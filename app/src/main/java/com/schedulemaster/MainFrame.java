@@ -1,12 +1,6 @@
 package com.schedulemaster;
 
-import mdlaf.MaterialLookAndFeel;
-import mdlaf.components.button.MaterialButtonUI;
-import mdlaf.components.textfield.MaterialTextFieldUI;
-import mdlaf.utils.MaterialBorders;
-
 import javax.swing.*;
-import javax.swing.text.Document;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
