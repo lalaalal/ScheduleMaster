@@ -1,0 +1,21 @@
+plugins {
+    id 'application'
+}
+
+group 'com.schedulemaster.server'
+version '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+
+    implementation group: 'com.opencsv', name: 'opencsv', version: '4.6'
+    implementation project(':misc')
+}
+
+application {
+    mainClass = 'com.schedulemaster.server.App'
+}

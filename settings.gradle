@@ -8,4 +8,5 @@
  */
 
 rootProject.name = 'ScheduleMaster'
-include('app')
+include 'app', 'misc', 'server'
+
