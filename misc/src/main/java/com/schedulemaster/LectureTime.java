@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class LectureTime implements Serializable {
-    private record Time(int hour, int minute) implements Serializable {
+    public record Time(int hour, int minute) implements Serializable {
 
         public boolean isAfter(Time time) {
             return this.hour > time.hour && this.minute > time.minute;
