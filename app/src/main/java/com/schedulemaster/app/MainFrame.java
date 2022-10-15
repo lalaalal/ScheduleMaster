@@ -1,4 +1,4 @@
-package com.schedulemaster;
+package com.schedulemaster.app;
 
 import javax.swing.*;
 import java.awt.*;
