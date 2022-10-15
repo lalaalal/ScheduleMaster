@@ -1,4 +1,4 @@
-package com.schedulemaster;
+package com.schedulemaster.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
