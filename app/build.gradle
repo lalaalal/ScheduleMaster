@@ -11,6 +11,9 @@ plugins {
     id 'application'
 }
 
+group 'com.schedulemaster.app'
+version '0.1'
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
@@ -18,8 +21,10 @@ repositories {
 
 dependencies {
     // Use JUnit test framework.
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation(platform('org.junit:junit-bom:5.9.1'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
 
+    implementation project(':misc')
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'io.github.vincenzopalazzo:material-ui-swing:1.1.2'
@@ -27,5 +32,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.schedulemaster.App'
+    mainClass = 'com.schedulemaster.app.App'
 }
