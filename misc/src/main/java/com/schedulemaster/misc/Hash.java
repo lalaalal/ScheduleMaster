@@ -81,6 +81,8 @@ public class Hash<K, V> implements Iterable<V> {
         @SuppressWarnings("unchecked")
         LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K,V>>) elements[index];
 
+        if (bucketList == null)
+            return null;
         for (Bucket<K, V> bucket : bucketList) {
             if (bucket.key.equals(key))
                 return bucket.value;
