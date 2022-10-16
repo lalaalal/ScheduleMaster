@@ -16,12 +16,4 @@ public class Lecture implements Serializable {
     public String major;		// 개설학과 전공
     public String completion;	// 이수구분
 
-
-
-
-
-
-
-
-
 }
