@@ -24,7 +24,7 @@ public class LectureHandler {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Something went wrong while reading csv from " + lectureDataPath);
         }
     }
 
