@@ -9,13 +9,13 @@ public class Hash<K, V> implements Iterable<V> {
 
         @Override
         public boolean hasNext() {
-            if (index == elements.length - 1) {
+            if (index == getLength() - 1) {
                 @SuppressWarnings("unchecked")
-                LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K,V>>) elements[index];
+                LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
                 if (bucketIndex == bucketList.getLength() - 1)
                     return false;
             }
-            return index < elements.length;
+            return index + 1 < getLength();
         }
 
         @Override
@@ -24,6 +24,7 @@ public class Hash<K, V> implements Iterable<V> {
             LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K,V>>) elements[index];
             if (bucketIndex >= bucketList.getLength()) {
                 bucketList = (LinkedList<Bucket<K,V>>) elements[++index];
+                bucketIndex = 0;
             }
 
 
@@ -50,6 +51,7 @@ public class Hash<K, V> implements Iterable<V> {
     private final Object[] elements;
 
     private static final int DEFAULT_SIZE = 1024;
+    private int length = 0;
 
     public Hash() {
         elements = new Object[DEFAULT_SIZE];
@@ -68,8 +70,9 @@ public class Hash<K, V> implements Iterable<V> {
 
         @SuppressWarnings("unchecked")
         LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
-
         bucketList.push(bucket);
+
+        length += 1;
     }
 
     public V get(K key) {
@@ -98,5 +101,11 @@ public class Hash<K, V> implements Iterable<V> {
                 select = bucket;
         }
         bucketList.remove(select);
+
+        length -= 1;
+    }
+
+    public int getLength() {
+        return length;
     }
 }

@@ -8,17 +8,27 @@ public class HashTest {
 
     @Test
     public void testHash() {
-        Hash<String, String> hash = new Hash<>();
+        Hash<Integer, Integer> hash = new Hash<>();
 
-        String hello = "Hello";
-        String hi = "hi";
-        hash.put("A", hello);
-        hash.put("B", hi);
+        for (int i = 0; i < 1000; i++) {
+            hash.put(i, i * 100);
+        }
 
-        Assertions.assertEquals(hello, hash.get("A"));
-        Assertions.assertEquals(hi, hash.get("B"));
+        for (int i = 0; i < 1000; i++) {
+            Assertions.assertEquals(i * 100, hash.get(i));
+        }
 
-        hash.remove("A");
-        Assertions.assertNull(hash.get("A"));
+        for (int i = 0; i < 1000; i++) {
+            hash.remove(i);
+        }
+        Assertions.assertEquals(0, hash.getLength());
+
+        hash.put(0, 10);
+        hash.put(1, 11);
+
+        for (Integer i : hash) {
+            System.out.println(i);
+        }
+
     }
 }
