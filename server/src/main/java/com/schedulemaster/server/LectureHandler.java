@@ -14,13 +14,7 @@ public class LectureHandler {
             String[] tuple = csvReader.read();
             while ((tuple = csvReader.read()) != null) {
                 Lecture lecture = Lecture.createLecture(tuple);
-                Lecture sameLecture = findLecture(lecture.lectureNum);
-                if (sameLecture == null) {
-                    lectures.push(lecture);
-                } else {
-                    LinkedList<LectureTime.TimeSet> timeSets = lecture.time.getTimeSets();
-                    sameLecture.time.addTimeSets(timeSets);
-                }
+                addLecture(lecture);
             }
 
         } catch (IOException e) {
@@ -36,6 +30,16 @@ public class LectureHandler {
         }
 
         return null;
+    }
+
+    public void addLecture(Lecture lecture) {
+        Lecture sameLecture = findLecture(lecture.lectureNum);
+        if (sameLecture == null) {
+            lectures.push(lecture);
+        } else {
+            LinkedList<LectureTime.TimeSet> timeSets = lecture.time.getTimeSets();
+            sameLecture.time.addTimeSets(timeSets);
+        }
     }
 
     public LinkedList<Lecture> getLectures() {
