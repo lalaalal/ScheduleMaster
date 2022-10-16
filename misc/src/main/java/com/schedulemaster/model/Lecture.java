@@ -3,6 +3,7 @@ package com.schedulemaster.model;
 import java.io.Serializable;
 
 public class Lecture implements Serializable {
+    public static final long serialVersionUID = 1L;
     public int grade;		    // 학년
     public String name;         // 강의명
     public int score; 		    // 학점

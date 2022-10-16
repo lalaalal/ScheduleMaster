@@ -1,8 +1,11 @@
 package com.schedulemaster.misc;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class Hash<K, V> implements Iterable<V> {
+public class Hash<K, V> implements Iterable<V>, Serializable {
+    public static final long serialVersionUID = 1L;
+
     private class HashIterator implements Iterator<V> {
         private int index = 0;
         private int bucketIndex = 0;

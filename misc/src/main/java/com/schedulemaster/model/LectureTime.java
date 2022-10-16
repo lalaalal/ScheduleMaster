@@ -3,11 +3,11 @@ package com.schedulemaster.model;
 import com.schedulemaster.misc.LinkedList;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class LectureTime implements Serializable {
+    public static final long serialVersionUID = 1L;
     public record Time(int hour, int minute) implements Serializable {
+        public static final long serialVersionUID = 1L;
 
         public boolean isAfter(Time time) {
             return this.hour >= time.hour && this.minute >= time.minute;
@@ -27,6 +27,7 @@ public class LectureTime implements Serializable {
     }
 
     public record TimeSet(int dayOfWeek, Time start, Time end) implements Serializable {
+        public static final long serialVersionUID = 1L;
         public boolean conflictWith(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
                     && (!start.isAfter(timeSet.end)
