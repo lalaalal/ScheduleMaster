@@ -1,8 +1,9 @@
 package com.schedulemaster.misc;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class LinkedList<E> implements Iterable<E> {
+public class LinkedList<E> implements Iterable<E>, Serializable {
 
     private class LinkedListIterator implements Iterator<E> {
         private Node<E> curr = head;
@@ -24,7 +25,7 @@ public class LinkedList<E> implements Iterable<E> {
         return new LinkedListIterator();
     }
 
-    private static class Node<E> {
+    private static class Node<E> implements Serializable {
         public E data;
         public Node<E> next;
 
