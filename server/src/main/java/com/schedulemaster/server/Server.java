@@ -28,8 +28,8 @@ public class Server implements AutoCloseable, Runnable {
             try {
                 Socket client = serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(client, lectureHandler, userHandler);
-                Thread clientThread = new Thread(clientHandler);
-                clientThread.start();
+                Thread clientHandlerThread = new Thread(clientHandler);
+                clientHandlerThread.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

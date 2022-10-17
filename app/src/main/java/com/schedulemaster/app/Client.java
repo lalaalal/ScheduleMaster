@@ -37,16 +37,25 @@ public class Client extends Communicator {
         return (LinkedList<Lecture>) response.data();
     }
 
-    public User getUserData() {
-        throw new UnsupportedOperationException();
+    public User getUserData() throws IOException {
+        Request request = new Request(Request.REQ_USER, null);
+        Response response = send(request);
+
+        return (User) response.data();
     }
 
-    public boolean enrollLecture(Lecture lecture, User user) {
-        throw new UnsupportedOperationException();
+    public boolean enrollLecture(Lecture lecture) throws IOException {
+        Request request = new Request(Request.ENROLL, lecture);
+        Response response = send(request);
+
+        return response != null && response.status() == Status.SUCCEED;
     }
 
-    public boolean selectLecture(Lecture lecture, User user) {
-        throw new UnsupportedOperationException();
+    public boolean selectLecture(Lecture lecture) throws IOException {
+        Request request = new Request(Request.SELECT, lecture);
+        Response response = send(request);
+
+        return response != null && response.status() == Status.SUCCEED;
     }
 
     @Override

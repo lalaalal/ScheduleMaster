@@ -23,4 +23,20 @@ public class User implements Serializable {
     public boolean verifyPassword(String hashedPassword) {
         return pw.equals(hashedPassword);
     }
+
+    public void enrollLecture(Lecture lecture) {
+        enrolledLectures.push(lecture);
+    }
+
+    public void selectLecture(Lecture lecture) {
+        selectedLectures.push(lecture);
+    }
+
+    public void cancelLecture(Lecture lecture) {
+        enrolledLectures.remove(lecture);
+    }
+
+    public void unselectLecture(Lecture lecture) {
+        selectedLectures.remove(lecture);
+    }
 }

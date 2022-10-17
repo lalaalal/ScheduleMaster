@@ -4,21 +4,37 @@ import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
+import com.schedulemaster.model.User;
 
-import java.io.IOException;
+import java.io.*;
 
 public class LectureHandler {
-    private final Hash<String, Lecture> lectures = new Hash<>();
+    private Hash<String, Lecture> lectures;
+    private final String lectureDataPath;
 
-    public LectureHandler(String lectureDataPath) {
-        try (CSVReader csvReader = new CSVReader(lectureDataPath)) {
+    @SuppressWarnings("unchecked")
+    public LectureHandler(String lectureDataPath) throws IOException {
+        this.lectureDataPath = lectureDataPath;
+        try (FileInputStream fis = new FileInputStream(lectureDataPath)) {
+            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+                Object object = ois.readObject();
+                lectures = (Hash<String, Lecture>) object;
+            }
+        } catch (FileNotFoundException | ClassNotFoundException e) {
+            lectures = new Hash<>();
+        }
+    }
+
+    public void initFromCSV(String csvPath) {
+        try (CSVReader csvReader = new CSVReader(csvPath)) {
             String[] tuple = csvReader.read();
             while ((tuple = csvReader.read()) != null) {
                 Lecture lecture = Lecture.createLecture(tuple);
                 addLecture(lecture);
             }
+            save();
         } catch (IOException e) {
-            System.out.println("Something went wrong while reading csv from " + lectureDataPath);
+            System.out.println("Something went wrong while reading csv from " + csvPath);
         }
     }
 
@@ -40,5 +56,40 @@ public class LectureHandler {
         LinkedList<Lecture> list = new LinkedList<>();
         list.addAll(lectures);
         return list;
+    }
+
+    public synchronized boolean enrollLecture(String lectureNum, User user) {
+        Lecture lecture = lectures.get(lectureNum);
+        if (user.enrolledLectures.has(lecture))
+            return false;
+
+        if (lecture.enrolled < lecture.max) {
+            lecture.enrolled += 1;
+            user.enrollLecture(lecture);
+            save();
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized boolean cancelLecture(String lectureNum, User user) {
+        Lecture lecture = lectures.get(lectureNum);
+        if (!user.enrolledLectures.has(lecture))
+            return false;
+
+        lecture.enrolled -= 1;
+        user.cancelLecture(lecture);
+        save();
+        return true;
+    }
+
+    public synchronized void save() {
+        try (FileOutputStream fos = new FileOutputStream(lectureDataPath)) {
+            try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+                oos.writeObject(lectures);
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to save Lectures");
+        }
     }
 }

@@ -18,27 +18,27 @@ public class UserHandler {
                 Object object = ois.readObject();
                 users = (Hash<String, User>) object;
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | ClassNotFoundException e) {
             users = new Hash<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
-    public void save() throws IOException {
+    public synchronized void save() {
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
             try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                 oos.writeObject(users);
             }
+        } catch (IOException e) {
+            System.out.println("Failed to save Lectures");
         }
     }
 
-    public void addUser(String id, String pw) {
+    public synchronized void addUser(String id, String pw) {
         User user = new User(id, pw);
         users.put(id, user);
     }
 
-    public void addUser(User user) {
+    public synchronized void addUser(User user) {
         users.put(user.id, user);
     }
 

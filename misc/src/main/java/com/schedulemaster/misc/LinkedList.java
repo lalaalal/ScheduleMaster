@@ -99,6 +99,14 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
         return curr.data;
     }
 
+    public boolean has(E data) {
+        for (E element : this) {
+            if (element.equals(data))
+                return true;
+        }
+        return false;
+    }
+
     public int getLength() {
         return length;
     }

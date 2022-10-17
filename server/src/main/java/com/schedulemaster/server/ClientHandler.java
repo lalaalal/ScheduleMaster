@@ -4,6 +4,7 @@ import com.schedulemaster.misc.Communicator;
 import com.schedulemaster.misc.Request;
 import com.schedulemaster.misc.Response;
 import com.schedulemaster.misc.Status;
+import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.User;
 
 import java.io.IOException;
@@ -69,6 +70,24 @@ public class ClientHandler extends Communicator implements Runnable {
 
         public Response lectureResponse() {
             return new Response(Status.SUCCEED, lectureHandler.getLectures());
+        }
+
+        public synchronized Response enrollLectureResponse(Request request) {
+            Lecture lecture = (Lecture) request.data();
+            if (!lectureHandler.enrollLecture(lecture.lectureNum, user))
+                return new Response(Status.FAILED, null);
+
+            userHandler.save();
+            return new Response(Status.SUCCEED, null);
+        }
+
+        public synchronized Response cancelLectureResponse(Request request) {
+            Lecture lecture = (Lecture) request.data();
+            if (!lectureHandler.cancelLecture(lecture.lectureNum, user))
+                return new Response(Status.FAILED, null);
+
+            userHandler.save();
+            return new Response(Status.SUCCEED, null);
         }
 
         public Response commandNotFoundResponse() {
