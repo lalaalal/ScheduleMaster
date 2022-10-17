@@ -15,7 +15,6 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public V next() {
             K key = iterator.next();
 
@@ -58,6 +57,9 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
     }
 
     public void put(K key, V value) {
+        if (hasKey(key))
+            throw new RuntimeException("Key " + key + " already exists");
+
         int index = getIndex(key);
         Bucket<K, V> bucket = new Bucket<>(key, value);
 
@@ -72,11 +74,19 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         length += 1;
     }
 
+    private boolean hasKey(K keyToCheck) {
+        for (K key : keys) {
+            if (key.equals(keyToCheck))
+                return true;
+        }
+        return false;
+    }
+
     public V get(K key) {
         int index = getIndex(key);
 
         @SuppressWarnings("unchecked")
-        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K,V>>) elements[index];
+        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
 
         if (bucketList == null)
             return null;
@@ -92,7 +102,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         int index = getIndex(key);
 
         @SuppressWarnings("unchecked")
-        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K,V>>) elements[index];
+        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
 
         Bucket<K, V> select = null;
         for (Bucket<K, V> bucket : bucketList) {
