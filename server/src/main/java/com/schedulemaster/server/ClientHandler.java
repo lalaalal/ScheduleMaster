@@ -1,20 +1,15 @@
 package com.schedulemaster.server;
 
+import com.schedulemaster.misc.Communicator;
 import com.schedulemaster.misc.Request;
 import com.schedulemaster.misc.Response;
 import com.schedulemaster.misc.Status;
 import com.schedulemaster.model.User;
-import com.schedulemaster.util.SerializeManager;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientHandler implements Runnable, AutoCloseable {
-    private final Socket client;
-    private final BufferedInputStream inputStream;
-    private final BufferedOutputStream outputStream;
+public class ClientHandler extends Communicator implements Runnable {
 
     private final LectureHandler lectureHandler;
     private final UserHandler userHandler;
@@ -24,9 +19,7 @@ public class ClientHandler implements Runnable, AutoCloseable {
     private User user;
 
     public ClientHandler(Socket client, LectureHandler lectureHandler, UserHandler userHandler) throws IOException {
-        this.client = client;
-        this.inputStream = new BufferedInputStream(client.getInputStream());
-        this.outputStream = new BufferedOutputStream(client.getOutputStream());
+        super(client);
         this.lectureHandler = lectureHandler;
         this.userHandler = userHandler;
     }
@@ -36,7 +29,7 @@ public class ClientHandler implements Runnable, AutoCloseable {
         Status status = Status.SUCCEED;
         while (status != Status.BYE) {
             try {
-                status = process();
+                status = receiveAndSend();
             } catch (IOException e) {
                 System.out.println("Something went wrong while handling client request");
                 return;
@@ -44,23 +37,9 @@ public class ClientHandler implements Runnable, AutoCloseable {
         }
     }
 
-    private Status process() throws IOException {
-        byte[] requestBytes = inputStream.readAllBytes();
-        Request request = SerializeManager.deserialize(requestBytes, Request.class);
-
-        Response response = factory.createResponse(request);
-        byte[] responseBytes = SerializeManager.serialize(response);
-
-        outputStream.write(responseBytes);
-
-        return response.status();
-    }
-
     @Override
-    public void close() throws IOException {
-        inputStream.close();
-        outputStream.close();
-        client.close();
+    protected Response createResponse(Request request) {
+        return factory.createResponse(request);
     }
 
     private class ResponseFactory {

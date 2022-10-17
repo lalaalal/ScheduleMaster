@@ -26,7 +26,7 @@ public class LectureHandler {
         return lectures.get(lectureNumber);
     }
 
-    public void addLecture(Lecture lecture) {
+    public synchronized void addLecture(Lecture lecture) {
         Lecture sameLecture = findLecture(lecture.lectureNum);
         if (sameLecture == null) {
             lectures.put(lecture.lectureNum, lecture);
