@@ -65,6 +65,12 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
         length += 1;
     }
 
+    public void addAll(Iterable<E> iterable) {
+        for (E element : iterable) {
+            push(element);
+        }
+    }
+
     public void remove(E data) {
         Node<E> prev = head;
         Node<E> curr = prev.next;

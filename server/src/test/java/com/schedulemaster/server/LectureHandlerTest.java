@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 public class LectureHandlerTest {
     @Test
     public void testLectureHandler() {
-        String path = "C:\\Users\\bonti\\Downloads\\lecture.csv";
+        String path = "/Users/lalaalal/Downloads/lectures.csv";
 
         LectureHandler lectureHandler = new LectureHandler(path);
-        for (Lecture lecture : lectureHandler.getLectures()) {
+        for (Lecture lecture : lectureHandler.getLectureHash()) {
             System.out.println(lecture);
         }
     }
