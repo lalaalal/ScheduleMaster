@@ -60,6 +60,10 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         elements = new Object[DEFAULT_SIZE];
     }
 
+    public Hash(int indexLength) {
+        elements = new Object[indexLength];
+    }
+
     private int getIndex(K key) {
         return Math.abs(key.hashCode()) % elements.length;
     }
