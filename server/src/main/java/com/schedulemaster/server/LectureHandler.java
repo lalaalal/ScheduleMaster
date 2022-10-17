@@ -8,8 +8,7 @@ import com.schedulemaster.model.LectureTime;
 import java.io.IOException;
 
 public class LectureHandler {
-    private final Hash<String, Lecture> lectureHash = new Hash<>();
-    private final LinkedList<Lecture> lectures = new LinkedList<>();
+    private final Hash<String, Lecture> lectures = new Hash<>();
 
     public LectureHandler(String lectureDataPath) {
         try (CSVReader csvReader = new CSVReader(lectureDataPath)) {
@@ -18,27 +17,28 @@ public class LectureHandler {
                 Lecture lecture = Lecture.createLecture(tuple);
                 addLecture(lecture);
             }
-            lectures.addAll(lectureHash);
         } catch (IOException e) {
             System.out.println("Something went wrong while reading csv from " + lectureDataPath);
         }
     }
 
     public Lecture findLecture(String lectureNumber) {
-        return lectureHash.get(lectureNumber);
+        return lectures.get(lectureNumber);
     }
 
     public void addLecture(Lecture lecture) {
         Lecture sameLecture = findLecture(lecture.lectureNum);
         if (sameLecture == null) {
-            lectureHash.put(lecture.lectureNum, lecture);
+            lectures.put(lecture.lectureNum, lecture);
         } else {
             LinkedList<LectureTime.TimeSet> timeSets = lecture.time.getTimeSets();
             sameLecture.time.addTimeSets(timeSets);
         }
     }
 
-    public LinkedList<Lecture> getLectureHash() {
-        return lectures;
+    public LinkedList<Lecture> getLectures() {
+        LinkedList<Lecture> list = new LinkedList<>();
+        list.addAll(lectures);
+        return list;
     }
 }

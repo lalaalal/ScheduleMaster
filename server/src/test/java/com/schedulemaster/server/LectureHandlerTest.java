@@ -9,7 +9,7 @@ public class LectureHandlerTest {
         String path = "/Users/lalaalal/Downloads/lectures.csv";
 
         LectureHandler lectureHandler = new LectureHandler(path);
-        for (Lecture lecture : lectureHandler.getLectureHash()) {
+        for (Lecture lecture : lectureHandler.getLectures()) {
             System.out.println(lecture);
         }
     }

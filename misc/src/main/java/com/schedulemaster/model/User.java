@@ -1,14 +1,26 @@
 package com.schedulemaster.model;
 
+import com.schedulemaster.misc.LinkedList;
+import com.schedulemaster.util.SHA256;
+
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.security.NoSuchAlgorithmException;
 
 public class User implements Serializable {
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 2L;
 
     public String id;
     private String pw;
 
-    public ArrayList<Lecture> selectedLectures; // 책가방 강의
-    public ArrayList<Lecture> enrolledLectures; // 신청 완료된 강의
+    public LinkedList<Lecture> selectedLectures = new LinkedList<>(); // 책가방 강의
+    public LinkedList<Lecture> enrolledLectures = new LinkedList<>(); // 신청 완료된 강의
+
+    public User(String id, String pw) {
+        this.id = id;
+        this.pw = SHA256.encrypt(pw);
+    }
+
+    public boolean verifyPassword(String hashedPassword) {
+        return pw.equals(hashedPassword);
+    }
 }
