@@ -2,6 +2,7 @@ package com.schedulemaster;
 
 import com.schedulemaster.misc.LinkedList;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -23,6 +24,7 @@ public class LinkedListTest {
         Assertions.assertEquals(4, list.getLength());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void serializeTest() {
         LinkedList<Integer> list = new LinkedList<>();

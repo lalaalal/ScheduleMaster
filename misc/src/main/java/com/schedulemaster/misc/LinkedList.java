@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 public class LinkedList<E> implements Iterable<E>, Serializable {
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 10L;
 
     private class LinkedListIterator implements Iterator<E> {
         private Node<E> curr = head;
@@ -65,6 +65,12 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
         length += 1;
     }
 
+    public void addAll(Iterable<E> iterable) {
+        for (E element : iterable) {
+            push(element);
+        }
+    }
+
     public void remove(E data) {
         Node<E> prev = head;
         Node<E> curr = prev.next;
@@ -91,6 +97,14 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
         }
 
         return curr.data;
+    }
+
+    public boolean has(E data) {
+        for (E element : this) {
+            if (element.equals(data))
+                return true;
+        }
+        return false;
     }
 
     public int getLength() {

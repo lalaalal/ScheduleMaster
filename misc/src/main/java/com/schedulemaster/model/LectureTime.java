@@ -5,9 +5,9 @@ import com.schedulemaster.misc.LinkedList;
 import java.io.Serializable;
 
 public class LectureTime implements Serializable {
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 10L;
     public record Time(int hour, int minute) implements Serializable {
-        public static final long serialVersionUID = 1L;
+        public static final long serialVersionUID = 10L;
 
         public boolean isAfter(Time time) {
             return this.hour >= time.hour && this.minute >= time.minute;
@@ -24,10 +24,28 @@ public class LectureTime implements Serializable {
 
             return new Time(hour, minute);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Time time = (Time) o;
+
+            if (hour != time.hour) return false;
+            return minute == time.minute;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = hour;
+            result = 31 * result + minute;
+            return result;
+        }
     }
 
     public record TimeSet(int dayOfWeek, Time start, Time end) implements Serializable {
-        public static final long serialVersionUID = 1L;
+        public static final long serialVersionUID = 10L;
         public boolean conflictWith(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
                     && (!start.isAfter(timeSet.end)
@@ -38,6 +56,26 @@ public class LectureTime implements Serializable {
             return this.dayOfWeek == timeSet.dayOfWeek
                     && start.isBefore(timeSet.start)
                     && end.isAfter(timeSet.end);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            TimeSet timeSet = (TimeSet) o;
+
+            if (dayOfWeek != timeSet.dayOfWeek) return false;
+            if (!start.equals(timeSet.start)) return false;
+            return end.equals(timeSet.end);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = dayOfWeek;
+            result = 31 * result + start.hashCode();
+            result = 31 * result + end.hashCode();
+            return result;
         }
     }
 
@@ -92,4 +130,18 @@ public class LectureTime implements Serializable {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LectureTime that = (LectureTime) o;
+
+        return timeSets.equals(that.timeSets);
+    }
+
+    @Override
+    public int hashCode() {
+        return timeSets.hashCode();
+    }
 }

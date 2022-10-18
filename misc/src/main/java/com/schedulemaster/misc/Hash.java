@@ -4,34 +4,21 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 public class Hash<K, V> implements Iterable<V>, Serializable {
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 10L;
 
     private class HashIterator implements Iterator<V> {
-        private int index = 0;
-        private int bucketIndex = 0;
+        private final Iterator<K> iterator = keys.iterator();
 
         @Override
         public boolean hasNext() {
-            if (index == getLength() - 1) {
-                @SuppressWarnings("unchecked")
-                LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
-                if (bucketIndex == bucketList.getLength() - 1)
-                    return false;
-            }
-            return index + 1 < getLength();
+            return iterator.hasNext();
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public V next() {
-            LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K,V>>) elements[index];
-            if (bucketIndex >= bucketList.getLength()) {
-                bucketList = (LinkedList<Bucket<K,V>>) elements[++index];
-                bucketIndex = 0;
-            }
+            K key = iterator.next();
 
-
-            return bucketList.at(bucketIndex++).value;
+            return get(key);
         }
     }
 
@@ -40,7 +27,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         return new HashIterator();
     }
 
-    private static class Bucket<K, V> {
+    private static class Bucket<K, V> implements Serializable {
         public K key;
         public V value;
 
@@ -52,6 +39,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
 
     // LinkedList<Bucket<K, V>>
     private final Object[] elements;
+    private final LinkedList<K> keys = new LinkedList<>();
 
     private static final int DEFAULT_SIZE = 1024;
     private int length = 0;
@@ -69,6 +57,9 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
     }
 
     public void put(K key, V value) {
+        if (hasKey(key))
+            throw new RuntimeException("Key " + key + " already exists");
+
         int index = getIndex(key);
         Bucket<K, V> bucket = new Bucket<>(key, value);
 
@@ -78,15 +69,24 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         @SuppressWarnings("unchecked")
         LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
         bucketList.push(bucket);
+        keys.push(key);
 
         length += 1;
+    }
+
+    private boolean hasKey(K keyToCheck) {
+        for (K key : keys) {
+            if (key.equals(keyToCheck))
+                return true;
+        }
+        return false;
     }
 
     public V get(K key) {
         int index = getIndex(key);
 
         @SuppressWarnings("unchecked")
-        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K,V>>) elements[index];
+        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
 
         if (bucketList == null)
             return null;
@@ -102,13 +102,14 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         int index = getIndex(key);
 
         @SuppressWarnings("unchecked")
-        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K,V>>) elements[index];
+        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
 
         Bucket<K, V> select = null;
         for (Bucket<K, V> bucket : bucketList) {
             if (bucket.key.equals(key))
                 select = bucket;
         }
+        keys.remove(key);
         bucketList.remove(select);
 
         length -= 1;
