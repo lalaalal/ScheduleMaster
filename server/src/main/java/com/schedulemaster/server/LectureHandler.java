@@ -59,17 +59,18 @@ public class LectureHandler {
         return list;
     }
 
-    public boolean doLectureCommand(String command, Lecture lecture, User user) {
+    public boolean doLectureCommand(String command, String lectureNum, User user) {
         return switch (command) {
-            case Request.ENROLL -> enrollLecture(lecture, user);
-            case Request.SELECT -> selectLecture(lecture, user);
-            case Request.CANCEL -> cancelLecture(lecture, user);
-            case Request.UNSELECT -> unselectLecture(lecture, user);
+            case Request.ENROLL -> enrollLecture(lectureNum, user);
+            case Request.SELECT -> selectLecture(lectureNum, user);
+            case Request.CANCEL -> cancelLecture(lectureNum, user);
+            case Request.UNSELECT -> unselectLecture(lectureNum, user);
             default -> false;
         };
     }
 
-    private synchronized boolean addLectureTo(LinkedList<Lecture> list, Lecture lecture) {
+    private synchronized boolean addLectureTo(LinkedList<Lecture> list, String lectureNum) {
+        Lecture lecture = lectures.get(lectureNum);
         if (list.has(lecture))
             return false;
 
@@ -82,7 +83,8 @@ public class LectureHandler {
         return false;
     }
 
-    private synchronized boolean removeLectureFrom(LinkedList<Lecture> list, Lecture lecture) {
+    private synchronized boolean removeLectureFrom(LinkedList<Lecture> list, String lectureNum) {
+        Lecture lecture = lectures.get(lectureNum);
         if (!list.has(lecture))
             return false;
 
@@ -92,20 +94,20 @@ public class LectureHandler {
         return true;
     }
 
-    public synchronized boolean enrollLecture(Lecture lecture, User user) {
-        return addLectureTo(user.enrolledLectures, lecture);
+    public synchronized boolean enrollLecture(String lectureNum, User user) {
+        return addLectureTo(user.enrolledLectures, lectureNum);
     }
 
-    public synchronized boolean selectLecture(Lecture lecture, User user) {
-        return addLectureTo(user.selectedLectures, lecture);
+    public synchronized boolean selectLecture(String lectureNum, User user) {
+        return addLectureTo(user.selectedLectures, lectureNum);
     }
 
-    public synchronized boolean cancelLecture(Lecture lecture, User user) {
-        return removeLectureFrom(user.enrolledLectures, lecture);
+    public synchronized boolean cancelLecture(String lectureNum, User user) {
+        return removeLectureFrom(user.enrolledLectures, lectureNum);
     }
 
-    public synchronized boolean unselectLecture(Lecture lecture, User user) {
-        return removeLectureFrom(user.selectedLectures, lecture);
+    public synchronized boolean unselectLecture(String lectureNum, User user) {
+        return removeLectureFrom(user.selectedLectures, lectureNum);
     }
 
     public synchronized void save() {

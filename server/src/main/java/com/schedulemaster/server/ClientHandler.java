@@ -90,7 +90,7 @@ public class ClientHandler extends Communicator implements Runnable {
 
         public synchronized Response lectureCommandResponse(Request request) {
             Lecture lecture = (Lecture) request.data();
-            if (!lectureHandler.doLectureCommand(request.command(), lecture, user))
+            if (!lectureHandler.doLectureCommand(request.command(), lecture.lectureNum, user))
                 return new Response(Status.FAILED, null);
 
             userHandler.save();

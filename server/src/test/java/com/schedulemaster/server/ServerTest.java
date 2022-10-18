@@ -7,10 +7,11 @@ import java.io.IOException;
 public class ServerTest {
     @Test
     public void testServer() throws IOException {
-        LectureHandler lectureHandler = new LectureHandler("/Users/lalaalal/Downloads/lectures");
-        lectureHandler.appendFromCSV("/Users/lalaalal/Downloads/lectures.csv");
+        LectureHandler lectureHandler = new LectureHandler("lectures");
+        if (lectureHandler.getLectures().isEmpty())
+            lectureHandler.appendFromCSV("/Users/lalaalal/Downloads/lectures.csv");
 
-        UserHandler userHandler = new UserHandler("/Users/lalaalal/Downloads/users");
+        UserHandler userHandler = new UserHandler("users");
         try (Server server = new Server(lectureHandler, userHandler)) {
             server.run();
         }
