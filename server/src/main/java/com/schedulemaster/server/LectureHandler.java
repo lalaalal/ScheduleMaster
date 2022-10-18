@@ -25,7 +25,7 @@ public class LectureHandler {
         }
     }
 
-    public void initFromCSV(String csvPath) {
+    public void appendFromCSV(String csvPath) {
         try (CSVReader csvReader = new CSVReader(csvPath)) {
             String[] tuple = csvReader.read();
             while ((tuple = csvReader.read()) != null) {

@@ -18,7 +18,7 @@ public class Server implements AutoCloseable, Runnable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         serverSocket.close();
     }
 

@@ -36,10 +36,12 @@ public class UserHandler {
     public synchronized void addUser(String id, String pw) {
         User user = new User(id, pw);
         users.put(id, user);
+        save();
     }
 
     public synchronized void addUser(User user) {
         users.put(user.id, user);
+        save();
     }
 
     public Hash<String, User> getUsers() {

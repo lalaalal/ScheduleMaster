@@ -27,7 +27,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         return new HashIterator();
     }
 
-    private static class Bucket<K, V> {
+    private static class Bucket<K, V> implements Serializable {
         public K key;
         public V value;
 

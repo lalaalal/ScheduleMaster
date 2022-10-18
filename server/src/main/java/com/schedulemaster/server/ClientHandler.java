@@ -50,6 +50,7 @@ public class ClientHandler extends Communicator implements Runnable {
             return switch (request.command()) {
                 case Request.LOGIN -> loginResponse(request);
                 case Request.REQ_LECTURES -> lectureResponse();
+                case Request.BYE -> byeResponse();
                 default -> commandNotFoundResponse();
             };
         }
@@ -88,6 +89,10 @@ public class ClientHandler extends Communicator implements Runnable {
 
             userHandler.save();
             return new Response(Status.SUCCEED, null);
+        }
+
+        public Response byeResponse() {
+            return new Response(Status.BYE, null);
         }
 
         public Response commandNotFoundResponse() {
