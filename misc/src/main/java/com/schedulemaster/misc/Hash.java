@@ -109,6 +109,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
             if (bucket.key.equals(key))
                 select = bucket;
         }
+        keys.remove(key);
         bucketList.remove(select);
 
         length -= 1;
