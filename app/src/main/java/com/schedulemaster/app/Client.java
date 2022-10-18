@@ -4,7 +4,6 @@ import com.schedulemaster.misc.*;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.User;
 import com.schedulemaster.util.SHA256;
-import com.schedulemaster.util.SerializeManager;
 
 import java.io.*;
 import java.net.Socket;
@@ -17,7 +16,7 @@ public class Client extends Communicator {
         super(new Socket(HOST, PORT));
     }
 
-    public boolean login(String id, String pw) throws IOException {
+    public LoginStatus login(String id, String pw) throws IOException {
         String hashedPassword = SHA256.encrypt(pw);
 
         String[] userInfo = new String[2];
@@ -26,7 +25,21 @@ public class Client extends Communicator {
 
         Request request = new Request(Request.LOGIN, userInfo);
         Response response = send(request);
-        return response != null && response.status() == Status.SUCCEED;
+
+        return new LoginStatus(response.status() == Status.SUCCEED, (String) response.data());
+    }
+
+    public LoginStatus signup(String id, String pw) throws IOException {
+        String hashedPassword = SHA256.encrypt(pw);
+
+        String[] userInfo = new String[2];
+        userInfo[0] = id;
+        userInfo[1] = hashedPassword;
+
+        Request request = new Request(Request.SIGNUP, userInfo);
+        Response response = send(request);
+
+        return new LoginStatus(response.status() == Status.SUCCEED, (String) response.data());
     }
 
     @SuppressWarnings("unchecked")
@@ -44,15 +57,8 @@ public class Client extends Communicator {
         return (User) response.data();
     }
 
-    public boolean enrollLecture(Lecture lecture) throws IOException {
-        Request request = new Request(Request.ENROLL, lecture);
-        Response response = send(request);
-
-        return response != null && response.status() == Status.SUCCEED;
-    }
-
-    public boolean selectLecture(Lecture lecture) throws IOException {
-        Request request = new Request(Request.SELECT, lecture);
+    public boolean lectureCommand(String command, Lecture lecture) throws IOException {
+        Request request = new Request(command, lecture);
         Response response = send(request);
 
         return response != null && response.status() == Status.SUCCEED;

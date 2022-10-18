@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 public class Hash<K, V> implements Iterable<V>, Serializable {
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 10L;
 
     private class HashIterator implements Iterator<V> {
         private final Iterator<K> iterator = keys.iterator();

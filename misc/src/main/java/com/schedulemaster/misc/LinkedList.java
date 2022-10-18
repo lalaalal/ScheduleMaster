@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 public class LinkedList<E> implements Iterable<E>, Serializable {
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 10L;
 
     private class LinkedListIterator implements Iterator<E> {
         private Node<E> curr = head;

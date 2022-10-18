@@ -2,6 +2,7 @@ package com.schedulemaster.server;
 
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
+import com.schedulemaster.misc.Request;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
@@ -58,29 +59,53 @@ public class LectureHandler {
         return list;
     }
 
-    public synchronized boolean enrollLecture(String lectureNum, User user) {
-        Lecture lecture = lectures.get(lectureNum);
-        if (user.enrolledLectures.has(lecture))
+    public boolean doLectureCommand(String command, Lecture lecture, User user) {
+        return switch (command) {
+            case Request.ENROLL -> enrollLecture(lecture, user);
+            case Request.SELECT -> selectLecture(lecture, user);
+            case Request.CANCEL -> cancelLecture(lecture, user);
+            case Request.UNSELECT -> unselectLecture(lecture, user);
+            default -> false;
+        };
+    }
+
+    private synchronized boolean addLectureTo(LinkedList<Lecture> list, Lecture lecture) {
+        if (list.has(lecture))
             return false;
 
         if (lecture.enrolled < lecture.max) {
             lecture.enrolled += 1;
-            user.enrollLecture(lecture);
+            list.push(lecture);
             save();
             return true;
         }
         return false;
     }
 
-    public synchronized boolean cancelLecture(String lectureNum, User user) {
-        Lecture lecture = lectures.get(lectureNum);
-        if (!user.enrolledLectures.has(lecture))
+    private synchronized boolean removeLectureFrom(LinkedList<Lecture> list, Lecture lecture) {
+        if (!list.has(lecture))
             return false;
 
         lecture.enrolled -= 1;
-        user.cancelLecture(lecture);
+        list.remove(lecture);
         save();
         return true;
+    }
+
+    public synchronized boolean enrollLecture(Lecture lecture, User user) {
+        return addLectureTo(user.enrolledLectures, lecture);
+    }
+
+    public synchronized boolean selectLecture(Lecture lecture, User user) {
+        return addLectureTo(user.selectedLectures, lecture);
+    }
+
+    public synchronized boolean cancelLecture(Lecture lecture, User user) {
+        return removeLectureFrom(user.enrolledLectures, lecture);
+    }
+
+    public synchronized boolean unselectLecture(Lecture lecture, User user) {
+        return removeLectureFrom(user.selectedLectures, lecture);
     }
 
     public synchronized void save() {

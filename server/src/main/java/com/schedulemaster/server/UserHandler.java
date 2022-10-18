@@ -44,6 +44,10 @@ public class UserHandler {
         save();
     }
 
+    public boolean hasId(String id) {
+        return users.get(id) != null;
+    }
+
     public Hash<String, User> getUsers() {
         return users;
     }

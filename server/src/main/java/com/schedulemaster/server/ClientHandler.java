@@ -33,7 +33,6 @@ public class ClientHandler extends Communicator implements Runnable {
                 status = receiveAndSend();
             } catch (IOException e) {
                 System.out.println("Something went wrong while handling client request");
-                return;
             }
         }
     }
@@ -49,7 +48,10 @@ public class ClientHandler extends Communicator implements Runnable {
                 return commandNotFoundResponse();
             return switch (request.command()) {
                 case Request.LOGIN -> loginResponse(request);
+                case Request.SIGNUP -> signupResponse(request);
                 case Request.REQ_LECTURES -> lectureResponse();
+                case Request.ENROLL, Request.SELECT,
+                        Request.CANCEL, Request.UNSELECT -> lectureCommandResponse(request);
                 case Request.BYE -> byeResponse();
                 default -> commandNotFoundResponse();
             };
@@ -60,31 +62,35 @@ public class ClientHandler extends Communicator implements Runnable {
             String id = userInfo[0];
             String hashedPassword = userInfo[1];
 
-            Status status = Status.FAILED;
             if (userHandler.verifyUser(id, hashedPassword)) {
-                status = Status.SUCCEED;
                 user = userHandler.getUser(id);
+                return new Response(Status.SUCCEED, "Succeed");
             }
+            if (userHandler.hasId(id))
+                return new Response(Status.FAILED, "Wrong Password");
 
-            return new Response(status, null);
+            return new Response(Status.FAILED, "ID not found");
+        }
+
+        public synchronized Response signupResponse(Request request) {
+            String[] userInfo = (String[]) request.data();
+            String id = userInfo[0];
+            String hashedPassword = userInfo[1];
+
+            if (userHandler.hasId(id))
+                return new Response(Status.FAILED, "Id exists");
+
+            userHandler.addUser(id, hashedPassword);
+            return new Response(Status.SUCCEED, "Succeed");
         }
 
         public Response lectureResponse() {
             return new Response(Status.SUCCEED, lectureHandler.getLectures());
         }
 
-        public synchronized Response enrollLectureResponse(Request request) {
+        public synchronized Response lectureCommandResponse(Request request) {
             Lecture lecture = (Lecture) request.data();
-            if (!lectureHandler.enrollLecture(lecture.lectureNum, user))
-                return new Response(Status.FAILED, null);
-
-            userHandler.save();
-            return new Response(Status.SUCCEED, null);
-        }
-
-        public synchronized Response cancelLectureResponse(Request request) {
-            Lecture lecture = (Lecture) request.data();
-            if (!lectureHandler.cancelLecture(lecture.lectureNum, user))
+            if (!lectureHandler.doLectureCommand(request.command(), lecture, user))
                 return new Response(Status.FAILED, null);
 
             userHandler.save();

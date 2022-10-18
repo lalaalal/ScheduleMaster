@@ -1,9 +1,10 @@
 package com.schedulemaster.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Lecture implements Serializable {
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 10L;
     public int grade;		    // 학년
     public String name;         // 강의명
     public int score; 		    // 학점
@@ -59,5 +60,41 @@ public class Lecture implements Serializable {
                 ", major='" + major + '\'' +
                 ", completion='" + completion + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Lecture lecture = (Lecture) o;
+
+        if (grade != lecture.grade) return false;
+        if (score != lecture.score) return false;
+        if (max != lecture.max) return false;
+        if (enrolled != lecture.enrolled) return false;
+        if (!Objects.equals(name, lecture.name)) return false;
+        if (!Objects.equals(time, lecture.time)) return false;
+        if (!Objects.equals(professor, lecture.professor)) return false;
+        if (!Objects.equals(lectureNum, lecture.lectureNum)) return false;
+        if (!Objects.equals(classRoom, lecture.classRoom)) return false;
+        if (!Objects.equals(major, lecture.major)) return false;
+        return Objects.equals(completion, lecture.completion);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = grade;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + score;
+        result = 31 * result + (time != null ? time.hashCode() : 0);
+        result = 31 * result + (professor != null ? professor.hashCode() : 0);
+        result = 31 * result + (lectureNum != null ? lectureNum.hashCode() : 0);
+        result = 31 * result + max;
+        result = 31 * result + enrolled;
+        result = 31 * result + (classRoom != null ? classRoom.hashCode() : 0);
+        result = 31 * result + (major != null ? major.hashCode() : 0);
+        result = 31 * result + (completion != null ? completion.hashCode() : 0);
+        return result;
     }
 }
