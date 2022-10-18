@@ -8,7 +8,7 @@ import java.io.IOException;
 public class UserHandlerTest {
     @Test
     public void testLoad() throws IOException {
-        UserHandler userHandler = new UserHandler("/Users/lalaalal/Downloads/users");
+        UserHandler userHandler = new UserHandler("users");
         for (User user : userHandler.getUsers()) {
             System.out.println(user);
         }

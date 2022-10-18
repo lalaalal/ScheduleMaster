@@ -10,7 +10,7 @@ public class LectureHandlerTest {
     public void testLectureHandler() throws IOException {
         String csvPath = "/Users/lalaalal/Downloads/lectures.csv";
 
-        LectureHandler lectureHandler = new LectureHandler("/Users/lalaalal/Downloads/lectures");
+        LectureHandler lectureHandler = new LectureHandler("lectures");
         lectureHandler.appendFromCSV(csvPath);
         for (Lecture lecture : lectureHandler.getLectures()) {
             System.out.println(lecture);

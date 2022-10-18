@@ -1,9 +1,10 @@
 package com.schedulemaster.server;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
+@Disabled
 public class ServerTest {
     @Test
     public void testServer() throws IOException {
