@@ -41,7 +41,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
     private final Object[] elements;
     private final LinkedList<K> keys = new LinkedList<>();
 
-    private static final int DEFAULT_SIZE = 1024;
+    private static final int DEFAULT_SIZE = 10240;
     private int length = 0;
 
     public Hash() {
