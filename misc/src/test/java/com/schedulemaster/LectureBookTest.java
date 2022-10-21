@@ -36,7 +36,7 @@ public class LectureBookTest {
         LinkedList<Lecture> lectures = getSampleList();
 
         LectureBook lectureBook = new LectureBook(lectures);
-        lectureBook.addIndex("professor", (Lecture lecture) -> lecture.professor);
+        lectureBook.addIndex("professor", Lecture::getProfessor);
 
         LinkedList<Lecture> findByProfessor = lectureBook.findLectures("professor", "A");
         Assertions.assertEquals(3, findByProfessor.getLength());
