@@ -1,6 +1,7 @@
 package com.schedulemaster.misc;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class LinkedList<E> implements Iterable<E>, Serializable {
@@ -109,5 +110,18 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
 
     public int getLength() {
         return length;
+    }
+
+    public E[] toArray(E[] array) {
+        E[] result = Arrays.copyOf(array, length);
+
+        int index = 0;
+        for (E e : this) {
+            result[index] = e;
+
+            index += 1;
+        }
+
+        return result;
     }
 }

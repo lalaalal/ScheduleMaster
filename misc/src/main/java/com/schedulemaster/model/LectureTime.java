@@ -102,6 +102,12 @@ public class LectureTime implements Serializable {
         timeSets.push(new TimeSet(dayOfWeek, start, end));
     }
 
+    public void addTimeSet(TimeSet timeset) {
+        if (!(0 <= timeset.dayOfWeek && timeset.dayOfWeek < 5))
+            throw new RuntimeException("Invalid value; dayOfWeek is " + timeset.dayOfWeek);
+        timeSets.push(timeset);
+    }
+
     public void addTimeSets(LinkedList<TimeSet> timeSets) {
         for (TimeSet timeSet : timeSets) {
             this.timeSets.push(timeSet);

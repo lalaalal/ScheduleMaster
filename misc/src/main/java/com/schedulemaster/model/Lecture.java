@@ -1,10 +1,13 @@
 package com.schedulemaster.model;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Getter
 public class Lecture implements Serializable {
-    public static final long serialVersionUID = 10L;
+    public static final long serialVersionUID = 11L;
     public int grade;		    // 학년
     public String name;         // 강의명
     public int score; 		    // 학점
