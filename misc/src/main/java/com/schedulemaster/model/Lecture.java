@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Getter
 public class Lecture implements Serializable {
-    public static final long serialVersionUID = 11L;
+    public static final long serialVersionUID = 12L;
     public int grade;		    // 학년
     public String name;         // 강의명
     public int score; 		    // 학점
@@ -19,7 +19,6 @@ public class Lecture implements Serializable {
     public String classRoom; 	// 강의실
 
     public String major;		// 개설학과 전공
-    public String completion;	// 이수구분
 
     public static Lecture createLecture(String[] tuple) {
         Lecture lecture = new Lecture();
@@ -61,7 +60,6 @@ public class Lecture implements Serializable {
                 ", enrolled=" + enrolled +
                 ", classRoom='" + classRoom + '\'' +
                 ", major='" + major + '\'' +
-                ", completion='" + completion + '\'' +
                 '}';
     }
 
@@ -81,8 +79,7 @@ public class Lecture implements Serializable {
         if (!Objects.equals(professor, lecture.professor)) return false;
         if (!Objects.equals(lectureNum, lecture.lectureNum)) return false;
         if (!Objects.equals(classRoom, lecture.classRoom)) return false;
-        if (!Objects.equals(major, lecture.major)) return false;
-        return Objects.equals(completion, lecture.completion);
+        return Objects.equals(major, lecture.major);
     }
 
     @Override
@@ -97,7 +94,6 @@ public class Lecture implements Serializable {
         result = 31 * result + enrolled;
         result = 31 * result + (classRoom != null ? classRoom.hashCode() : 0);
         result = 31 * result + (major != null ? major.hashCode() : 0);
-        result = 31 * result + (completion != null ? completion.hashCode() : 0);
         return result;
     }
 }
