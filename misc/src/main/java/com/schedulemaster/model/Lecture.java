@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Getter
 public class Lecture implements Serializable {
-    public static final long serialVersionUID = 12L;
+    public static final long serialVersionUID = 13L;
     public int grade;		    // 학년
     public String name;         // 강의명
     public int score; 		    // 학점
@@ -24,7 +24,7 @@ public class Lecture implements Serializable {
         Lecture lecture = new Lecture();
         lecture.grade = parseGrade(tuple[0]);
         lecture.name = tuple[1];
-        lecture.major = tuple[2];
+        lecture.major = tuple[2].replaceAll("\\d", "");
         lecture.score = Integer.parseInt(tuple[3]);
         lecture.professor = tuple[4];
         lecture.lectureNum = tuple[5];
