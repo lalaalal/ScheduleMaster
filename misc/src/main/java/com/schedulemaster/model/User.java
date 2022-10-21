@@ -1,19 +1,20 @@
 package com.schedulemaster.model;
 
+import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.LinkedList;
 
 import java.io.Serializable;
 
 public class User implements Serializable {
-    public static final long serialVersionUID = 12L;
+    public static final long serialVersionUID = 13L;
 
     public final String id;
     private final String hashedPassword;
 
     public final LinkedList<Lecture> selectedLectures = new LinkedList<>(); // 책가방 강의
     public final LinkedList<Lecture> enrolledLectures = new LinkedList<>(); // 신청 완료된 강의
-    public final Heap<Priority> priorities = new Heap<>(Heap.Comparator.maxHeapInt(Priority::priority));
+    public Hash<Lecture, Integer> priorities = new Hash<>();
     public final LectureTime unwantedTime = new LectureTime();
 
     public User(String id, String hashedPassword) {

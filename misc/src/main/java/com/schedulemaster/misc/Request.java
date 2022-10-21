@@ -14,4 +14,5 @@ public record Request(String command, Object data) implements Serializable {
     public static final String SELECT = "select";
     public static final String CANCEL = "cancel";
     public static final String UNSELECT = "unselect";
+    public static final String SET_PRIORITIES = "set_priorities";
 }
