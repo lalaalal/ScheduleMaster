@@ -2,6 +2,7 @@ package com.schedulemaster.server;
 
 import com.schedulemaster.misc.*;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
 
 import java.io.IOException;
@@ -113,6 +114,17 @@ public class ClientHandler extends Communicator implements Runnable {
 
             user.priorities = (Hash<Lecture, Integer>) priorities;
             userHandler.save();
+            
+            return new Response(Status.SUCCEED, null);
+        }
+
+        public synchronized Response setUnwantedTimeResponse(Request request) {
+            if (!(request.data() instanceof LectureTime unwantedTime))
+                return new Response(Status.FAILED, "Wrong Request");
+
+            user.unwantedTime = unwantedTime;
+            userHandler.save();
+
             return new Response(Status.SUCCEED, null);
         }
 

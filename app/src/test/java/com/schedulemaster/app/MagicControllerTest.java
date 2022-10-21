@@ -5,6 +5,7 @@ import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.model.Schedule;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureBook;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,7 +16,8 @@ public class MagicControllerTest {
         try (Client client = new Client()) {
             UserController userController = new UserController(client);
             userController.login("test", "test");
-            MagicController magicController = new MagicController(userController);
+            LectureBook lectureBook = new LectureBook(client.getLectures());
+            MagicController magicController = new MagicController(userController, lectureBook);
 
             LinkedList<Lecture> lectures = client.getLectures();
 
@@ -41,9 +43,15 @@ public class MagicControllerTest {
         try (Client client = new Client()) {
             UserController userController = new UserController(client);
             userController.login("test", "test");
-            MagicController magicController = new MagicController(userController);
 
-            for (Lecture lecture : magicController.suggest()) {
+            LectureBook lectureBook = new LectureBook(client.getLectures());
+            MagicController magicController = new MagicController(userController, lectureBook);
+
+            for (Lecture enrolledLecture : userController.getEnrolledLectures()) {
+                System.out.println(enrolledLecture);
+            }
+
+            for (Lecture lecture : magicController.suggest(20)) {
                 System.out.println(lecture);
             }
         }

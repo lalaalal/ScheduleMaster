@@ -1,12 +1,10 @@
 package com.schedulemaster.app.controller;
 
-import com.schedulemaster.model.LectureGroup;
+import com.schedulemaster.model.*;
 import com.schedulemaster.app.model.Schedule;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.LinkedList;
-import com.schedulemaster.model.Lecture;
-import com.schedulemaster.model.Priority;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -18,9 +16,11 @@ public class MagicController {
     private final LinkedList<Schedule> schedules = new LinkedList<>();
     private final LinkedList<LectureGroup> lectureGroups = new LinkedList<>();
     private final Hash<Lecture, Integer> priorities = new Hash<>();
+    private final LectureBook lectureBook;
 
-    public MagicController(UserController userController) {
+    public MagicController(UserController userController, LectureBook lectureBook) {
         this.userController = userController;
+        this.lectureBook = lectureBook;
     }
 
     public void addGroup() {
@@ -60,7 +60,8 @@ public class MagicController {
     public void magic() throws IOException {
         schedules.clear();
         createSchedules(lectureGroups.iterator(), null, new Schedule());
-        userController.setPriorities(priorities);
+        userController.savePriorities(priorities);
+        userController.saveUnwantedTime();
     }
 
     private void createSchedules(Iterator<LectureGroup> iterator, LectureGroup curr, Schedule schedule) {
@@ -91,16 +92,36 @@ public class MagicController {
         return schedules.toArray(new Schedule[0]);
     }
 
-    public LinkedList<Lecture> suggest() {
+    public LinkedList<Lecture> suggest(int maxSuggestion) {
+        LectureTime usedTime = getUsedTime();
+
         LinkedList<Lecture> suggestion = new LinkedList<>();
         Heap<Priority> priorityHeap = userController.getPriorityHeap();
         while (!priorityHeap.isEmpty()) {
             Lecture lecture = priorityHeap.pop().lecture();
-            suggestion.push(lecture);
+            if (!lecture.time.conflictWith(usedTime))
+                suggestion.push(lecture);
         }
 
-        // TODO: Find lectures not conflict with unwantedTime (from LectureBook)
+        LinkedList<Lecture> lectures = lectureBook.getLectures();
+        for (Lecture lecture : lectures) {
+            if (suggestion.getLength() >= maxSuggestion)
+                return suggestion;
+            if (!lecture.time.conflictWith(usedTime) && !suggestion.has(lecture))
+                suggestion.push(lecture);
+        }
 
         return suggestion;
+    }
+
+    private LectureTime getUsedTime() {
+        Lecture[] enrolledLectures = userController.getEnrolledLectures();
+        LectureTime usedTime = new LectureTime();
+        usedTime.addTimeSets(userController.getUnwantedTime().getTimeSets());
+        for (Lecture enrolledLecture : enrolledLectures) {
+            usedTime.addTimeSets(enrolledLecture.time.getTimeSets());
+        }
+
+        return usedTime;
     }
 }

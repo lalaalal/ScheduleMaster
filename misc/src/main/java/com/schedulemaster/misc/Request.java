@@ -3,7 +3,7 @@ package com.schedulemaster.misc;
 import java.io.Serializable;
 
 public record Request(String command, Object data) implements Serializable {
-    public static final long serialVersionUID = 10L;
+    public static final long serialVersionUID = 11L;
 
     public static final String LOGIN = "login";
     public static final String SIGNUP = "signup";
@@ -15,4 +15,5 @@ public record Request(String command, Object data) implements Serializable {
     public static final String CANCEL = "cancel";
     public static final String UNSELECT = "unselect";
     public static final String SET_PRIORITIES = "set_priorities";
+    public static final String SET_UNWANTED_TIME = "set_unwanted_time";
 }

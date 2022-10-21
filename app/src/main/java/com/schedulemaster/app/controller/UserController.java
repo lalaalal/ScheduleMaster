@@ -5,10 +5,7 @@ import com.schedulemaster.app.LoginStatus;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.Request;
-import com.schedulemaster.model.Lecture;
-import com.schedulemaster.model.LectureGroup;
-import com.schedulemaster.model.Priority;
-import com.schedulemaster.model.User;
+import com.schedulemaster.model.*;
 
 import java.io.IOException;
 
@@ -60,7 +57,15 @@ public class UserController {
         return result;
     }
 
-    public void setPriorities(Hash<Lecture, Integer> priorities) throws IOException {
+    public Lecture[] getEnrolledLectures() {
+        return user.enrolledLectures.toArray(new Lecture[0]);
+    }
+
+    public Lecture[] getSelectedLectures() {
+        return user.selectedLectures.toArray(new Lecture[0]);
+    }
+
+    public void savePriorities(Hash<Lecture, Integer> priorities) throws IOException {
         user.priorities = priorities;
         client.sendPriorities(priorities);
     }
@@ -69,5 +74,17 @@ public class UserController {
         LectureGroup group = new LectureGroup();
         group.addAll(user.priorities.getKeys());
         return group.createHeap(user.priorities);
+    }
+
+    public void addUnwantedTime(LectureTime.TimeSet timeSet) {
+        user.unwantedTime.addTimeSet(timeSet);
+    }
+
+    public void saveUnwantedTime() throws IOException {
+        client.sendUnwantedTime(user.unwantedTime);
+    }
+
+    public LectureTime getUnwantedTime() {
+        return user.unwantedTime;
     }
 }

@@ -2,6 +2,7 @@ package com.schedulemaster.app;
 
 import com.schedulemaster.misc.*;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
 import com.schedulemaster.util.SHA256;
 
@@ -66,6 +67,13 @@ public class Client extends Communicator {
 
     public boolean sendPriorities(Hash<Lecture, Integer> priorities) throws IOException{
         Request request = new Request(Request.SET_PRIORITIES, priorities);
+        Response response = send(request);
+
+        return response != null && response.status() == Status.SUCCEED;
+    }
+
+    public boolean sendUnwantedTime(LectureTime unwantedTime) throws IOException {
+        Request request = new Request(Request.SET_UNWANTED_TIME, unwantedTime);
         Response response = send(request);
 
         return response != null && response.status() == Status.SUCCEED;
