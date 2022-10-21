@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 public class Hash<K, V> implements Iterable<V>, Serializable {
-    public static final long serialVersionUID = 10L;
+    public static final long serialVersionUID = 11L;
 
     private class HashIterator implements Iterator<V> {
         private final Iterator<K> iterator = keys.iterator();
@@ -41,7 +41,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
     private final Object[] elements;
     private final LinkedList<K> keys = new LinkedList<>();
 
-    private static final int DEFAULT_SIZE = 1024;
+    private static final int DEFAULT_SIZE = 10240;
     private int length = 0;
 
     public Hash() {
@@ -96,6 +96,21 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         }
 
         return null;
+    }
+
+    public void set(K key, V value) {
+        int index = getIndex(key);
+
+        @SuppressWarnings("unchecked")
+        LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
+
+        if (bucketList == null)
+            throw new RuntimeException("No such key " + key);
+        for (Bucket<K, V> bucket : bucketList) {
+            if (bucket.key.equals(key))
+                bucket.value = value;
+        }
+        throw new RuntimeException("No such key " + key);
     }
 
     public void remove(K key) {

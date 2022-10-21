@@ -58,7 +58,8 @@ public class ClientHandler extends Communicator implements Runnable {
         }
 
         public Response loginResponse(Request request) {
-            String[] userInfo = (String[]) request.data();
+            if (!(request.data() instanceof String[] userInfo))
+                return new Response(Status.FAILED, "Succeed");
             String id = userInfo[0];
             String hashedPassword = userInfo[1];
 
@@ -73,7 +74,9 @@ public class ClientHandler extends Communicator implements Runnable {
         }
 
         public synchronized Response signupResponse(Request request) {
-            String[] userInfo = (String[]) request.data();
+            if (!(request.data() instanceof String[] userInfo))
+                return new Response(Status.FAILED, "Wrong Request");
+
             String id = userInfo[0];
             String hashedPassword = userInfo[1];
 
@@ -89,7 +92,8 @@ public class ClientHandler extends Communicator implements Runnable {
         }
 
         public synchronized Response lectureCommandResponse(Request request) {
-            Lecture lecture = (Lecture) request.data();
+            if (!(request.data() instanceof Lecture lecture))
+                return new Response(Status.FAILED, "Wrong Request");
             if (!lectureHandler.doLectureCommand(request.command(), lecture.lectureNum, user))
                 return new Response(Status.FAILED, null);
 

@@ -42,6 +42,11 @@ public class LectureTime implements Serializable {
             result = 31 * result + minute;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return hour + ":" + minute;
+        }
     }
 
     public record TimeSet(int dayOfWeek, Time start, Time end) implements Serializable {
@@ -77,6 +82,11 @@ public class LectureTime implements Serializable {
             result = 31 * result + end.hashCode();
             return result;
         }
+
+        @Override
+        public String toString() {
+            return '(' + DAY_OF_WEEK[dayOfWeek] + ' ' + start + " ~ " + end + ')';
+        }
     }
 
     public static final String[] DAY_OF_WEEK = { "월", "화", "수", "목", "금" };
@@ -100,6 +110,12 @@ public class LectureTime implements Serializable {
         if (!(0 <= dayOfWeek && dayOfWeek < 5))
             throw new RuntimeException("Invalid value; dayOfWeek is " + dayOfWeek);
         timeSets.push(new TimeSet(dayOfWeek, start, end));
+    }
+
+    public void addTimeSet(TimeSet timeset) {
+        if (!(0 <= timeset.dayOfWeek && timeset.dayOfWeek < 5))
+            throw new RuntimeException("Invalid value; dayOfWeek is " + timeset.dayOfWeek);
+        timeSets.push(timeset);
     }
 
     public void addTimeSets(LinkedList<TimeSet> timeSets) {
@@ -143,5 +159,16 @@ public class LectureTime implements Serializable {
     @Override
     public int hashCode() {
         return timeSets.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("LectureTime[");
+        for (TimeSet timeSet : timeSets)
+            stringBuilder.append(timeSet).append(", ");
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 }

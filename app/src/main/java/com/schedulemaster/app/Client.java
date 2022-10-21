@@ -64,12 +64,18 @@ public class Client extends Communicator {
         return response != null && response.status() == Status.SUCCEED;
     }
 
-    public void bye() throws IOException {
+    private void bye() throws IOException {
         Request request = new Request(Request.BYE, null);
         Response response = send(request);
 
         if (response.status() != Status.BYE)
             throw new IOException("Bye was not succeed");
+    }
+
+    @Override
+    public void close() throws IOException {
+        bye();
+        super.close();
     }
 
     @Override
