@@ -7,19 +7,20 @@ import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.User;
 
 import java.util.Iterator;
 
 public class MagicController {
 
-    private final UserController userController;
+    private final User user;
 
     private final LinkedList<Schedule> schedules = new LinkedList<>();
     private final LinkedList<LectureGroup> lectureGroups = new LinkedList<>();
     private final Hash<Lecture, Integer> priorities = new Hash<>();
 
-    public MagicController(UserController userController) {
-        this.userController = userController;
+    public MagicController(User user) {
+        this.user = user;
     }
 
     public void addGroup() {
@@ -54,25 +55,16 @@ public class MagicController {
             next = iterator.next();
 
         Heap<Priority> priorityHeap = curr.createHeap(priorities);
-        Schedule clone = schedule.copy();
-        if (!priorityHeap.isEmpty()) {
-            Lecture lecture = priorityHeap.pop().lecture();
 
-            schedule.addLecture(lecture);
-            if (next == null)
-                schedules.push(schedule);
-            else
-                createSchedules(iterator, next, schedule);
-        }
         while (!priorityHeap.isEmpty()) {
             Lecture lecture = priorityHeap.pop().lecture();
 
-            Schedule newSchedule = clone.copy();
-            newSchedule.addLecture(lecture);
+            Schedule clone = schedule.copy();
+            clone.addLecture(lecture);
             if (next == null)
-                schedules.push(newSchedule);
+                schedules.push(clone);
             else
-                createSchedules(iterator, next, newSchedule);
+                createSchedules(iterator, next, clone);
         }
     }
 
