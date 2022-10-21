@@ -18,7 +18,6 @@ public class ClientTest {
             for (Lecture lecture : lectures) {
                 System.out.println(lecture);
             }
-            client.bye();
         }
     }
 
@@ -26,7 +25,6 @@ public class ClientTest {
     public void testSignup() throws IOException {
         try (Client client = new Client()) {
             client.signup("test", "test");
-            client.bye();
         }
     }
 
@@ -44,8 +42,6 @@ public class ClientTest {
             loginStatus = client.login("test", "test1");
             System.out.println(loginStatus.msg());
             Assertions.assertFalse(loginStatus.status());
-
-            client.bye();
         }
     }
 
@@ -57,7 +53,6 @@ public class ClientTest {
             Lecture lecture = lectures.at(10);
             boolean result = client.lectureCommand(Request.ENROLL, lecture);
             System.out.println(result);
-            client.bye();
         }
     }
 }
