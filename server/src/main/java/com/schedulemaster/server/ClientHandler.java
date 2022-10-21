@@ -1,9 +1,6 @@
 package com.schedulemaster.server;
 
-import com.schedulemaster.misc.Communicator;
-import com.schedulemaster.misc.Request;
-import com.schedulemaster.misc.Response;
-import com.schedulemaster.misc.Status;
+import com.schedulemaster.misc.*;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.User;
 
@@ -49,9 +46,11 @@ public class ClientHandler extends Communicator implements Runnable {
             return switch (request.command()) {
                 case Request.LOGIN -> loginResponse(request);
                 case Request.SIGNUP -> signupResponse(request);
+                case Request.REQ_USER -> userDataResponse();
                 case Request.REQ_LECTURES -> lectureResponse();
                 case Request.ENROLL, Request.SELECT,
                         Request.CANCEL, Request.UNSELECT -> lectureCommandResponse(request);
+                case Request.SET_PRIORITIES -> setPrioritiesResponse(request);
                 case Request.BYE -> byeResponse();
                 default -> commandNotFoundResponse();
             };
@@ -87,6 +86,12 @@ public class ClientHandler extends Communicator implements Runnable {
             return new Response(Status.SUCCEED, "Succeed");
         }
 
+        public Response userDataResponse() {
+            if (user == null)
+                return new Response(Status.FAILED, null);
+            return new Response(Status.SUCCEED, user);
+        }
+
         public Response lectureResponse() {
             return new Response(Status.SUCCEED, lectureHandler.getLectures());
         }
@@ -97,6 +102,16 @@ public class ClientHandler extends Communicator implements Runnable {
             if (!lectureHandler.doLectureCommand(request.command(), lecture.lectureNum, user))
                 return new Response(Status.FAILED, null);
 
+            userHandler.save();
+            return new Response(Status.SUCCEED, null);
+        }
+
+        @SuppressWarnings("unchecked")
+        public synchronized Response setPrioritiesResponse(Request request) {
+            if (!(request.data() instanceof Hash<?, ?> priorities))
+                return new Response(Status.FAILED, "Wrong Request");
+
+            user.priorities = (Hash<Lecture, Integer>) priorities;
             userHandler.save();
             return new Response(Status.SUCCEED, null);
         }

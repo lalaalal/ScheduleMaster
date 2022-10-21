@@ -1,6 +1,7 @@
 package com.schedulemaster.app;
 
 import com.schedulemaster.app.controller.MagicController;
+import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.model.Schedule;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -12,7 +13,9 @@ public class MagicControllerTest {
     @Test
     public void testMagic() throws IOException {
         try (Client client = new Client()) {
-            MagicController magicController = new MagicController(null);
+            UserController userController = new UserController(client);
+            userController.login("test", "test");
+            MagicController magicController = new MagicController(userController);
 
             LinkedList<Lecture> lectures = client.getLectures();
 
@@ -29,6 +32,19 @@ public class MagicControllerTest {
             magicController.magic();
             for (Schedule schedule : magicController.getSchedules()) {
                 System.out.println(schedule);
+            }
+        }
+    }
+
+    @Test
+    public void testSuggestion() throws IOException {
+        try (Client client = new Client()) {
+            UserController userController = new UserController(client);
+            userController.login("test", "test");
+            MagicController magicController = new MagicController(userController);
+
+            for (Lecture lecture : magicController.suggest()) {
+                System.out.println(lecture);
             }
         }
     }

@@ -1,26 +1,26 @@
 package com.schedulemaster.app.controller;
 
-import com.schedulemaster.app.model.LectureGroup;
-import com.schedulemaster.app.model.Priority;
+import com.schedulemaster.model.LectureGroup;
 import com.schedulemaster.app.model.Schedule;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
-import com.schedulemaster.model.User;
+import com.schedulemaster.model.Priority;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 public class MagicController {
 
-    private final User user;
+    private final UserController userController;
 
     private final LinkedList<Schedule> schedules = new LinkedList<>();
     private final LinkedList<LectureGroup> lectureGroups = new LinkedList<>();
     private final Hash<Lecture, Integer> priorities = new Hash<>();
 
-    public MagicController(User user) {
-        this.user = user;
+    public MagicController(UserController userController) {
+        this.userController = userController;
     }
 
     public void addGroup() {
@@ -35,13 +35,32 @@ public class MagicController {
         group.push(lecture);
     }
 
+    public void removeLecture(int groupNumber, Lecture lecture) {
+        if (lectureGroups.getLength() <= groupNumber)
+            throw new IndexOutOfBoundsException();
+        LectureGroup group = lectureGroups.at(groupNumber);
+        group.remove(lecture);
+        priorities.remove(lecture);
+    }
+
+    /** *
+     * Number of later groups will decrease
+     */
+    public void removeGroup(int groupNumber) {
+        if (lectureGroups.getLength() <= groupNumber)
+            throw new IndexOutOfBoundsException();
+        LectureGroup group = lectureGroups.at(groupNumber);
+        lectureGroups.remove(group);
+    }
+
     public void changePriority(Lecture lecture, int priority) {
         priorities.set(lecture, priority);
     }
 
-    public void magic() {
+    public void magic() throws IOException {
         schedules.clear();
         createSchedules(lectureGroups.iterator(), null, new Schedule());
+        userController.setPriorities(priorities);
     }
 
     private void createSchedules(Iterator<LectureGroup> iterator, LectureGroup curr, Schedule schedule) {
@@ -70,5 +89,18 @@ public class MagicController {
 
     public Schedule[] getSchedules() {
         return schedules.toArray(new Schedule[0]);
+    }
+
+    public LinkedList<Lecture> suggest() {
+        LinkedList<Lecture> suggestion = new LinkedList<>();
+        Heap<Priority> priorityHeap = userController.getPriorityHeap();
+        while (!priorityHeap.isEmpty()) {
+            Lecture lecture = priorityHeap.pop().lecture();
+            suggestion.push(lecture);
+        }
+
+        // TODO: Find lectures not conflict with unwantedTime (from LectureBook)
+
+        return suggestion;
     }
 }

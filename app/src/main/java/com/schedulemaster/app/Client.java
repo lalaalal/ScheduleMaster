@@ -64,6 +64,13 @@ public class Client extends Communicator {
         return response != null && response.status() == Status.SUCCEED;
     }
 
+    public boolean sendPriorities(Hash<Lecture, Integer> priorities) throws IOException{
+        Request request = new Request(Request.SET_PRIORITIES, priorities);
+        Response response = send(request);
+
+        return response != null && response.status() == Status.SUCCEED;
+    }
+
     private void bye() throws IOException {
         Request request = new Request(Request.BYE, null);
         Response response = send(request);

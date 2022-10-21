@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public class LinkedList<E> implements Iterable<E>, Serializable {
-    public static final long serialVersionUID = 11L;
+    public static final long serialVersionUID = 12L;
 
     private class LinkedListIterator implements Iterator<E> {
         private Node<E> curr = head;
@@ -138,5 +138,29 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
         stringBuilder.append("\n]");
 
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LinkedList<?> that = (LinkedList<?>) o;
+
+        if (length != that.length) return false;
+        for (int i = 0; i < length; i++) {
+            if (!this.at(i).equals(that.at(i)))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 0;
+        for (E element : this)
+            result = 31 * result + element.hashCode();
+
+        return result;
     }
 }
