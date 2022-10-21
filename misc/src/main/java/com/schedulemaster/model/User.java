@@ -27,6 +27,7 @@ public class User implements Serializable {
 
     public void enrollLecture(Lecture lecture) {
         enrolledLectures.push(lecture);
+        lecture.enrolled += 1;
     }
 
     public void selectLecture(Lecture lecture) {
@@ -35,6 +36,7 @@ public class User implements Serializable {
 
     public void cancelLecture(Lecture lecture) {
         enrolledLectures.remove(lecture);
+        lecture.enrolled -= 1;
     }
 
     public void unselectLecture(Lecture lecture) {
