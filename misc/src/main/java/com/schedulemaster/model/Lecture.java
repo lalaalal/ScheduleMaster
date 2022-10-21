@@ -51,12 +51,12 @@ public class Lecture implements Serializable {
     @Override
     public String toString() {
         return "Lecture{" +
-                "grade=" + grade +
+                "lectureNum='" + lectureNum + '\'' +
                 ", name='" + name + '\'' +
+                ", grade=" + grade +
                 ", score=" + score +
                 ", time=" + time +
                 ", professor='" + professor + '\'' +
-                ", lectureNum='" + lectureNum + '\'' +
                 ", max=" + max +
                 ", enrolled=" + enrolled +
                 ", classRoom='" + classRoom + '\'' +
