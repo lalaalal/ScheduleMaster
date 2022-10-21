@@ -1,9 +1,12 @@
 package com.schedulemaster.misc;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class Heap<E> implements Iterable<E> {
+public class Heap<E> implements Iterable<E>, Serializable {
+    public static final long serialVersionUID = 10L;
+
     private static final int DEFAULT_SIZE = 10240;
     private static final int ROOT_INDEX = 1;
 
