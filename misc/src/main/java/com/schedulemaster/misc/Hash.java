@@ -1,10 +1,12 @@
 package com.schedulemaster.misc;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class Hash<K, V> implements Iterable<V>, Serializable {
-    public static final long serialVersionUID = 11L;
+    public static final long serialVersionUID = 13L;
 
     private class HashIterator implements Iterator<V> {
         private final Iterator<K> iterator = keys.iterator();
@@ -35,10 +37,29 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
             this.key = key;
             this.value = value;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Bucket<?, ?> bucket = (Bucket<?, ?>) o;
+
+            if (!Objects.equals(key, bucket.key)) return false;
+            return Objects.equals(value, bucket.value);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = key != null ? key.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
+        }
     }
 
     // LinkedList<Bucket<K, V>>
     private final Object[] elements;
+
     private final LinkedList<K> keys = new LinkedList<>();
 
     private static final int DEFAULT_SIZE = 10240;
@@ -52,7 +73,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         elements = new Object[indexLength];
     }
 
-    private int getIndex(K key) {
+    private int getIndex(Object key) {
         return Math.abs(key.hashCode()) % elements.length;
     }
 
@@ -64,7 +85,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         Bucket<K, V> bucket = new Bucket<>(key, value);
 
         if (elements[index] == null)
-            elements[index] = new LinkedList<>();
+            elements[index] = new LinkedList<Bucket<K, V>>();
 
         @SuppressWarnings("unchecked")
         LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
@@ -132,5 +153,40 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
 
     public int getLength() {
         return length;
+    }
+
+    public LinkedList<K> getKeys() {
+        return keys;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Hash<?, ?> hash = (Hash<?, ?>) o;
+
+        if (length != hash.length) return false;
+        
+        if (!keys.equals(hash.keys)) return false;
+
+        for (K key : keys) {
+            int index = this.getIndex(key);
+            Object my = this.elements[index];
+            Object other = hash.elements[index];
+            if ((my != null && other != null && !my.equals(other))
+                    || !(my == null && other == null))
+                return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(elements);
+        result = 31 * result + keys.hashCode();
+        result = 31 * result + length;
+        return result;
     }
 }

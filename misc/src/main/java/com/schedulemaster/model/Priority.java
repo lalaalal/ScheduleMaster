@@ -1,5 +1,7 @@
 package com.schedulemaster.model;
 
-public record Priority(int priority, Lecture lecture) {
+import java.io.Serializable;
 
+public record Priority(int priority, Lecture lecture) implements Serializable {
+    public static final long serialVersionUID = 10L;
 }
