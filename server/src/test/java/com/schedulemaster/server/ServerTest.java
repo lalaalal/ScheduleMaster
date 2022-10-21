@@ -10,7 +10,7 @@ public class ServerTest {
     public void testServer() throws IOException {
         LectureHandler lectureHandler = new LectureHandler("lectures");
         if (lectureHandler.getLectures().isEmpty())
-            lectureHandler.appendFromCSV("/Users/lalaalal/Downloads/lectures.csv");
+            lectureHandler.appendFromCSV(System.getProperty("CSV_PATH"));
 
         UserHandler userHandler = new UserHandler("users");
         try (Server server = new Server(lectureHandler, userHandler)) {

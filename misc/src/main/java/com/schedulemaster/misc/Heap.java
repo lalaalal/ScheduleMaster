@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 public class Heap<E> implements Iterable<E>, Serializable {
-    public static final long serialVersionUID = 10L;
+    public static final long serialVersionUID = 11L;
 
     private static final int DEFAULT_SIZE = 10240;
     private static final int ROOT_INDEX = 1;
@@ -91,6 +91,8 @@ public class Heap<E> implements Iterable<E>, Serializable {
 
     @SuppressWarnings("unchecked")
     public E top() {
+        if (isEmpty())
+            return null;
         return (E) elements[ROOT_INDEX];
     }
 

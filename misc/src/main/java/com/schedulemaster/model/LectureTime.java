@@ -42,6 +42,11 @@ public class LectureTime implements Serializable {
             result = 31 * result + minute;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return hour + ":" + minute;
+        }
     }
 
     public record TimeSet(int dayOfWeek, Time start, Time end) implements Serializable {
@@ -76,6 +81,11 @@ public class LectureTime implements Serializable {
             result = 31 * result + start.hashCode();
             result = 31 * result + end.hashCode();
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return '(' + DAY_OF_WEEK[dayOfWeek] + ' ' + start + " ~ " + end + ')';
         }
     }
 
@@ -149,5 +159,16 @@ public class LectureTime implements Serializable {
     @Override
     public int hashCode() {
         return timeSets.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("LectureTime[");
+        for (TimeSet timeSet : timeSets)
+            stringBuilder.append(timeSet).append(", ");
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 }
