@@ -68,20 +68,24 @@ public class App implements AutoCloseable{
     }
 
     private void handleCommand(String command, Scanner scanner) {
-        if (command.equals("append_csv")) {
-            String path = scanner.next();
-            logger.setActor(ACTOR);
-            lectureHandler.appendFromCSV(path);
-
-        } else if (command.equals("log_level")) {
-            int logLevel = scanner.nextInt();
-            logger.setLogLevel(logLevel);
-            logger.log("Set LOG_LEVEL to " + logLevel, Logger.INFO, ACTOR);
-        } else {
-            logger.log("help", Logger.INFO, ACTOR);
-            logger.log(":\tappend_csv [path]", Logger.INFO, ACTOR);
-            logger.log(":\tlog_level [0 (ERROR) | 1 (INFO) | 2 (DEBUG) | 3 (VERBOSE)]", Logger.INFO, ACTOR);
-            logger.log(":\tstop | exit", Logger.INFO, ACTOR);
+        switch (command) {
+            case "append_csv" -> {
+                String path = scanner.next();
+                logger.setActor(ACTOR);
+                lectureHandler.appendFromCSV(path);
+            }
+            case "log_level" -> {
+                int logLevel = scanner.nextInt();
+                logger.setLogLevel(logLevel);
+                logger.log("Set LOG_LEVEL to " + logLevel, Logger.INFO, ACTOR);
+            }
+            case "exit", "stop" -> logger.log("Stopping Server", Logger.INFO, ACTOR);
+            default -> {
+                logger.log("help", Logger.INFO, ACTOR);
+                logger.log(":\tappend_csv [path]", Logger.INFO, ACTOR);
+                logger.log(":\tlog_level [0 (ERROR) | 1 (INFO) | 2 (DEBUG) | 3 (VERBOSE)]", Logger.INFO, ACTOR);
+                logger.log(":\tstop | exit", Logger.INFO, ACTOR);
+            }
         }
     }
 

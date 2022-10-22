@@ -28,21 +28,23 @@ public class ClientHandler extends Communicator implements Runnable {
 
     @Override
     public void run() {
-        Status status = Status.SUCCEED;
-        while (status != Status.BYE) {
-            try {
+        try {
+            Status status = Status.SUCCEED;
+            while (status != Status.BYE) {
                 status = receiveAndSend();
-            } catch (IOException e) {
-                System.out.println("Something went wrong while handling client request");
             }
+        } catch (IOException e) {
+            logger.log(e.getCause().getMessage(), Logger.ERROR, clientID);
+            logger.log(e.getMessage(), Logger.ERROR, clientID);
         }
         logger.log("Bye bye", Logger.INFO, clientID);
+        logger.log("", Logger.INFO, clientID);
     }
 
     @Override
     protected Response createResponse(Request request) {
         logger.log("Request.command : " + request.command(), Logger.DEBUG, clientID);
-        logger.log("Request.data : " + request.data(), Logger.VERBOSE, clientID);
+        logger.log("Request.data : " + request.getDataType(), Logger.VERBOSE, clientID);
         return factory.createResponse(request);
     }
 
@@ -64,19 +66,20 @@ public class ClientHandler extends Communicator implements Runnable {
             };
 
             logger.log("Response.status : " + response.status(), Logger.DEBUG, clientID);
-            logger.log("Response.data : "  + response.data(), Logger.VERBOSE, clientID);
+            logger.log("Response.data : "  + request.getDataType(), Logger.VERBOSE, clientID);
+            logger.log("", Logger.DEBUG, clientID);
             return response;
         }
 
-        public Response loginResponse(Request request) {
+        public synchronized Response loginResponse(Request request) {
             if (!(request.data() instanceof String[] userInfo))
                 return new Response(Status.FAILED, "Wrong Request");
             String id = userInfo[0];
             String hashedPassword = userInfo[1];
 
             if (userHandler.verifyUser(id, hashedPassword)) {
-                user = userHandler.getUser(id);
                 logger.log("\"" + id + "\" login succeed", Logger.INFO, clientID);
+                user = userHandler.getUser(id);
                 return new Response(Status.SUCCEED, "Succeed");
             }
             logger.log("\"" + id + "\" login failed", Logger.INFO, clientID);
@@ -116,6 +119,7 @@ public class ClientHandler extends Communicator implements Runnable {
         public synchronized Response lectureCommandResponse(Request request) {
             if (!(request.data() instanceof Lecture lecture))
                 return new Response(Status.FAILED, "Wrong Request");
+            logger.setActor(clientID);
             if (!lectureHandler.doLectureCommand(request.command(), lecture.lectureNum, user))
                 return new Response(Status.FAILED, null);
 

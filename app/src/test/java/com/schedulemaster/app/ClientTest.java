@@ -4,12 +4,10 @@ import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.misc.Request;
 import com.schedulemaster.model.Lecture;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-@Disabled
 public class ClientTest {
     @Test
     public void testGetLectures() throws IOException {
@@ -24,7 +22,7 @@ public class ClientTest {
     @Test
     public void testSignup() throws IOException {
         try (Client client = new Client()) {
-            client.signup("test", "test");
+            client.signup("test1", "test1");
         }
     }
 
@@ -54,5 +52,36 @@ public class ClientTest {
             boolean result = client.lectureCommand(Request.ENROLL, lecture);
             System.out.println(result);
         }
+    }
+
+    @Test
+    public void testMultiUser() throws InterruptedException {
+        Thread thread1 = new Thread(() -> {
+            try (Client client = new Client()) {
+                LinkedList<Lecture> lectures =  client.getLectures();
+                client.login("test", "test");
+                Lecture lecture = lectures.at(13);
+                boolean result = client.lectureCommand(Request.ENROLL, lecture);
+                System.out.println(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            try (Client client = new Client()) {
+                LinkedList<Lecture> lectures =  client.getLectures();
+                client.login("test1", "test1");
+                Lecture lecture = lectures.at(13);
+                boolean result = client.lectureCommand(Request.ENROLL, lecture);
+                System.out.println(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        thread1.start();
+        thread2.start();
+        thread1.join();
+        thread2.join();
     }
 }

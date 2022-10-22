@@ -15,28 +15,29 @@ public class LectureHandler {
 
     private final Logger logger = Logger.getInstance();
 
+    private static final String ACTOR = "LectureHandler";
     @SuppressWarnings("unchecked")
     public LectureHandler(String lectureDataPath) {
         this.lectureDataPath = lectureDataPath;
-        logger.log("Reading lecture data from \"" + lectureDataPath + "\"", Logger.INFO);
+        logger.log("Reading lecture data from \"" + lectureDataPath + "\"", Logger.INFO, ACTOR);
         try (FileInputStream fis = new FileInputStream(lectureDataPath);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Object object = ois.readObject();
             lectures = (Hash<String, Lecture>) object;
         } catch (FileNotFoundException e) {
             lectures = new Hash<>();
-            logger.log("No such file : \"" + lectureDataPath + "\"", Logger.ERROR);
+            logger.log("No such file : \"" + lectureDataPath + "\"", Logger.ERROR, ACTOR);
         } catch (ClassNotFoundException e) {
             lectures = new Hash<>();
-            logger.log("Class not found while reading data from \"" + lectureDataPath + "\"", Logger.ERROR);
+            logger.log("Class not found while reading data from \"" + lectureDataPath + "\"", Logger.ERROR, ACTOR);
         } catch (IOException e) {
             lectures = new Hash<>();
-            logger.log("Something went wrong while load lectures from \"" + lectures + "\"", Logger.ERROR);
+            logger.log("Something went wrong while load lectures from \"" + lectures + "\"", Logger.ERROR, ACTOR);
         }
     }
 
     public void appendFromCSV(String csvPath) {
-        logger.log("Appending lectures from csv : \"" + csvPath + "\"", Logger.INFO);
+        logger.log("Appending lectures from csv : \"" + csvPath + "\"", Logger.INFO, ACTOR);
         try (CSVReader csvReader = new CSVReader(csvPath)) {
             String[] tuple = csvReader.read();
             while ((tuple = csvReader.read()) != null) {
@@ -45,9 +46,9 @@ public class LectureHandler {
             }
             save();
         } catch (FileNotFoundException e) {
-            logger.log("No such file : \"" + csvPath + "\"", Logger.ERROR);
+            logger.log("No such file : \"" + csvPath + "\"", Logger.ERROR, ACTOR);
         } catch (IOException e) {
-            logger.log("\"Something went wrong while reading csv from \"" + csvPath + "\"", Logger.ERROR);
+            logger.log("\"Something went wrong while reading csv from \"" + csvPath + "\"", Logger.ERROR, ACTOR);
         }
     }
 
@@ -63,13 +64,13 @@ public class LectureHandler {
             LinkedList<LectureTime.TimeSet> timeSets = lecture.time.getTimeSets();
             sameLecture.time.addTimeSets(timeSets);
         }
-        logger.log("Add Lecture (" + lecture + ")", Logger.DEBUG);
+        logger.log("Add Lecture (" + lecture + ")", Logger.DEBUG, ACTOR);
     }
 
     public LinkedList<Lecture> getLectures() {
         LinkedList<Lecture> list = new LinkedList<>();
         list.addAll(lectures);
-        logger.log("Get all Lectures", Logger.INFO);
+        logger.log("Get all Lectures", Logger.INFO, ACTOR);
         return list;
     }
 
@@ -109,33 +110,33 @@ public class LectureHandler {
     }
 
     public synchronized boolean enrollLecture(String lectureNum, User user) {
-        logger.log("\"" + user.id + "\" enroll " + lectureNum, Logger.INFO);
+        logger.log("\"" + user.id + "\" enroll " + lectureNum, Logger.INFO, ACTOR);
         return addLectureTo(user.enrolledLectures, lectureNum);
     }
 
     public synchronized boolean selectLecture(String lectureNum, User user) {
-        logger.log("\"" + user.id + "\" select " + lectureNum, Logger.INFO);
+        logger.log("\"" + user.id + "\" select " + lectureNum, Logger.INFO, ACTOR);
         return addLectureTo(user.selectedLectures, lectureNum);
     }
 
     public synchronized boolean cancelLecture(String lectureNum, User user) {
-        logger.log("\"" + user.id + "\" cancel " + lectureNum, Logger.INFO);
+        logger.log("\"" + user.id + "\" cancel " + lectureNum, Logger.INFO, ACTOR);
         return removeLectureFrom(user.enrolledLectures, lectureNum);
     }
 
     public synchronized boolean unselectLecture(String lectureNum, User user) {
-        logger.log("\"" + user.id + "\" unselect " + lectureNum, Logger.INFO);
+        logger.log("\"" + user.id + "\" unselect " + lectureNum, Logger.INFO, ACTOR);
         return removeLectureFrom(user.selectedLectures, lectureNum);
     }
 
     public synchronized void save() {
-        logger.log("Saving lectures", Logger.DEBUG);
+        logger.log("Saving lectures to \"" + lectureDataPath + "\"", Logger.DEBUG, ACTOR);
         try (FileOutputStream fos = new FileOutputStream(lectureDataPath)) {
             try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                 oos.writeObject(lectures);
             }
         } catch (IOException e) {
-            System.out.println("Failed to save Lectures");
+            logger.log(e.getMessage(), Logger.ERROR, ACTOR);
         }
     }
 }

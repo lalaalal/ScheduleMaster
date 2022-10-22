@@ -20,6 +20,10 @@ application {
     mainClass = 'com.schedulemaster.server.App'
 }
 
+test {
+    useJUnitPlatform()
+}
+
 run {
     standardInput = System.in
 }
