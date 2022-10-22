@@ -41,7 +41,8 @@ public class ClientHandler extends Communicator implements Runnable {
 
     @Override
     protected Response createResponse(Request request) {
-        logger.log("Received request (" + request.command() + ")", Logger.DEBUG, clientID);
+        logger.log("Request.command : " + request.command(), Logger.DEBUG, clientID);
+        logger.log("Request.data : " + request.data(), Logger.VERBOSE, clientID);
         return factory.createResponse(request);
     }
 
@@ -62,7 +63,8 @@ public class ClientHandler extends Communicator implements Runnable {
                 default -> commandNotFoundResponse();
             };
 
-            logger.log("Create response (" + response + ")", Logger.DEBUG, clientID);
+            logger.log("Response.status : " + response.status(), Logger.DEBUG, clientID);
+            logger.log("Response.data : "  + response.data(), Logger.VERBOSE, clientID);
             return response;
         }
 
