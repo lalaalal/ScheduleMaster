@@ -10,6 +10,9 @@ public class Server implements AutoCloseable, Runnable {
     private final ServerSocket serverSocket;
     private final LectureHandler lectureHandler;
     private final UserHandler userHandler;
+    private final Logger logger = Logger.getInstance();
+
+    private boolean run = true;
 
     public Server(LectureHandler lectureHandler, UserHandler userHandler) throws IOException {
         serverSocket = new ServerSocket(PORT);
@@ -19,19 +22,22 @@ public class Server implements AutoCloseable, Runnable {
 
     @Override
     public void close() throws IOException {
+        run = false;
         serverSocket.close();
     }
 
     @Override
     public void run() {
-        while (true) {
+        logger.log("Starting server", Logger.INFO);
+        while (run) {
             try {
                 Socket client = serverSocket.accept();
+                logger.log("New connection from " + client.getInetAddress(), Logger.INFO);
                 ClientHandler clientHandler = new ClientHandler(client, lectureHandler, userHandler);
                 Thread clientHandlerThread = new Thread(clientHandler);
                 clientHandlerThread.start();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(e.getMessage(), Logger.ERROR);
             }
         }
     }

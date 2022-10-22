@@ -95,7 +95,7 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         length += 1;
     }
 
-    private boolean hasKey(K keyToCheck) {
+    public boolean hasKey(K keyToCheck) {
         for (K key : keys) {
             if (key.equals(keyToCheck))
                 return true;
