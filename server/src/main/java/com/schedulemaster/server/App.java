@@ -74,9 +74,14 @@ public class App implements AutoCloseable{
             lectureHandler.appendFromCSV(path);
 
         } else if (command.equals("log_level")) {
-            String logLevel = scanner.next();
+            int logLevel = scanner.nextInt();
             logger.setLogLevel(logLevel);
             logger.log("Set LOG_LEVEL to " + logLevel, Logger.INFO, ACTOR);
+        } else {
+            logger.log("help", Logger.INFO, ACTOR);
+            logger.log(":\tappend_csv [path]", Logger.INFO, ACTOR);
+            logger.log(":\tlog_level [0 (ERROR) | 1 (INFO) | 2 (DEBUG) | 3 (VERBOSE)]", Logger.INFO, ACTOR);
+            logger.log(":\tstop | exit", Logger.INFO, ACTOR);
         }
     }
 
