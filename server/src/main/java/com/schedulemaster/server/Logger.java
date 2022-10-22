@@ -1,23 +1,21 @@
 package com.schedulemaster.server;
 
-import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Logger {
-    public static final int ERROR = 1;
-    public static final int INFO = 2;
-    public static final int DEBUG = 3;
-    public static final int VERBOSE = 4;
+    public static final int ERROR = 0;
+    public static final int INFO = 1;
+    public static final int DEBUG = 2;
+    public static final int VERBOSE = 3;
+    public static final String[] LOG_LEVEL = { "ERROR", "INFO", "DEBUG", "VERBOSE" };
 
     private final LinkedList<String> log = new LinkedList<>();
-    private final Hash<OutputStream, BufferedWriter> outputStreams = new Hash<>();
+    private final LinkedList<OutputStream> outputStreams = new LinkedList<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[[HH:mm:ss]]");
 
     public int logLevel = INFO;
@@ -35,11 +33,10 @@ public class Logger {
     }
 
     public void addOutputStream(OutputStream os) {
-        if (outputStreams.hasKey(os))
+        if (outputStreams.has(os))
             return;
 
-        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(os));
-        outputStreams.put(os, bufferedWriter);
+        outputStreams.push(os);
     }
 
     public synchronized void log(String msg, int logLevel) {
@@ -50,9 +47,9 @@ public class Logger {
             String stamp = timeStamp();
             log.push(stamp + " " + msg);
 
-            for (BufferedWriter writer : outputStreams) {
-                writer.write(stamp + " " + msg);
-                writer.newLine();
+            for (OutputStream writer : outputStreams) {
+                String line = String.format("[%s %s] %s\n", stamp, LOG_LEVEL[logLevel], msg);
+                writer.write(line.getBytes());
                 writer.flush();
             }
 
