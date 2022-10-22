@@ -16,7 +16,7 @@ public class LectureHandler {
     private final Logger logger = Logger.getInstance();
 
     @SuppressWarnings("unchecked")
-    public LectureHandler(String lectureDataPath) throws IOException {
+    public LectureHandler(String lectureDataPath) {
         this.lectureDataPath = lectureDataPath;
         logger.log("Reading lecture data from \"" + lectureDataPath + "\"", Logger.INFO);
         try (FileInputStream fis = new FileInputStream(lectureDataPath);
@@ -29,6 +29,9 @@ public class LectureHandler {
         } catch (ClassNotFoundException e) {
             lectures = new Hash<>();
             logger.log("Class not found while reading data from \"" + lectureDataPath + "\"", Logger.ERROR);
+        } catch (IOException e) {
+            lectures = new Hash<>();
+            logger.log("Something went wrong while load lectures from \"" + lectures + "\"", Logger.ERROR);
         }
     }
 

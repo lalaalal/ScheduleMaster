@@ -13,7 +13,7 @@ public class UserHandler {
     private final Logger logger = Logger.getInstance();
 
     @SuppressWarnings("unchecked")
-    public UserHandler(String filePath) throws IOException {
+    public UserHandler(String filePath) {
         this.filePath = filePath;
         logger.log("Reading lecture data from \"" + filePath + "\"", Logger.INFO);
         try (FileInputStream fis = new FileInputStream(filePath);
@@ -26,6 +26,9 @@ public class UserHandler {
         } catch (ClassNotFoundException e) {
             users = new Hash<>();
             logger.log("Class not found while reading data from \"" + filePath + "\"", Logger.ERROR);
+        } catch (IOException e) {
+            users = new Hash<>();
+            logger.log("Something went wrong while load lectures from \"" + filePath + "\"", Logger.ERROR);
         }
     }
 
