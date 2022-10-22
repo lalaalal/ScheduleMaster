@@ -28,16 +28,18 @@ public class Server implements AutoCloseable, Runnable {
 
     @Override
     public void run() {
-        logger.log("Starting server", Logger.INFO);
+        logger.log("Starting server", Logger.INFO, "Server");
+        int clientId = 0;
         while (run) {
             try {
                 Socket client = serverSocket.accept();
-                logger.log("New connection from " + client.getInetAddress(), Logger.INFO);
-                ClientHandler clientHandler = new ClientHandler(client, lectureHandler, userHandler);
+                logger.log("New connection from " + client.getInetAddress(), Logger.INFO, "Server");
+                ClientHandler clientHandler = new ClientHandler(clientId, client, lectureHandler, userHandler);
                 Thread clientHandlerThread = new Thread(clientHandler);
                 clientHandlerThread.start();
+                clientId += 1;
             } catch (IOException e) {
-                logger.log(e.getMessage(), Logger.ERROR);
+                logger.log(e.getMessage(), Logger.ERROR, "Server");
             }
         }
     }

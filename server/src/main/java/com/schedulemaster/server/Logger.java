@@ -11,12 +11,11 @@ public class Logger {
     public static final int ERROR = 0;
     public static final int INFO = 1;
     public static final int DEBUG = 2;
-    public static final int VERBOSE = 3;
-    public static final String[] LOG_LEVEL = { "ERROR", "INFO", "DEBUG", "VERBOSE" };
+    public static final String[] LOG_LEVEL = { "ERROR", "INFO", "DEBUG" };
 
     private final LinkedList<String> log = new LinkedList<>();
     private final LinkedList<OutputStream> outputStreams = new LinkedList<>();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[[HH:mm:ss]]");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public int logLevel = INFO;
 
@@ -39,7 +38,15 @@ public class Logger {
         outputStreams.push(os);
     }
 
-    public synchronized void log(String msg, int logLevel) {
+    public void setLogLevel(int logLevel) {
+        this.logLevel = logLevel;
+    }
+
+    public void log(String msg, int logLevel) {
+        log(msg, logLevel, "App");
+    }
+
+    public synchronized void log(String msg, int logLevel, String actor) {
         if (this.logLevel < logLevel)
             return;
 
@@ -48,7 +55,7 @@ public class Logger {
             log.push(stamp + " " + msg);
 
             for (OutputStream writer : outputStreams) {
-                String line = String.format("[%s %s] %s\n", stamp, LOG_LEVEL[logLevel], msg);
+                String line = String.format("[%s %s\t%s] %s\n", stamp, LOG_LEVEL[logLevel], actor, msg);
                 writer.write(line.getBytes());
                 writer.flush();
             }

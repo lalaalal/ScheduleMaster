@@ -17,11 +17,13 @@ public class ClientHandler extends Communicator implements Runnable {
 
     private User user;
     private final Logger logger = Logger.getInstance();
+    private final String id;
 
-    public ClientHandler(Socket client, LectureHandler lectureHandler, UserHandler userHandler) throws IOException {
+    public ClientHandler(int id, Socket client, LectureHandler lectureHandler, UserHandler userHandler) throws IOException {
         super(client);
         this.lectureHandler = lectureHandler;
         this.userHandler = userHandler;
+        this.id = "Client-" + id;
     }
 
     @Override
@@ -34,12 +36,12 @@ public class ClientHandler extends Communicator implements Runnable {
                 System.out.println("Something went wrong while handling client request");
             }
         }
-        logger.log("Bye bye", Logger.INFO);
+        logger.log("Bye bye", Logger.INFO, id);
     }
 
     @Override
     protected Response createResponse(Request request) {
-        logger.log("Received request (" + request.command() + ")", Logger.DEBUG);
+        logger.log("Received request (" + request.command() + ")", Logger.DEBUG, id);
         return factory.createResponse(request);
     }
 
@@ -60,7 +62,7 @@ public class ClientHandler extends Communicator implements Runnable {
                 default -> commandNotFoundResponse();
             };
 
-            logger.log("Create response (" + response + ")", Logger.DEBUG);
+            logger.log("Create response (" + response + ")", Logger.DEBUG, id);
             return response;
         }
 
@@ -72,10 +74,10 @@ public class ClientHandler extends Communicator implements Runnable {
 
             if (userHandler.verifyUser(id, hashedPassword)) {
                 user = userHandler.getUser(id);
-                logger.log("\"" + id + "\" login succeed", Logger.INFO);
+                logger.log("\"" + id + "\" login succeed", Logger.INFO, id);
                 return new Response(Status.SUCCEED, "Succeed");
             }
-            logger.log("\"" + id + "\" login failed", Logger.INFO);
+            logger.log("\"" + id + "\" login failed", Logger.INFO, id);
             if (userHandler.hasId(id))
                 return new Response(Status.FAILED, "Wrong Password");
 
@@ -90,12 +92,12 @@ public class ClientHandler extends Communicator implements Runnable {
             String hashedPassword = userInfo[1];
 
             if (userHandler.hasId(id)) {
-                logger.log("\"" + id + "\" signup failed", Logger.INFO);
+                logger.log("\"" + id + "\" signup failed", Logger.INFO, id);
                 return new Response(Status.FAILED, "Id exists");
             }
 
             userHandler.addUser(id, hashedPassword);
-            logger.log("\"" + id + "\" signup succeed", Logger.INFO);
+            logger.log("\"" + id + "\" signup succeed", Logger.INFO, id);
             return new Response(Status.SUCCEED, "Succeed");
         }
 
@@ -124,7 +126,7 @@ public class ClientHandler extends Communicator implements Runnable {
             if (!(request.data() instanceof Hash<?, ?> priorities))
                 return new Response(Status.FAILED, "Wrong Request");
 
-            logger.log("Update \"" + user.id + "\"'s priorities", Logger.DEBUG);
+            logger.log("Update \"" + user.id + "\"'s priorities", Logger.DEBUG, id);
             user.priorities = (Hash<Lecture, Integer>) priorities;
             userHandler.save();
 
@@ -135,7 +137,7 @@ public class ClientHandler extends Communicator implements Runnable {
             if (!(request.data() instanceof LectureTime unwantedTime))
                 return new Response(Status.FAILED, "Wrong Request");
 
-            logger.log("Update \"" + user.id + "\"'s unwanted time", Logger.DEBUG);
+            logger.log("Update \"" + user.id + "\"'s unwanted time", Logger.DEBUG, id);
             user.unwantedTime = unwantedTime;
             userHandler.save();
 

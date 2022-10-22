@@ -25,7 +25,7 @@ public class LectureHandler {
             lectures = (Hash<String, Lecture>) object;
         } catch (FileNotFoundException e) {
             lectures = new Hash<>();
-            logger.log("No such file : " + lectureDataPath, Logger.ERROR);
+            logger.log("No such file : \"" + lectureDataPath + "\"", Logger.ERROR);
         } catch (ClassNotFoundException e) {
             lectures = new Hash<>();
             logger.log("Class not found while reading data from \"" + lectureDataPath + "\"", Logger.ERROR);
@@ -36,6 +36,7 @@ public class LectureHandler {
     }
 
     public void appendFromCSV(String csvPath) {
+        logger.log("Appending lectures from csv : \"" + csvPath + "\"", Logger.INFO);
         try (CSVReader csvReader = new CSVReader(csvPath)) {
             String[] tuple = csvReader.read();
             while ((tuple = csvReader.read()) != null) {
@@ -44,7 +45,7 @@ public class LectureHandler {
             }
             save();
         } catch (FileNotFoundException e) {
-            logger.log("No such file : " + csvPath, Logger.ERROR);
+            logger.log("No such file : \"" + csvPath + "\"", Logger.ERROR);
         } catch (IOException e) {
             logger.log("\"Something went wrong while reading csv from \"" + csvPath + "\"", Logger.ERROR);
         }
@@ -62,7 +63,7 @@ public class LectureHandler {
             LinkedList<LectureTime.TimeSet> timeSets = lecture.time.getTimeSets();
             sameLecture.time.addTimeSets(timeSets);
         }
-        logger.log("Add Lecture (" + lecture + ")", Logger.INFO);
+        logger.log("Add Lecture (" + lecture + ")", Logger.DEBUG);
     }
 
     public LinkedList<Lecture> getLectures() {

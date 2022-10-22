@@ -22,7 +22,7 @@ public class UserHandler {
             users = (Hash<String, User>) object;
         } catch (FileNotFoundException e) {
             users = new Hash<>();
-            logger.log("No such file : " + filePath, Logger.ERROR);
+            logger.log("No such file : \"" + filePath + "\"", Logger.ERROR);
         } catch (ClassNotFoundException e) {
             users = new Hash<>();
             logger.log("Class not found while reading data from \"" + filePath + "\"", Logger.ERROR);
@@ -33,7 +33,7 @@ public class UserHandler {
     }
 
     public synchronized void save() {
-        logger.log("Saving users to \"" + filePath + "\"", Logger.ERROR);
+        logger.log("Saving users to \"" + filePath + "\"", Logger.INFO);
         try (FileOutputStream fos = new FileOutputStream(filePath);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(users);
