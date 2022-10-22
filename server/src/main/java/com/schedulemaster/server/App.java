@@ -11,6 +11,8 @@ public class App implements AutoCloseable{
     public static final String DEFAULT_LECTURE_FILE_PATH = "lectures";
     public static final String DEFAULT_USER_FILE_PATH = "users";
 
+    private static final String ACTOR = "App";
+
     private final LectureHandler lectureHandler;
     private final UserHandler userHandler;
     private FileOutputStream logFileOutputStream = null;
@@ -61,17 +63,20 @@ public class App implements AutoCloseable{
             }
 
         } catch (IOException e) {
-            logger.log(e.getMessage(), Logger.ERROR);
+            logger.log(e.getMessage(), Logger.ERROR, ACTOR);
         }
     }
 
     private void handleCommand(String command, Scanner scanner) {
         if (command.equals("append_csv")) {
             String path = scanner.next();
+            logger.setActor(ACTOR);
             lectureHandler.appendFromCSV(path);
+
         } else if (command.equals("log_level")) {
-            int logLevel = scanner.nextInt();
+            String logLevel = scanner.next();
             logger.setLogLevel(logLevel);
+            logger.log("Set LOG_LEVEL to " + logLevel, Logger.INFO, ACTOR);
         }
     }
 
