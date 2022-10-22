@@ -3,6 +3,7 @@ package com.schedulemaster.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Server implements AutoCloseable, Runnable {
     private static final int PORT = 5678;
@@ -38,6 +39,8 @@ public class Server implements AutoCloseable, Runnable {
                 Thread clientHandlerThread = new Thread(clientHandler);
                 clientHandlerThread.start();
                 clientId += 1;
+            } catch (SocketException e) {
+                logger.log(e.getMessage(), Logger.INFO, "Server");
             } catch (IOException e) {
                 logger.log(e.getMessage(), Logger.ERROR, "Server");
             }

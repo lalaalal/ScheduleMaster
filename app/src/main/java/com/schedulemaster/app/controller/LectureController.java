@@ -36,6 +36,10 @@ public class LectureController {
         return result;
     }
 
+    public LectureBook getLectureBook() {
+        return lectureBook;
+    }
+
     public interface Comparator {
         boolean compare(Lecture lecture, Object comparingValue);
     }
