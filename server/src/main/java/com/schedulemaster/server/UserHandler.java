@@ -15,7 +15,7 @@ public class UserHandler {
     @SuppressWarnings("unchecked")
     public UserHandler(String filePath) {
         this.filePath = filePath;
-        logger.log("Reading lecture data from \"" + filePath + "\"", Logger.INFO);
+        logger.log("Reading user data from \"" + filePath + "\"", Logger.INFO);
         try (FileInputStream fis = new FileInputStream(filePath);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Object object = ois.readObject();

@@ -109,22 +109,22 @@ public class LectureHandler {
     }
 
     public synchronized boolean enrollLecture(String lectureNum, User user) {
-        logger.log(user.id + " enroll " + lectureNum, Logger.INFO);
+        logger.log("\"" + user.id + "\" enroll " + lectureNum, Logger.INFO);
         return addLectureTo(user.enrolledLectures, lectureNum);
     }
 
     public synchronized boolean selectLecture(String lectureNum, User user) {
-        logger.log(user.id + " select " + lectureNum, Logger.INFO);
+        logger.log("\"" + user.id + "\" select " + lectureNum, Logger.INFO);
         return addLectureTo(user.selectedLectures, lectureNum);
     }
 
     public synchronized boolean cancelLecture(String lectureNum, User user) {
-        logger.log(user.id + " cancel " + lectureNum, Logger.INFO);
+        logger.log("\"" + user.id + "\" cancel " + lectureNum, Logger.INFO);
         return removeLectureFrom(user.enrolledLectures, lectureNum);
     }
 
     public synchronized boolean unselectLecture(String lectureNum, User user) {
-        logger.log(user.id + " unselect " + lectureNum, Logger.INFO);
+        logger.log("\"" + user.id + "\" unselect " + lectureNum, Logger.INFO);
         return removeLectureFrom(user.selectedLectures, lectureNum);
     }
 

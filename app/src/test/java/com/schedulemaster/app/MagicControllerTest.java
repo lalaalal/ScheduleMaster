@@ -1,23 +1,26 @@
 package com.schedulemaster.app;
 
+import com.schedulemaster.app.controller.LectureController;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.model.Schedule;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureBook;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+@Disabled
 public class MagicControllerTest {
     @Test
     public void testMagic() throws IOException {
         try (Client client = new Client()) {
             UserController userController = new UserController(client);
             userController.login("test", "test");
-            LectureBook lectureBook = new LectureBook(client.getLectures());
-            MagicController magicController = new MagicController(userController, lectureBook);
+            LectureController lectureController = new LectureController(client);
+            MagicController magicController = new MagicController(userController, lectureController.getLectureBook());
 
             LinkedList<Lecture> lectures = client.getLectures();
 
