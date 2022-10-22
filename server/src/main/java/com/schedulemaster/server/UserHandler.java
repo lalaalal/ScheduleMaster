@@ -11,49 +11,48 @@ public class UserHandler {
     private final String filePath;
 
     private final Logger logger = Logger.getInstance();
-    private static final String ACTOR = "UserHandler";
 
     @SuppressWarnings("unchecked")
     public UserHandler(String filePath) {
         this.filePath = filePath;
-        logger.log("Reading user data from \"" + filePath + "\"", Logger.INFO, ACTOR);
+        logger.log("Reading user data from \"" + filePath + "\"", Logger.INFO);
         try (FileInputStream fis = new FileInputStream(filePath);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Object object = ois.readObject();
             users = (Hash<String, User>) object;
         } catch (FileNotFoundException e) {
             users = new Hash<>();
-            logger.log("No such file : \"" + filePath + "\"", Logger.ERROR, ACTOR);
+            logger.log("No such file : \"" + filePath + "\"", Logger.ERROR);
         } catch (ClassNotFoundException e) {
             users = new Hash<>();
-            logger.log("Class not found while reading data from \"" + filePath + "\"", Logger.ERROR, ACTOR);
+            logger.log("Class not found while reading data from \"" + filePath + "\"", Logger.ERROR);
         } catch (IOException e) {
             users = new Hash<>();
-            logger.log("Something went wrong while load lectures from \"" + filePath + "\"", Logger.ERROR, ACTOR);
+            logger.log("Something went wrong while load lectures from \"" + filePath + "\"", Logger.ERROR);
         }
     }
 
     public synchronized void save() {
-        logger.log("Saving users to \"" + filePath + "\"", Logger.INFO, ACTOR);
+        logger.log("Saving users to \"" + filePath + "\"", Logger.INFO);
         try (FileOutputStream fos = new FileOutputStream(filePath);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(users);
         } catch (IOException e) {
             System.out.println("Failed to save Lectures");
-            logger.log("Something went wrong while saving users to \"" + filePath + "\"", Logger.ERROR, ACTOR);
+            logger.log("Something went wrong while saving users to \"" + filePath + "\"", Logger.ERROR);
         }
     }
 
     public synchronized void addUser(String id, String pw) {
         User user = new User(id, pw);
         users.put(id, user);
-        logger.log("New user \"" + id + "\" signup", Logger.INFO, ACTOR);
+        logger.log("New user \"" + id + "\" signup", Logger.INFO);
         save();
     }
 
     public synchronized void addUser(User user) {
         users.put(user.id, user);
-        logger.log("New user \"" + user.id + "\" signup", Logger.INFO, ACTOR);
+        logger.log("New user \"" + user.id + "\" signup", Logger.INFO);
         save();
     }
 
@@ -66,13 +65,13 @@ public class UserHandler {
     }
 
     public User getUser(String id) {
-        logger.log("Get \"" + id + "\"'s user data", Logger.DEBUG, ACTOR);
+        logger.log("Get \"" + id + "\"'s user data", Logger.DEBUG);
         return users.get(id);
     }
 
     public boolean verifyUser(String id, String hashedPassword) {
         User user = users.get(id);
-        logger.log("\"" + id + "\" is trying login", Logger.DEBUG, ACTOR);
+        logger.log("\"" + id + "\" is trying login", Logger.DEBUG);
         if (user == null)
             return false;
 
