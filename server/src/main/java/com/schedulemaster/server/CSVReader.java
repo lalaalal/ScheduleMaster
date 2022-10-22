@@ -1,9 +1,9 @@
 package com.schedulemaster.server;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -11,8 +11,8 @@ public class CSVReader implements AutoCloseable {
 
     private final BufferedReader reader;
 
-    public CSVReader(String path) throws FileNotFoundException {
-        reader = new BufferedReader(new FileReader(path));
+    public CSVReader(String path) throws IOException {
+        reader = new BufferedReader(new FileReader(path, StandardCharsets.UTF_8));
     }
 
     public String[] read() throws IOException {

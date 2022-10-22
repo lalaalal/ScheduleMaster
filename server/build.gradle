@@ -19,3 +19,9 @@ dependencies {
 application {
     mainClass = 'com.schedulemaster.server.App'
 }
+
+run {
+    standardInput = System.in
+}
+
+compileJava.options.encoding = 'UTF-8'

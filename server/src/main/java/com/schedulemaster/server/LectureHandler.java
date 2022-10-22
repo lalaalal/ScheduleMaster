@@ -13,20 +13,30 @@ public class LectureHandler {
     private Hash<String, Lecture> lectures;
     private final String lectureDataPath;
 
+    private final Logger logger = Logger.getInstance();
+
     @SuppressWarnings("unchecked")
-    public LectureHandler(String lectureDataPath) throws IOException {
+    public LectureHandler(String lectureDataPath) {
         this.lectureDataPath = lectureDataPath;
-        try (FileInputStream fis = new FileInputStream(lectureDataPath)) {
-            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-                Object object = ois.readObject();
-                lectures = (Hash<String, Lecture>) object;
-            }
-        } catch (FileNotFoundException | ClassNotFoundException e) {
+        logger.log("Reading lecture data from \"" + lectureDataPath + "\"", Logger.INFO);
+        try (FileInputStream fis = new FileInputStream(lectureDataPath);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            Object object = ois.readObject();
+            lectures = (Hash<String, Lecture>) object;
+        } catch (FileNotFoundException e) {
             lectures = new Hash<>();
+            logger.log("No such file : \"" + lectureDataPath + "\"", Logger.ERROR);
+        } catch (ClassNotFoundException e) {
+            lectures = new Hash<>();
+            logger.log("Class not found while reading data from \"" + lectureDataPath + "\"", Logger.ERROR);
+        } catch (IOException e) {
+            lectures = new Hash<>();
+            logger.log("Something went wrong while load lectures from \"" + lectures + "\"", Logger.ERROR);
         }
     }
 
     public void appendFromCSV(String csvPath) {
+        logger.log("Appending lectures from csv : \"" + csvPath + "\"", Logger.INFO);
         try (CSVReader csvReader = new CSVReader(csvPath)) {
             String[] tuple = csvReader.read();
             while ((tuple = csvReader.read()) != null) {
@@ -34,8 +44,10 @@ public class LectureHandler {
                 addLecture(lecture);
             }
             save();
+        } catch (FileNotFoundException e) {
+            logger.log("No such file : \"" + csvPath + "\"", Logger.ERROR);
         } catch (IOException e) {
-            System.out.println("Something went wrong while reading csv from " + csvPath);
+            logger.log("\"Something went wrong while reading csv from \"" + csvPath + "\"", Logger.ERROR);
         }
     }
 
@@ -51,11 +63,13 @@ public class LectureHandler {
             LinkedList<LectureTime.TimeSet> timeSets = lecture.time.getTimeSets();
             sameLecture.time.addTimeSets(timeSets);
         }
+        logger.log("Add Lecture (" + lecture + ")", Logger.DEBUG);
     }
 
     public LinkedList<Lecture> getLectures() {
         LinkedList<Lecture> list = new LinkedList<>();
         list.addAll(lectures);
+        logger.log("Get all Lectures", Logger.INFO);
         return list;
     }
 
@@ -95,22 +109,27 @@ public class LectureHandler {
     }
 
     public synchronized boolean enrollLecture(String lectureNum, User user) {
+        logger.log(user.id + " enroll " + lectureNum, Logger.INFO);
         return addLectureTo(user.enrolledLectures, lectureNum);
     }
 
     public synchronized boolean selectLecture(String lectureNum, User user) {
+        logger.log(user.id + " select " + lectureNum, Logger.INFO);
         return addLectureTo(user.selectedLectures, lectureNum);
     }
 
     public synchronized boolean cancelLecture(String lectureNum, User user) {
+        logger.log(user.id + " cancel " + lectureNum, Logger.INFO);
         return removeLectureFrom(user.enrolledLectures, lectureNum);
     }
 
     public synchronized boolean unselectLecture(String lectureNum, User user) {
+        logger.log(user.id + " unselect " + lectureNum, Logger.INFO);
         return removeLectureFrom(user.selectedLectures, lectureNum);
     }
 
     public synchronized void save() {
+        logger.log("Saving lectures", Logger.DEBUG);
         try (FileOutputStream fos = new FileOutputStream(lectureDataPath)) {
             try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                 oos.writeObject(lectures);
