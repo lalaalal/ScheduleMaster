@@ -5,9 +5,9 @@ import com.schedulemaster.misc.LinkedList;
 import java.io.Serializable;
 
 public class LectureTime implements Serializable {
-    public static final long serialVersionUID = 10L;
+    public static final long serialVersionUID = 11L;
     public record Time(int hour, int minute) implements Serializable {
-        public static final long serialVersionUID = 10L;
+        public static final long serialVersionUID = 11L;
 
         public boolean isAfter(Time time) {
             return this.hour >= time.hour && this.minute >= time.minute;
@@ -45,7 +45,7 @@ public class LectureTime implements Serializable {
 
         @Override
         public String toString() {
-            return hour + ":" + minute;
+            return String.format("%02d:%02d", hour, minute);
         }
     }
 
