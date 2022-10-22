@@ -37,3 +37,5 @@ application {
     // Define the main class for the application.
     mainClass = 'com.schedulemaster.app.App'
 }
+
+compileJava.options.encoding = 'UTF-8'
