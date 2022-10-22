@@ -35,6 +35,11 @@ public class ClientHandler extends Communicator implements Runnable {
             logger.log(e.getCause().getMessage(), Logger.ERROR);
             logger.log(e.getMessage(), Logger.ERROR);
         }
+        if (user != null) {
+            userHandler.logout(user);
+            logger.log("Logout", Logger.INFO);
+        }
+
         logger.log("Bye bye", Logger.INFO);
         logger.log("", Logger.INFO);
     }
@@ -64,20 +69,26 @@ public class ClientHandler extends Communicator implements Runnable {
             };
 
             logger.log("Response.status : " + response.status(), Logger.DEBUG);
-            logger.log("Response.data : "  + request.getDataType(), Logger.VERBOSE);
+            logger.log("Response.data : "  + response.getDataType(), Logger.VERBOSE);
             logger.log("", Logger.DEBUG);
             return response;
         }
 
-        public synchronized Response loginResponse(Request request) {
+        public Response loginResponse(Request request) {
             if (!(request.data() instanceof String[] userInfo))
                 return new Response(Status.FAILED, "Wrong Request");
             String id = userInfo[0];
             String hashedPassword = userInfo[1];
 
             if (userHandler.verifyUser(id, hashedPassword)) {
-                logger.log("\"" + id + "\" login succeed", Logger.INFO);
                 user = userHandler.getUser(id);
+                if (!userHandler.login(user)) {
+                    logger.log("\"" + id + "\" already has login session", Logger.INFO);
+                    user = null;
+                    return new Response(Status.FAILED, "Already login sessions");
+                }
+
+                logger.log("\"" + id + "\" login succeed", Logger.INFO);
                 return new Response(Status.SUCCEED, "Succeed");
             }
             logger.log("\"" + id + "\" login failed", Logger.INFO);
@@ -87,7 +98,7 @@ public class ClientHandler extends Communicator implements Runnable {
             return new Response(Status.FAILED, "ID not found");
         }
 
-        public synchronized Response signupResponse(Request request) {
+        public Response signupResponse(Request request) {
             if (!(request.data() instanceof String[] userInfo))
                 return new Response(Status.FAILED, "Wrong Request");
 
@@ -114,7 +125,10 @@ public class ClientHandler extends Communicator implements Runnable {
             return new Response(Status.SUCCEED, lectureHandler.getLectures());
         }
 
-        public synchronized Response lectureCommandResponse(Request request) {
+        public Response lectureCommandResponse(Request request) {
+            if (user == null)
+                return new Response(Status.FAILED, "Please login first");
+
             if (!(request.data() instanceof Lecture lecture))
                 return new Response(Status.FAILED, "Wrong Request");
             if (!lectureHandler.doLectureCommand(request.command(), lecture.lectureNum, user))
@@ -126,6 +140,9 @@ public class ClientHandler extends Communicator implements Runnable {
 
         @SuppressWarnings("unchecked")
         public synchronized Response setPrioritiesResponse(Request request) {
+            if (user == null)
+                return new Response(Status.FAILED, "Please login first");
+
             if (!(request.data() instanceof Hash<?, ?> priorities))
                 return new Response(Status.FAILED, "Wrong Request");
 
@@ -137,6 +154,9 @@ public class ClientHandler extends Communicator implements Runnable {
         }
 
         public synchronized Response setUnwantedTimeResponse(Request request) {
+            if (user == null)
+                return new Response(Status.FAILED, "Please login first");
+
             if (!(request.data() instanceof LectureTime unwantedTime))
                 return new Response(Status.FAILED, "Wrong Request");
 
