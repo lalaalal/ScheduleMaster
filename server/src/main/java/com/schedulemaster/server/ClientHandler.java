@@ -32,7 +32,6 @@ public class ClientHandler extends Communicator implements Runnable {
                 status = receiveAndSend();
             }
         } catch (IOException e) {
-            logger.log(e.getCause().getMessage(), Logger.ERROR);
             logger.log(e.getMessage(), Logger.ERROR);
         }
         if (user != null) {

@@ -101,6 +101,8 @@ public class MagicController {
             Lecture lecture = priorityHeap.pop().lecture();
             if (!lecture.time.conflictWith(usedTime))
                 suggestion.push(lecture);
+            if (suggestion.getLength() >= maxSuggestion)
+                return suggestion;
         }
 
         LinkedList<Lecture> lectures = lectureBook.getLectures();

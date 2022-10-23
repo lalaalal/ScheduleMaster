@@ -65,9 +65,9 @@ public class UserController {
         return user.selectedLectures.toArray(new Lecture[0]);
     }
 
-    public void savePriorities(Hash<Lecture, Integer> priorities) throws IOException {
+    public boolean savePriorities(Hash<Lecture, Integer> priorities) throws IOException {
         user.priorities = priorities;
-        client.sendPriorities(priorities);
+        return client.sendPriorities(priorities);
     }
 
     public Heap<Priority> getPriorityHeap() {
@@ -80,8 +80,8 @@ public class UserController {
         user.unwantedTime.addTimeSet(timeSet);
     }
 
-    public void saveUnwantedTime() throws IOException {
-        client.sendUnwantedTime(user.unwantedTime);
+    public boolean saveUnwantedTime() throws IOException {
+        return client.sendUnwantedTime(user.unwantedTime);
     }
 
     public LectureTime getUnwantedTime() {
