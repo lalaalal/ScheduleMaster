@@ -13,8 +13,6 @@ public class Logger {
     public static final int DEBUG = 2;
     public static final int VERBOSE = 3;
     public static final String[] LOG_LEVEL = { "ERROR  ", "INFO   ", "DEBUG  ", "VERBOSE" };
-
-    private final LinkedList<String> log = new LinkedList<>();
     private final LinkedList<OutputStream> outputStreams = new LinkedList<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -61,8 +59,6 @@ public class Logger {
         try {
             String stamp = timeStamp();
             String threadID = Thread.currentThread().getName();
-            log.push(stamp + " " + msg);
-
             for (OutputStream writer : outputStreams) {
                 String line = String.format("[%s %s %s] %s\n", stamp, LOG_LEVEL[logLevel], threadID, msg);
                 writer.write(line.getBytes());
@@ -70,7 +66,7 @@ public class Logger {
             }
 
         } catch (IOException e) {
-            log.push(e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 

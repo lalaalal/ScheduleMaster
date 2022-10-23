@@ -34,10 +34,11 @@ public class Server implements AutoCloseable, Runnable {
         while (run) {
             try {
                 Socket client = serverSocket.accept();
-                logger.log("New connection from " + client.getInetAddress(), Logger.INFO);
                 ClientHandler clientHandler = new ClientHandler(client, lectureHandler, userHandler);
                 Thread clientHandlerThread = new Thread(clientHandler);
                 clientHandlerThread.setName("Client-" + clientId);
+                logger.log("New connection from " + client.getInetAddress()
+                        + " -> " + clientHandlerThread.getName(), Logger.INFO);
                 clientHandlerThread.start();
                 clientId += 1;
             } catch (SocketException e) {

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-public class App implements AutoCloseable{
+public class App implements AutoCloseable {
     public static final String DEFAULT_LECTURE_FILE_PATH = "lectures";
     public static final String DEFAULT_USER_FILE_PATH = "users";
 
