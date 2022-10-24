@@ -13,11 +13,8 @@ public class Logger {
     public static final int DEBUG = 2;
     public static final int VERBOSE = 3;
     public static final String[] LOG_LEVEL = { "ERROR  ", "INFO   ", "DEBUG  ", "VERBOSE" };
-
-    private final LinkedList<String> log = new LinkedList<>();
     private final LinkedList<OutputStream> outputStreams = new LinkedList<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-    private String actor = "App";
 
     public int logLevel = INFO;
 
@@ -33,10 +30,6 @@ public class Logger {
 
     }
 
-    public synchronized void setActor(String actor) {
-        this.actor = actor;
-    }
-
     public void addOutputStream(OutputStream os) {
         if (outputStreams.has(os))
             return;
@@ -45,7 +38,8 @@ public class Logger {
     }
 
     public void setLogLevel(int logLevel) {
-        this.logLevel = logLevel;
+        if (0 <= logLevel && logLevel < LOG_LEVEL.length)
+            this.logLevel = logLevel;
     }
 
     public void setLogLevel(String logLevel) {
@@ -58,27 +52,21 @@ public class Logger {
         }
     }
 
-    public synchronized void log(String msg, int logLevel, String actor) {
-        setActor(actor);
-        log(msg, logLevel);
-    }
-
     public synchronized void log(String msg, int logLevel) {
         if (this.logLevel < logLevel)
             return;
 
         try {
             String stamp = timeStamp();
-            log.push(stamp + " " + msg);
-
+            String threadID = Thread.currentThread().getName();
             for (OutputStream writer : outputStreams) {
-                String line = String.format("[%s %s %s] %s\n", stamp, LOG_LEVEL[logLevel], actor, msg);
+                String line = String.format("[%s %s %s] %s\n", stamp, LOG_LEVEL[logLevel], threadID, msg);
                 writer.write(line.getBytes());
                 writer.flush();
             }
 
         } catch (IOException e) {
-            log.push(e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 

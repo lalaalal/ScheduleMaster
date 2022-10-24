@@ -29,20 +29,22 @@ public class Server implements AutoCloseable, Runnable {
 
     @Override
     public void run() {
-        logger.log("Starting server", Logger.INFO, "Server");
+        logger.log("Starting server", Logger.INFO);
         int clientId = 0;
         while (run) {
             try {
                 Socket client = serverSocket.accept();
-                logger.log("New connection from " + client.getInetAddress(), Logger.INFO, "Server");
-                ClientHandler clientHandler = new ClientHandler(clientId, client, lectureHandler, userHandler);
+                ClientHandler clientHandler = new ClientHandler(client, lectureHandler, userHandler);
                 Thread clientHandlerThread = new Thread(clientHandler);
+                clientHandlerThread.setName("Client-" + clientId);
+                logger.log("New connection from " + client.getInetAddress()
+                        + " -> " + clientHandlerThread.getName(), Logger.INFO);
                 clientHandlerThread.start();
                 clientId += 1;
             } catch (SocketException e) {
-                logger.log(e.getMessage(), Logger.INFO, "Server");
+                logger.log(e.getMessage(), Logger.INFO);
             } catch (IOException e) {
-                logger.log(e.getMessage(), Logger.ERROR, "Server");
+                logger.log(e.getMessage(), Logger.ERROR);
             }
         }
     }

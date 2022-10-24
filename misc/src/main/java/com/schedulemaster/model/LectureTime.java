@@ -53,14 +53,14 @@ public class LectureTime implements Serializable {
         public static final long serialVersionUID = 10L;
         public boolean conflictWith(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
-                    && (!start.isAfter(timeSet.end)
-                    || !end.isBefore(timeSet.start));
+                    && (start.isAfter(timeSet.start) && start.isBefore(timeSet.end))
+                    || (end.isBefore(timeSet.start) && end.isBefore(timeSet.end));
         }
 
         public boolean include(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
-                    && start.isBefore(timeSet.start)
-                    && end.isAfter(timeSet.end);
+                    && (start.isBefore(timeSet.start) && end.isAfter(timeSet.end))
+                    || (start.isAfter(timeSet.start) && end.isBefore(timeSet.end));
         }
 
         @Override

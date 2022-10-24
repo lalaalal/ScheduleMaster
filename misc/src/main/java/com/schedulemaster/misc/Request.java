@@ -16,4 +16,10 @@ public record Request(String command, Object data) implements Serializable {
     public static final String UNSELECT = "unselect";
     public static final String SET_PRIORITIES = "set_priorities";
     public static final String SET_UNWANTED_TIME = "set_unwanted_time";
+
+    public String getDataType() {
+        if (data == null)
+            return "null";
+        return data.getClass().getSimpleName();
+    }
 }

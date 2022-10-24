@@ -13,13 +13,20 @@ public class LectureController {
     }
 
     private final LectureBook lectureBook;
+    private final Client client;
 
     public LectureController(Client client) throws IOException {
+        this.client = client;
         lectureBook = new LectureBook(client.getLectures());
 
         lectureBook.addIndex(AttributeName.Professor.name(), Lecture::getProfessor);
         lectureBook.addIndex(AttributeName.Major.name(), Lecture::getMajor);
         lectureBook.addIndex(AttributeName.Name.name(), Lecture::getName);
+    }
+
+    public void refresh() throws IOException {
+        LinkedList<Lecture> lectures = client.getLectures();
+        lectureBook.setLectures(lectures);
     }
 
     public LinkedList<Lecture> findByAttributeName(AttributeName attributeName, String value) {

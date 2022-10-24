@@ -5,7 +5,7 @@ import com.schedulemaster.misc.Index;
 import com.schedulemaster.misc.LinkedList;
 
 public class LectureBook {
-    private final LinkedList<Lecture> lectures;
+    private LinkedList<Lecture> lectures;
 
     private final Hash<String, Index<String, Lecture>> indexes;
 
@@ -26,5 +26,12 @@ public class LectureBook {
 
     public LinkedList<Lecture> getLectures() {
         return lectures;
+    }
+
+    public void setLectures(LinkedList<Lecture> lectures) {
+        this.lectures = lectures;
+        for (Index<String, Lecture> index : indexes) {
+            index.changeTable(lectures);
+        }
     }
 }

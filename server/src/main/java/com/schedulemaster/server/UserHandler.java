@@ -1,12 +1,14 @@
 package com.schedulemaster.server;
 
 import com.schedulemaster.misc.Hash;
+import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.User;
 
 import java.io.*;
 
 public class UserHandler {
     private Hash<String, User> users;
+    private final LinkedList<User> loginUsers = new LinkedList<>();
 
     private final String filePath;
 
@@ -76,5 +78,21 @@ public class UserHandler {
             return false;
 
         return user.verifyPassword(hashedPassword);
+    }
+
+    public synchronized boolean login(User user) {
+        if (loginUsers.has(user)) {
+            logger.log("\"" + user.id + "\" is already in loginUsers", Logger.VERBOSE);
+            return false;
+        }
+
+        loginUsers.push(user);
+        logger.log("\"" + user.id + "\" was added to loginUsers", Logger.VERBOSE);
+        return true;
+    }
+
+    public synchronized void logout(User user) {
+        loginUsers.remove(user);
+        logger.log("\"" + user.id + "\" was removed from loginUsers", Logger.VERBOSE);
     }
 }

@@ -7,11 +7,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-public class App implements AutoCloseable{
+public class App implements AutoCloseable {
     public static final String DEFAULT_LECTURE_FILE_PATH = "lectures";
     public static final String DEFAULT_USER_FILE_PATH = "users";
-
-    private static final String ACTOR = "App";
 
     private final LectureHandler lectureHandler;
     private final UserHandler userHandler;
@@ -54,6 +52,7 @@ public class App implements AutoCloseable{
         try (Server server = new Server(lectureHandler, userHandler);
              Scanner scanner = new Scanner(System.in)) {
             Thread serverThread = new Thread(server);
+            serverThread.setName("Server");
             serverThread.start();
 
             String command = "";
@@ -63,25 +62,28 @@ public class App implements AutoCloseable{
             }
 
         } catch (IOException e) {
-            logger.log(e.getMessage(), Logger.ERROR, ACTOR);
+            logger.log(e.getMessage(), Logger.ERROR);
         }
     }
 
     private void handleCommand(String command, Scanner scanner) {
-        if (command.equals("append_csv")) {
-            String path = scanner.next();
-            logger.setActor(ACTOR);
-            lectureHandler.appendFromCSV(path);
-
-        } else if (command.equals("log_level")) {
-            int logLevel = scanner.nextInt();
-            logger.setLogLevel(logLevel);
-            logger.log("Set LOG_LEVEL to " + logLevel, Logger.INFO, ACTOR);
-        } else {
-            logger.log("help", Logger.INFO, ACTOR);
-            logger.log(":\tappend_csv [path]", Logger.INFO, ACTOR);
-            logger.log(":\tlog_level [0 (ERROR) | 1 (INFO) | 2 (DEBUG) | 3 (VERBOSE)]", Logger.INFO, ACTOR);
-            logger.log(":\tstop | exit", Logger.INFO, ACTOR);
+        switch (command) {
+            case "append_csv" -> {
+                String path = scanner.next();
+                lectureHandler.appendFromCSV(path);
+            }
+            case "log_level" -> {
+                int logLevel = scanner.nextInt();
+                logger.setLogLevel(logLevel);
+                logger.log("Set LOG_LEVEL to " + logLevel, Logger.INFO);
+            }
+            case "exit", "stop" -> logger.log("Stopping Server", Logger.INFO);
+            default -> {
+                logger.log("help", Logger.INFO);
+                logger.log(":\tappend_csv [path]", Logger.INFO);
+                logger.log(":\tlog_level [0 (ERROR) | 1 (INFO) | 2 (DEBUG) | 3 (VERBOSE)]", Logger.INFO);
+                logger.log(":\tstop | exit", Logger.INFO);
+            }
         }
     }
 

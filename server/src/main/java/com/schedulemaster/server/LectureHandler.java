@@ -83,59 +83,64 @@ public class LectureHandler {
         };
     }
 
-    private synchronized boolean addLectureTo(LinkedList<Lecture> list, String lectureNum) {
+    public synchronized boolean enrollLecture(String lectureNum, User user) {
+        logger.log("\"" + user.id + "\" enroll " + lectureNum, Logger.INFO);
         Lecture lecture = lectures.get(lectureNum);
-        if (list.has(lecture))
+        if (user.enrolledLectures.has(lecture))
             return false;
 
         if (lecture.enrolled < lecture.max) {
             lecture.enrolled += 1;
-            list.push(lecture);
+            user.enrolledLectures.push(lecture);
             save();
             return true;
         }
+        logger.log("Lecture " +  lectureNum + "is already full", Logger.INFO);
         return false;
-    }
-
-    private synchronized boolean removeLectureFrom(LinkedList<Lecture> list, String lectureNum) {
-        Lecture lecture = lectures.get(lectureNum);
-        if (!list.has(lecture))
-            return false;
-
-        lecture.enrolled -= 1;
-        list.remove(lecture);
-        save();
-        return true;
-    }
-
-    public synchronized boolean enrollLecture(String lectureNum, User user) {
-        logger.log("\"" + user.id + "\" enroll " + lectureNum, Logger.INFO);
-        return addLectureTo(user.enrolledLectures, lectureNum);
     }
 
     public synchronized boolean selectLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" select " + lectureNum, Logger.INFO);
-        return addLectureTo(user.selectedLectures, lectureNum);
+        Lecture lecture = lectures.get(lectureNum);
+        if (user.selectedLectures.has(lecture))
+            return false;
+
+        user.selectedLectures.push(lecture);
+        save();
+        return true;
     }
 
     public synchronized boolean cancelLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" cancel " + lectureNum, Logger.INFO);
-        return removeLectureFrom(user.enrolledLectures, lectureNum);
+        Lecture lecture = lectures.get(lectureNum);
+        if (!user.enrolledLectures.has(lecture))
+            return false;
+
+        lecture.enrolled -= 1;
+        user.enrolledLectures.remove(lecture);
+        save();
+        return true;
     }
 
     public synchronized boolean unselectLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" unselect " + lectureNum, Logger.INFO);
-        return removeLectureFrom(user.selectedLectures, lectureNum);
+        Lecture lecture = lectures.get(lectureNum);
+        if (!user.selectedLectures.has(lecture))
+            return false;
+
+        user.selectedLectures.remove(lecture);
+        save();
+        return true;
     }
 
     public synchronized void save() {
-        logger.log("Saving lectures", Logger.DEBUG);
+        logger.log("Saving lectures to \"" + lectureDataPath + "\"", Logger.DEBUG);
         try (FileOutputStream fos = new FileOutputStream(lectureDataPath)) {
             try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                 oos.writeObject(lectures);
             }
         } catch (IOException e) {
-            System.out.println("Failed to save Lectures");
+            logger.log(e.getMessage(), Logger.ERROR);
         }
     }
 }

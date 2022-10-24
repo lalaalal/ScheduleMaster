@@ -17,32 +17,36 @@ public class ClientHandler extends Communicator implements Runnable {
 
     private User user;
     private final Logger logger = Logger.getInstance();
-    private final String clientID;
 
-    public ClientHandler(int id, Socket client, LectureHandler lectureHandler, UserHandler userHandler) throws IOException {
+    public ClientHandler(Socket client, LectureHandler lectureHandler, UserHandler userHandler) throws IOException {
         super(client);
         this.lectureHandler = lectureHandler;
         this.userHandler = userHandler;
-        this.clientID = "Client-" + id;
     }
 
     @Override
     public void run() {
-        Status status = Status.SUCCEED;
-        while (status != Status.BYE) {
-            try {
+        try {
+            Status status = Status.SUCCEED;
+            while (status != Status.BYE) {
                 status = receiveAndSend();
-            } catch (IOException e) {
-                System.out.println("Something went wrong while handling client request");
             }
+        } catch (IOException e) {
+            logger.log(e.getMessage(), Logger.ERROR);
         }
-        logger.log("Bye bye", Logger.INFO, clientID);
+        if (user != null) {
+            userHandler.logout(user);
+            logger.log("Logout", Logger.INFO);
+        }
+
+        logger.log("Bye bye", Logger.INFO);
+        logger.log("", Logger.INFO);
     }
 
     @Override
     protected Response createResponse(Request request) {
-        logger.log("Request.command : " + request.command(), Logger.DEBUG, clientID);
-        logger.log("Request.data : " + request.data(), Logger.VERBOSE, clientID);
+        logger.log("Request.command : " + request.command(), Logger.DEBUG);
+        logger.log("Request.data : " + request.getDataType(), Logger.VERBOSE);
         return factory.createResponse(request);
     }
 
@@ -63,8 +67,9 @@ public class ClientHandler extends Communicator implements Runnable {
                 default -> commandNotFoundResponse();
             };
 
-            logger.log("Response.status : " + response.status(), Logger.DEBUG, clientID);
-            logger.log("Response.data : "  + response.data(), Logger.VERBOSE, clientID);
+            logger.log("Response.status : " + response.status(), Logger.DEBUG);
+            logger.log("Response.data : "  + response.getDataType(), Logger.VERBOSE);
+            logger.log("", Logger.DEBUG);
             return response;
         }
 
@@ -76,17 +81,23 @@ public class ClientHandler extends Communicator implements Runnable {
 
             if (userHandler.verifyUser(id, hashedPassword)) {
                 user = userHandler.getUser(id);
-                logger.log("\"" + id + "\" login succeed", Logger.INFO, clientID);
+                if (!userHandler.login(user)) {
+                    logger.log("\"" + id + "\" already has login session", Logger.INFO);
+                    user = null;
+                    return new Response(Status.FAILED, "Already login sessions");
+                }
+
+                logger.log("\"" + id + "\" login succeed", Logger.INFO);
                 return new Response(Status.SUCCEED, "Succeed");
             }
-            logger.log("\"" + id + "\" login failed", Logger.INFO, clientID);
+            logger.log("\"" + id + "\" login failed", Logger.INFO);
             if (userHandler.hasId(id))
                 return new Response(Status.FAILED, "Wrong Password");
 
             return new Response(Status.FAILED, "ID not found");
         }
 
-        public synchronized Response signupResponse(Request request) {
+        public Response signupResponse(Request request) {
             if (!(request.data() instanceof String[] userInfo))
                 return new Response(Status.FAILED, "Wrong Request");
 
@@ -94,12 +105,12 @@ public class ClientHandler extends Communicator implements Runnable {
             String hashedPassword = userInfo[1];
 
             if (userHandler.hasId(id)) {
-                logger.log("\"" + id + "\" signup failed", Logger.INFO, clientID);
+                logger.log("\"" + id + "\" signup failed", Logger.INFO);
                 return new Response(Status.FAILED, "Id exists");
             }
 
             userHandler.addUser(id, hashedPassword);
-            logger.log("\"" + id + "\" signup succeed", Logger.INFO, clientID);
+            logger.log("\"" + id + "\" signup succeed", Logger.INFO);
             return new Response(Status.SUCCEED, "Succeed");
         }
 
@@ -113,7 +124,10 @@ public class ClientHandler extends Communicator implements Runnable {
             return new Response(Status.SUCCEED, lectureHandler.getLectures());
         }
 
-        public synchronized Response lectureCommandResponse(Request request) {
+        public Response lectureCommandResponse(Request request) {
+            if (user == null)
+                return new Response(Status.FAILED, "Please login first");
+
             if (!(request.data() instanceof Lecture lecture))
                 return new Response(Status.FAILED, "Wrong Request");
             if (!lectureHandler.doLectureCommand(request.command(), lecture.lectureNum, user))
@@ -125,10 +139,13 @@ public class ClientHandler extends Communicator implements Runnable {
 
         @SuppressWarnings("unchecked")
         public synchronized Response setPrioritiesResponse(Request request) {
+            if (user == null)
+                return new Response(Status.FAILED, "Please login first");
+
             if (!(request.data() instanceof Hash<?, ?> priorities))
                 return new Response(Status.FAILED, "Wrong Request");
 
-            logger.log("Update \"" + user.id + "\"'s priorities", Logger.DEBUG, clientID);
+            logger.log("Update \"" + user.id + "\"'s priorities", Logger.DEBUG);
             user.priorities = (Hash<Lecture, Integer>) priorities;
             userHandler.save();
 
@@ -136,10 +153,13 @@ public class ClientHandler extends Communicator implements Runnable {
         }
 
         public synchronized Response setUnwantedTimeResponse(Request request) {
+            if (user == null)
+                return new Response(Status.FAILED, "Please login first");
+
             if (!(request.data() instanceof LectureTime unwantedTime))
                 return new Response(Status.FAILED, "Wrong Request");
 
-            logger.log("Update \"" + user.id + "\"'s unwanted time", Logger.DEBUG, clientID);
+            logger.log("Update \"" + user.id + "\"'s unwanted time", Logger.DEBUG);
             user.unwantedTime = unwantedTime;
             userHandler.save();
 

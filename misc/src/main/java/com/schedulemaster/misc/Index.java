@@ -29,4 +29,24 @@ public class Index<Attribute, Tuple> {
 
         tuples.push(tuple);
     }
+
+    public void changeTable(LinkedList<Tuple> table) {
+        clear();
+        for (Tuple tuple : table) {
+            add(tuple);
+        }
+    }
+
+    public void remove(Tuple tuple) {
+        Attribute attributeValue = selector.getAttribute(tuple);
+        LinkedList<Tuple> tuples = index.get(attributeValue);
+        if (tuples == null)
+            return;
+
+        tuples.remove(tuple);
+    }
+
+    public void clear() {
+        index.clear();
+    }
 }

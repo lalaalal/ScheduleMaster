@@ -151,6 +151,15 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         length -= 1;
     }
 
+    public void clear() {
+        for (K key : keys) {
+            int index = getIndex(key);
+            elements[index] = null;
+        }
+        keys.clear();
+        length = 0;
+    }
+
     public int getLength() {
         return length;
     }
