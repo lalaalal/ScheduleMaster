@@ -104,6 +104,9 @@ public class ClientHandler extends Communicator implements Runnable {
             String id = userInfo[0];
             String hashedPassword = userInfo[1];
 
+            if (id.length() == 0)
+                return new Response(Status.FAILED, "Id should be filled");
+
             if (userHandler.hasId(id)) {
                 logger.log("\"" + id + "\" signup failed", Logger.INFO);
                 return new Response(Status.FAILED, "Id exists");

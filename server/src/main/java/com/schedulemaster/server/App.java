@@ -15,12 +15,14 @@ public class App implements AutoCloseable {
     private final UserHandler userHandler;
     private FileOutputStream logFileOutputStream = null;
 
-    Logger logger = Logger.getInstance();
+    private Logger logger = Logger.getInstance();
+    private Thread serverThread;
 
     public static void main(String[] args) {
         try (App app = new App(args)) {
             app.startServer();
-        } catch (IOException e) {
+            app.getServerThread().join();
+        } catch (IOException | InterruptedException e) {
             System.out.println(e.getMessage());
         }
 
@@ -51,7 +53,7 @@ public class App implements AutoCloseable {
     public void startServer() {
         try (Server server = new Server(lectureHandler, userHandler);
              Scanner scanner = new Scanner(System.in)) {
-            Thread serverThread = new Thread(server);
+            serverThread = new Thread(server);
             serverThread.setName("Server");
             serverThread.start();
 
@@ -65,6 +67,11 @@ public class App implements AutoCloseable {
             logger.log(e.getMessage(), Logger.ERROR);
         }
     }
+
+    public Thread getServerThread() {
+        return serverThread;
+    }
+
 
     private void handleCommand(String command, Scanner scanner) {
         switch (command) {
