@@ -13,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
@@ -58,6 +60,13 @@ public class MainFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 disconnectServer();
                 showLoginForm();
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                disconnectServer();
             }
         });
     }
