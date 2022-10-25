@@ -24,8 +24,12 @@ public class LoginFrom {
     private JLabel idLabel;
     private JLabel pwLabel;
     private JButton loginButton;
+    private JLabel signupLabel;
 
-    private MainFrame mainFrame;
+    private final MainFrame mainFrame;
+
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("string");
+
 
     public JPanel getPanel() {
         return panel;
@@ -35,6 +39,7 @@ public class LoginFrom {
         this.mainFrame = mainFrame;
         idField.setBorder(BorderFactory.createCompoundBorder(idField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         passwordField.setBorder(BorderFactory.createCompoundBorder(passwordField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        signupLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
         loginButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -42,9 +47,17 @@ public class LoginFrom {
                 login();
             }
         });
+        signupLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mainFrame.connectServer();
+                signup();
+            }
+        });
     }
 
     public void login() {
+
         try {
             UserController userController = mainFrame.getUserController();
             String id = idField.getText();
@@ -52,11 +65,29 @@ public class LoginFrom {
             LoginStatus status = userController.login(id, pw);
             if (status.status()) {
                 mainFrame.login();
+                mainFrame.setUserID(id);
             } else {
-                JOptionPane.showMessageDialog(mainFrame, status.msg(), "Error", JOptionPane.ERROR_MESSAGE);
+                String title = resourceBundle.getString("info");
+                JOptionPane.showMessageDialog(mainFrame, status.msg(), title, JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            String title = resourceBundle.getString("error");
+            JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void signup() {
+
+        try {
+            UserController userController = mainFrame.getUserController();
+            String id = idField.getText();
+            String pw = new String(passwordField.getPassword());
+            LoginStatus status = userController.signup(id, pw);
+            String title = resourceBundle.getString("info");
+            JOptionPane.showMessageDialog(mainFrame, status.msg(), title, JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            String title = resourceBundle.getString("error");
+            JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
         }
     }
 

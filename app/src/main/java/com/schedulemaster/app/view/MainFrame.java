@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
-    private LoginFrom loginFrom = new LoginFrom(this);
+    private final LoginFrom loginFrom = new LoginFrom(this);
     private JPanel mainPanel;
     private JPanel titleBar;
     private JPanel content;
@@ -50,6 +50,7 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
 
         titleBar.setBorder(new EmptyBorder(20, 20, 20, 20));
+        logoutLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
 
         setVisible(true);
         logoutLabel.addMouseListener(new MouseAdapter() {
@@ -81,17 +82,20 @@ public class MainFrame extends JFrame {
             }
         } catch (IOException e) {
             String msg = resourceBundle.getString("disconnection_fail");
-            JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+            String title = resourceBundle.getString("error");
+            JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public void login() {
         super.setContentPane(mainPanel);
+        revalidate();
         repaint();
     }
 
     private void showLoginForm() {
         super.setContentPane(loginFrom.getPanel());
+        revalidate();
         repaint();
     }
 
