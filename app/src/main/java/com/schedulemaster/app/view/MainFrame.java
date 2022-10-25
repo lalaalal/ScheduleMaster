@@ -11,16 +11,19 @@ import com.schedulemaster.app.controller.UserController;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
-    private JPanel contentPane;
+    private JPanel mainPanel;
     private JPanel titleBar;
     private JPanel content;
     private JLabel titleLabel;
     private JLabel userIDLabel;
+    private JLabel logoutLabel;
 
     private Client client;
     private LectureController lectureController;
@@ -32,6 +35,7 @@ public class MainFrame extends JFrame {
 
     @Override
     public void setContentPane(Container contentPane) {
+        content.removeAll();
         content.add(contentPane);
         repaint();
     }
@@ -42,11 +46,16 @@ public class MainFrame extends JFrame {
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        super.setContentPane(contentPane);
 
         titleBar.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         setVisible(true);
+        logoutLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                disconnectServer();
+            }
+        });
     }
 
     public void connectServer() {
@@ -63,7 +72,10 @@ public class MainFrame extends JFrame {
 
     public void disconnectServer() {
         try {
-            client.close();
+            if (client != null) {
+                client.close();
+                client = null;
+            }
         } catch (IOException e) {
             String msg = resourceBundle.getString("disconnection_fail");
             JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
@@ -101,26 +113,32 @@ public class MainFrame extends JFrame {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        contentPane = new JPanel();
-        contentPane.setLayout(new BorderLayout(0, 0));
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(0, 0));
         titleBar = new JPanel();
-        titleBar.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        titleBar.setLayout(new GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), -1, -1));
         titleBar.setBackground(new Color(-13156691));
         titleBar.setForeground(new Color(-13156691));
-        contentPane.add(titleBar, BorderLayout.NORTH);
+        mainPanel.add(titleBar, BorderLayout.NORTH);
         titleLabel = new JLabel();
         titleLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(titleLabel, this.$$$getMessageFromBundle$$$("string", "title"));
         titleBar.add(titleLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        titleBar.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         userIDLabel = new JLabel();
         userIDLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(userIDLabel, this.$$$getMessageFromBundle$$$("string", "default_id"));
         titleBar.add(userIDLabel, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        logoutLabel = new JLabel();
+        logoutLabel.setForeground(new Color(-1));
+        this.$$$loadLabelText$$$(logoutLabel, this.$$$getMessageFromBundle$$$("string", "logout"));
+        titleBar.add(logoutLabel, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        titleBar.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        titleBar.add(spacer2, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(15, -1), null, null, 0, false));
         content = new JPanel();
         content.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        contentPane.add(content, BorderLayout.CENTER);
+        mainPanel.add(content, BorderLayout.CENTER);
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;
@@ -171,7 +189,7 @@ public class MainFrame extends JFrame {
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
-        return contentPane;
+        return mainPanel;
     }
 
 }
