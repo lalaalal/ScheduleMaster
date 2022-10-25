@@ -43,15 +43,15 @@ public class LoginFrom {
         loginButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                mainFrame.connectServer();
-                login();
+                if (mainFrame.connectServer())
+                    login();
             }
         });
         signupLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                mainFrame.connectServer();
-                signup();
+                if (mainFrame.connectServer())
+                    signup();
             }
         });
     }

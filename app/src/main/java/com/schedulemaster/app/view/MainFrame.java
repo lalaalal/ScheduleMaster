@@ -71,17 +71,19 @@ public class MainFrame extends JFrame {
         });
     }
 
-    public void connectServer() {
+    public boolean connectServer() {
         if (client != null)
-            return;
+            return true;
         try {
             client = new Client();
             lectureController = new LectureController(client);
             userController = new UserController(client);
             magicController = new MagicController(userController, lectureController.getLectureBook());
+            return true;
         } catch (IOException e) {
             String msg = resourceBundle.getString("connection_fail");
             JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
     }
 
