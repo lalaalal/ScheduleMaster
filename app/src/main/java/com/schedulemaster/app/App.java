@@ -1,5 +1,6 @@
 package com.schedulemaster.app;
 
+import com.schedulemaster.app.view.MainFrame;
 import mdlaf.MaterialLookAndFeel;
 
 import javax.swing.*;
@@ -25,6 +26,5 @@ public class App {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-
     }
 }
