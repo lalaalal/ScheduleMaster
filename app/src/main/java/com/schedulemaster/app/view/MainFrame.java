@@ -57,11 +57,14 @@ public class MainFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 disconnectServer();
+                showLoginForm();
             }
         });
     }
 
     public void connectServer() {
+        if (client != null)
+            return;
         try {
             client = new Client();
             lectureController = new LectureController(client);
@@ -73,12 +76,11 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public void disconnectServer() {
+    private void disconnectServer() {
         try {
             if (client != null) {
                 client.close();
                 client = null;
-                showLoginForm();
             }
         } catch (IOException e) {
             String msg = resourceBundle.getString("disconnection_fail");
