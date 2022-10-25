@@ -46,7 +46,7 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         super("Main");
 
-        setSize(700, 500);
+        setSize(1400, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         super.setContentPane(loginFrom.getPanel());
         setLocationRelativeTo(null);

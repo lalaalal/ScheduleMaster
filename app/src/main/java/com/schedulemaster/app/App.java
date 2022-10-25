@@ -6,6 +6,7 @@ import mdlaf.MaterialLookAndFeel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Enumeration;
+import java.util.Locale;
 
 public class App {
     public static void setUIFont(javax.swing.plaf.FontUIResource f) {
@@ -20,6 +21,7 @@ public class App {
 
     public static void main(String[] args) {
         try {
+            Locale.setDefault(Locale.KOREAN);
             UIManager.setLookAndFeel(new MaterialLookAndFeel());
             setUIFont (new javax.swing.plaf.FontUIResource("Sans", Font.PLAIN,12));
             MainFrame frame = new MainFrame();
