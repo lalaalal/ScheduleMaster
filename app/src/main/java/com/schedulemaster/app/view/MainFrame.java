@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
     private final LoginFrom loginFrom = new LoginFrom(this);
+    private final HomeForm homeForm = new HomeForm(this);
     private JPanel mainPanel;
     private JPanel titleBar;
     private JPanel content;
@@ -33,13 +34,12 @@ public class MainFrame extends JFrame {
     private UserController userController;
     private MagicController magicController;
 
-    private static final String RESOURCE_BUNDLE_NAME = "string";
-    private final ResourceBundle resourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME);
+    public static final String RESOURCE_BUNDLE_NAME = "string";
 
     @Override
     public void setContentPane(Container contentPane) {
         content.removeAll();
-        content.add(contentPane);
+        content.add(contentPane, BorderLayout.CENTER);
         repaint();
     }
 
@@ -81,8 +81,9 @@ public class MainFrame extends JFrame {
             magicController = new MagicController(userController, lectureController.getLectureBook());
             return true;
         } catch (IOException e) {
-            String msg = resourceBundle.getString("connection_fail");
-            JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+            String msg = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("connection_fail");
+            String title = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("error");
+            JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
@@ -94,14 +95,15 @@ public class MainFrame extends JFrame {
                 client = null;
             }
         } catch (IOException e) {
-            String msg = resourceBundle.getString("disconnection_fail");
-            String title = resourceBundle.getString("error");
+            String msg = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("disconnection_fail");
+            String title = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public void login() {
         super.setContentPane(mainPanel);
+        setContentPane(homeForm.getPanel());
         revalidate();
         repaint();
     }
@@ -167,7 +169,7 @@ public class MainFrame extends JFrame {
         final Spacer spacer2 = new Spacer();
         titleBar.add(spacer2, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(15, -1), null, null, 0, false));
         content = new JPanel();
-        content.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        content.setLayout(new BorderLayout(0, 0));
         mainPanel.add(content, BorderLayout.CENTER);
     }
 
