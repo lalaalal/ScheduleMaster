@@ -43,6 +43,8 @@ public abstract class Communicator implements AutoCloseable {
             byte[] receivedBytes = new byte[10240];
 
             nRead = inputStream.read(receivedBytes, 0, receivedBytes.length);
+            if (nRead == -1)
+                return receivedBytes;
             buffer.write(receivedBytes, 0, nRead);
             while (inputStream.available() > 0) {
                 nRead = inputStream.read(receivedBytes, 0, receivedBytes.length);
