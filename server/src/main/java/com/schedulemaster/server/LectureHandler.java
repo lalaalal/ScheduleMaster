@@ -89,6 +89,13 @@ public class LectureHandler {
         if (user.enrolledLectures.has(lecture))
             return false;
 
+        for (Lecture enrolledLecture : user.enrolledLectures) {
+            if (enrolledLecture.time.conflictWith(lecture.time)) {
+                logger.log(enrolledLecture.lectureNum + " conflict with " + lecture.lectureNum, Logger.INFO);
+                return false;
+            }
+        }
+
         if (lecture.enrolled < lecture.max) {
             lecture.enrolled += 1;
             user.enrolledLectures.push(lecture);

@@ -5,6 +5,7 @@ import com.schedulemaster.app.LoginStatus;
 import com.schedulemaster.app.Subject;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
+import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.misc.Request;
 import com.schedulemaster.model.*;
 
@@ -24,6 +25,10 @@ public class UserController extends Subject {
             user = client.getUserData();
 
         return status;
+    }
+
+    public void logout() {
+        user = null;
     }
 
     public LoginStatus signup(String id, String pw) throws IOException {
@@ -62,12 +67,12 @@ public class UserController extends Subject {
         return result;
     }
 
-    public Lecture[] getEnrolledLectures() {
-        return user.enrolledLectures.toArray(new Lecture[0]);
+    public LinkedList<Lecture> getEnrolledLectures() {
+        return user.enrolledLectures;
     }
 
-    public Lecture[] getSelectedLectures() {
-        return user.selectedLectures.toArray(new Lecture[0]);
+    public LinkedList<Lecture> getSelectedLectures() {
+        return user.selectedLectures;
     }
 
     public boolean savePriorities(Hash<Lecture, Integer> priorities) throws IOException {
@@ -91,5 +96,10 @@ public class UserController extends Subject {
 
     public LectureTime getUnwantedTime() {
         return user.unwantedTime;
+    }
+
+    public void refresh() throws IOException {
+        if (user != null)
+            user = client.getUserData();
     }
 }

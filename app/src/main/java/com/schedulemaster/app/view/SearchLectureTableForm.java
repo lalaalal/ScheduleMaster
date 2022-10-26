@@ -10,11 +10,10 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 
 public class SearchLectureTableForm extends LectureTableForm {
-    private final MainFrame frame;
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("string");
 
     public SearchLectureTableForm(MainFrame frame) {
-        this.frame = frame;
+        super(frame);
     }
 
     @Override
@@ -37,7 +36,19 @@ public class SearchLectureTableForm extends LectureTableForm {
 
     @Override
     public JButton createButton2(Lecture lecture) {
-        return new JButton("담기");
+        JButton selectButton = new JButton("담기");
+        selectButton.addActionListener(event -> {
+            try {
+                UserController userController = frame.getUserController();
+                String message = "failed";
+                if (userController.selectLecture(lecture))
+                    message = "succeed";
+                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(message), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
+            } catch (IOException e) {
+                JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
+            }
+        });
+        return selectButton;
     }
 
     @Override
@@ -51,6 +62,5 @@ public class SearchLectureTableForm extends LectureTableForm {
         } catch (IOException e) {
             JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
         }
-
     }
 }

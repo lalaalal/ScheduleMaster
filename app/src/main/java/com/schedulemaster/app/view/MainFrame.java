@@ -94,6 +94,7 @@ public class MainFrame extends JFrame {
                 client.close();
                 client = null;
             }
+            userController.logout();
         } catch (IOException e) {
             String msg = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("disconnection_fail");
             String title = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("error");

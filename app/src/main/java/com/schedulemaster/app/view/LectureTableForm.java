@@ -9,46 +9,24 @@ import com.schedulemaster.model.LectureTime;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ResourceBundle;
 
 public abstract class LectureTableForm extends LectureView implements Observer {
-    private static class JButtonRenderer implements TableCellRenderer {
-        private final TableCellRenderer defaultRenderer;
-
-        public JButtonRenderer(TableCellRenderer renderer) {
-            defaultRenderer = renderer;
-        }
+    private static class JButtonRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (value instanceof Component)
                 return (Component) value;
-            return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     }
 
-    private static class WordWrapCellRenderer extends JTextArea implements TableCellRenderer {
-        public WordWrapCellRenderer() {
-            setLineWrap(true);
-            setWrapStyleWord(true);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setAlignmentX(CENTER_ALIGNMENT);
-            setText(value.toString());
-            setSize(table.getColumnModel().getColumn(column).getWidth(), getPreferredSize().height);
-            if (table.getRowHeight(row) != getPreferredSize().height) {
-                table.setRowHeight(row, getPreferredSize().height);
-            }
-            return this;
-        }
-    }
-
-    private class TableMouseAdapter extends  MouseAdapter {
+    private class TableMouseAdapter extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
             int column = lectureTable.getColumnModel().getColumnIndexAtX(e.getX()); // get the column of the button
             int row = e.getY() / lectureTable.getRowHeight(); //get the row of the button
@@ -69,6 +47,10 @@ public abstract class LectureTableForm extends LectureView implements Observer {
     private JTable lectureTable;
     private JPanel panel;
     private JScrollPane scrollPane;
+
+    protected final MainFrame frame;
+    protected final ResourceBundle resourceBundle = ResourceBundle.getBundle("string");
+
     private final DefaultTableModel tableModel = new DefaultTableModel(HEADER, 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -76,11 +58,15 @@ public abstract class LectureTableForm extends LectureView implements Observer {
         }
     };
 
-    public LectureTableForm() {
+    public LectureTableForm(MainFrame frame) {
         $$$setupUI$$$();
         lectureTable.getColumn("강의명").setMinWidth(200);
-        lectureTable.getColumn("강의시간").setMinWidth(200);
+        lectureTable.getColumn("강의시간").setMinWidth(175);
         lectureTable.addMouseListener(new TableMouseAdapter());
+        lectureTable.setRowHeight((int) (lectureTable.getRowHeight() * 1.2));
+        this.frame = frame;
+
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     }
 
     public JPanel getPanel() {
@@ -116,28 +102,26 @@ public abstract class LectureTableForm extends LectureView implements Observer {
     }
 
     public abstract JButton createButton1(Lecture lecture);
+
     public abstract JButton createButton2(Lecture lecture);
 
     private String lectureTime(LectureTime time) {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder("<html>");
         LinkedList<LectureTime.TimeSet> timeSets = time.getTimeSets();
         int i = 0;
         for (LectureTime.TimeSet timeSet : timeSets) {
             stringBuilder.append(timeSet.toString());
             if (i < timeSets.getLength() - 1)
-                stringBuilder.append(", ");
+                stringBuilder.append("<br>");
         }
         return stringBuilder.toString();
     }
 
     private void createUIComponents() {
         lectureTable = new JTable(tableModel);
-        lectureTable.setDefaultRenderer(String.class, new WordWrapCellRenderer());
-        TableCellRenderer tableCellRenderer = lectureTable.getDefaultRenderer(JButton.class);
-        JButtonRenderer buttonRenderer = new JButtonRenderer(tableCellRenderer);
+        JButtonRenderer buttonRenderer = new JButtonRenderer();
         lectureTable.getColumn("1").setCellRenderer(buttonRenderer);
         lectureTable.getColumn("2").setCellRenderer(buttonRenderer);
-
     }
 
     /**
@@ -154,7 +138,7 @@ public abstract class LectureTableForm extends LectureView implements Observer {
         scrollPane = new JScrollPane();
         scrollPane.setEnabled(true);
         panel.add(scrollPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         lectureTable.setEnabled(true);
         scrollPane.setViewportView(lectureTable);
     }
@@ -165,5 +149,4 @@ public abstract class LectureTableForm extends LectureView implements Observer {
     public JComponent $$$getRootComponent$$$() {
         return panel;
     }
-
 }

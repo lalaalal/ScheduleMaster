@@ -15,7 +15,9 @@
         <properties>
           <enabled value="true"/>
         </properties>
-        <border type="empty"/>
+        <border type="empty">
+          <size top="15" left="15" bottom="15" right="15"/>
+        </border>
         <children>
           <component id="734f2" class="javax.swing.JTable" binding="lectureTable" custom-create="true">
             <constraints/>

@@ -13,13 +13,16 @@ public class HomeForm {
     private final MainFrame frame;
     private JPanel panel;
     private JPanel timeTablePanel;
-    private JPanel lectureTablePanel;
-    private final LectureTableForm lectureTableForm;
+    private JPanel searchTablePanel;
+    private JPanel selectedTablePanel;
+    private final LectureTableForm searchLectureTableForm;
+    private final LectureTableForm selectedLectureTableForm;
     private final TimeTableForm timeTableForm = new TimeTableForm();
 
     public HomeForm(MainFrame frame) {
         this.frame = frame;
-        lectureTableForm = new SearchLectureTableForm(frame);
+        searchLectureTableForm = new SearchLectureTableForm(frame);
+        selectedLectureTableForm = new SelectedLectureTableForm(frame);
 
         $$$setupUI$$$();
     }
@@ -27,11 +30,16 @@ public class HomeForm {
     public void load() {
         LectureController lectureController = frame.getLectureController();
         LectureBook lectureBook = lectureController.getLectureBook();
-        lectureTableForm.setLectures(lectureBook.getLectures());
-        lectureTableForm.updateView();
+        searchLectureTableForm.setLectures(lectureBook.getLectures());
+        searchLectureTableForm.updateView();
 
         UserController userController = frame.getUserController();
-        userController.addObserver(lectureTableForm);
+        userController.addObserver(searchLectureTableForm);
+
+        selectedLectureTableForm.setLectures(userController.getSelectedLectures());
+        selectedLectureTableForm.updateView();
+
+        userController.addObserver(selectedLectureTableForm);
     }
 
     public JPanel getPanel() {
@@ -49,8 +57,12 @@ public class HomeForm {
         createUIComponents();
         panel = new JPanel();
         panel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel.add(lectureTablePanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel.add(timeTablePanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel1.add(searchTablePanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel1.add(selectedTablePanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
     }
 
     /**
@@ -62,6 +74,7 @@ public class HomeForm {
 
     private void createUIComponents() {
         timeTablePanel = timeTableForm.getPanel();
-        lectureTablePanel = lectureTableForm.getPanel();
+        searchTablePanel = searchLectureTableForm.getPanel();
+        selectedTablePanel = selectedLectureTableForm.getPanel();
     }
 }
