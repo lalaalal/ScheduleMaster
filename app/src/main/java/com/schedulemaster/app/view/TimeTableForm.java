@@ -44,7 +44,8 @@ public class TimeTableForm extends LectureView implements Observer {
 
     private static final LectureTime.Time[] CLASS_TIME = new LectureTime.Time[RAW_DATA.length];
 
-    private static final Color[] COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.LIGHT_GRAY};
+    private static final Color[] COLORS = {Color.decode("#FF8787"), Color.decode("#F8C4B4"), Color.decode("#E5EBB2"), Color.decode("#BCE29E"), Color.decode("#B8E8FC"), Color.decode("#B1AFFF"), Color.decode("#C8FFD4")};
+    private final Hash<Lecture, Integer> lectureColor = new Hash<>();
 
     static {
         for (int time = FIRST_CLASS_HOUR, index = 0; time < LAST_CLASS_HOUR; time++, index++) {
@@ -64,7 +65,13 @@ public class TimeTableForm extends LectureView implements Observer {
         colors.clear();
         int colorIndex = 0;
         for (Lecture lecture : lectures) {
-            setClassTimes(lecture.getTime(), colorIndex);
+            int color = colorIndex;
+            if (lectureColor.hasKey(lecture))
+                color = lectureColor.get(lecture);
+            setClassTimes(lecture.getTime(), color);
+
+            if (!lectureColor.hasKey(lecture))
+                lectureColor.put(lecture, color);
             colorIndex += 1;
         }
         panel.revalidate();
