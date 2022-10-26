@@ -17,7 +17,6 @@ public abstract class LectureView {
 
     public void addLecture(Lecture lecture) {
         lectures.push(lecture);
-        updateView();
     }
 
     public void setLectures(LinkedList<Lecture> lectures) {

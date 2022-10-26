@@ -61,13 +61,10 @@ public class TimeTableForm extends LectureView {
     }
 
     @Override
-    public void setLectures(LinkedList<Lecture> lectures) {
-        super.setLectures(lectures);
-        lectureColors.clear();
-    }
-
-    @Override
     public void updateView() {
+        if (lectures.getLength() < 1)
+            lectureColors.clear();
+
         colors.clear();
         lectureNames.clear();
         int colorIndex = 0;

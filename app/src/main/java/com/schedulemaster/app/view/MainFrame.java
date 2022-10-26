@@ -90,6 +90,7 @@ public class MainFrame extends JFrame {
             userController = new UserController(client);
             magicController = new MagicController(userController, lectureController.getLectureBook());
             lectureController.addObserver(lectureBookObserver);
+            userController.addObserver(lectureBookObserver);
             userController.addObserver(selectedLectureObserver);
             userController.addObserver(enrolledLectureObserver);
             return true;

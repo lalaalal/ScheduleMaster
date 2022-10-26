@@ -16,7 +16,6 @@ public class LectureBookObserver extends LectureObserver {
         LectureBook lectureBook = lectureController.getLectureBook();
         for (LectureView lectureView : lectureViews) {
             lectureView.setLectures(lectureBook.getLectures());
-            lectureView.updateView();
         }
     }
 }

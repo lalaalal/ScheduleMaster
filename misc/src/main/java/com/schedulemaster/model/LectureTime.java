@@ -56,7 +56,7 @@ public class LectureTime implements Serializable {
         public boolean conflictWith(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
                     && ((start.isAfter(timeSet.start) && start.isBefore(timeSet.end))
-                    || (end.isBefore(timeSet.start) && end.isBefore(timeSet.end)));
+                    || (end.isAfter(timeSet.start) && end.isBefore(timeSet.end)));
         }
 
         public boolean include(TimeSet timeSet) {

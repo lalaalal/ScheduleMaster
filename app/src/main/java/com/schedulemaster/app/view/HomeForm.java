@@ -31,18 +31,16 @@ public class HomeForm {
         LectureController lectureController = frame.getLectureController();
         LectureBook lectureBook = lectureController.getLectureBook();
         searchLectureTableForm.setLectures(lectureBook.getLectures());
-        searchLectureTableForm.updateView();
 
         UserController userController = frame.getUserController();
 
         selectedLectureTableForm.setLectures(userController.getSelectedLectures());
-        selectedLectureTableForm.updateView();
 
         timeTableForm.setLectures(userController.getSelectedLectures());
-        timeTableForm.updateView();
 
         frame.addSelectedLectureView(selectedLectureTableForm);
         frame.addSelectedLectureView(timeTableForm);
+        frame.addBookLectureView(searchLectureTableForm);
     }
 
     public JPanel getPanel() {

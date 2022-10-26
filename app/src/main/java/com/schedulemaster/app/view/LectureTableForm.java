@@ -110,6 +110,7 @@ public abstract class LectureTableForm extends LectureView {
                 String message = "failed";
                 if (userAction.action(userController, lecture))
                     message = "succeed";
+                frame.getLectureController().refresh();
                 JOptionPane.showConfirmDialog(frame, resourceBundle.getString(message), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
             } catch (IOException e) {
                 JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
