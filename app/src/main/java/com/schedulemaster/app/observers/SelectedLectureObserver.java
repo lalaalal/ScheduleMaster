@@ -18,7 +18,6 @@ public class SelectedLectureObserver extends LectureObserver {
         LinkedList<Lecture> selectedLectures = userController.getSelectedLectures();
         for (LectureView lectureView : lectureViews) {
             lectureView.setLectures(selectedLectures);
-            lectureView.updateView();
         }
     }
 }

@@ -20,6 +20,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
@@ -56,6 +57,9 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         super.setContentPane(loginFrom.getPanel());
         setLocationRelativeTo(null);
+        URL url = getClass().getResource("/img/mju_main.png");
+
+        setIconImage(new ImageIcon(url, "dd").getImage());
 
         titleBar.setBorder(new EmptyBorder(20, 20, 20, 20));
         logoutLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
@@ -86,6 +90,7 @@ public class MainFrame extends JFrame {
             userController = new UserController(client);
             magicController = new MagicController(userController, lectureController.getLectureBook());
             lectureController.addObserver(lectureBookObserver);
+            userController.addObserver(lectureBookObserver);
             userController.addObserver(selectedLectureObserver);
             userController.addObserver(enrolledLectureObserver);
             return true;
@@ -103,11 +108,13 @@ public class MainFrame extends JFrame {
                 client.close();
                 client = null;
             }
-            userController.logout();
+            if (userController != null)
+                userController.logout();
         } catch (IOException e) {
             String msg = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("disconnection_fail");
             String title = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
+            client = null;
         }
     }
 

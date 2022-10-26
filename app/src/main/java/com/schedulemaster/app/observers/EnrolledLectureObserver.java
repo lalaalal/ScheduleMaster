@@ -18,7 +18,6 @@ public class EnrolledLectureObserver extends LectureObserver {
         LinkedList<Lecture> enrolledLectures = userController.getEnrolledLectures();
         for (LectureView lectureView : lectureViews) {
             lectureView.setLectures(enrolledLectures);
-            lectureView.updateView();
         }
     }
 }
