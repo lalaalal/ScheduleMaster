@@ -63,6 +63,9 @@ public abstract class LectureTableForm extends LectureView {
         $$$setupUI$$$();
         lectureTable.getColumn("강의명").setMinWidth(200);
         lectureTable.getColumn("강의시간").setMinWidth(175);
+        lectureTable.getColumn("강의번호").setMinWidth(50);
+        lectureTable.getColumn("-").setMinWidth(50);
+        lectureTable.getColumn("--").setMinWidth(50);
         lectureTable.addMouseListener(new TableMouseAdapter());
         lectureTable.setRowHeight((int) (lectureTable.getRowHeight() * 1.2));
         this.frame = frame;
