@@ -55,7 +55,7 @@ public class LoginFrom {
 
         KeyAdapter keyAdapter = new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyTyped(KeyEvent e) {
                 if (e.getKeyChar() == KeyEvent.VK_ENTER && mainFrame.connectServer()) {
                     login();
                 }

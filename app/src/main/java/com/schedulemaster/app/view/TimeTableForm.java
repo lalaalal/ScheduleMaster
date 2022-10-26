@@ -2,7 +2,6 @@ package com.schedulemaster.app.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.schedulemaster.app.observers.Observer;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -12,7 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-public class TimeTableForm extends LectureView implements Observer {
+public class TimeTableForm extends LectureView {
 
     private record Position(int row, int column) {
     }
@@ -122,11 +121,6 @@ public class TimeTableForm extends LectureView implements Observer {
 
     public JPanel getPanel() {
         return panel;
-    }
-
-    @Override
-    public void update() {
-
     }
 
     private void createUIComponents() {

@@ -39,7 +39,7 @@ public class HomeForm {
         selectedLectureTableForm.updateView();
 
         timeTableForm.setLectures(userController.getSelectedLectures());
-        timeTableForm.update();
+        timeTableForm.updateView();
 
         frame.addSelectedLectureView(selectedLectureTableForm);
         frame.addSelectedLectureView(timeTableForm);
