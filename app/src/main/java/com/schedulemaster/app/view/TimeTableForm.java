@@ -43,7 +43,7 @@ public class TimeTableForm extends LectureView {
 
     private static final LectureTime.Time[] CLASS_TIME = new LectureTime.Time[RAW_DATA.length + 1];
 
-    private static final Color[] COLORS = {Color.decode("#FF8787"), Color.decode("#F8C4B4"), Color.decode("#E5EBB2"), Color.decode("#BCE29E"), Color.decode("#B8E8FC"), Color.decode("#B1AFFF"), Color.decode("#C8FFD4")};
+    private static final Color[] COLORS = { Color.decode("#FF8787"), Color.decode("#F8C4B4"), Color.decode("#E5EBB2"), Color.decode("#BCE29E"), Color.decode("#B8E8FC"), Color.decode("#B1AFFF"), Color.decode("#C8FFD4"), Color.decode("#DFD3C3"), Color.decode("#F8EDE3"), Color.decode("#AEBDCA") };
     private final Hash<Lecture, Integer> lectureColors = new Hash<>();
     private final Hash<Position, String> lectureNames = new Hash<>();
 

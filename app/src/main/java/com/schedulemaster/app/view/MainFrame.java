@@ -20,7 +20,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
@@ -53,13 +52,10 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         super("Main");
 
-        setSize(1400, 700);
+        setSize(1400, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         super.setContentPane(loginFrom.getPanel());
         setLocationRelativeTo(null);
-        URL url = getClass().getResource("/img/mju_main.png");
-
-        setIconImage(new ImageIcon(url, "dd").getImage());
 
         titleBar.setBorder(new EmptyBorder(20, 20, 20, 20));
         logoutLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
