@@ -92,10 +92,7 @@ public class TimeTableForm extends LectureView {
             int[] rows = calcClassTimes(timeSet);
             if (rows.length > 0) {
                 Position firstPosition = new Position(rows[0], timeSet.dayOfWeek() + 1);
-                if (lectureNames.hasKey(firstPosition))
-                    lectureNames.set(firstPosition, lecture.name);
-                else
-                    lectureNames.put(firstPosition, lecture.name);
+                lectureNames.set(firstPosition, "<html><center>" + lecture.name);
             }
 
             for (int row : rows) {
@@ -141,19 +138,25 @@ public class TimeTableForm extends LectureView {
         timeTable = new JTable(RAW_DATA, HEADER);
         timeTable.getTableHeader().setReorderingAllowed(false);
         timeTable.setEnabled(false);
+        timeTable.setRowHeight((int) (timeTable.getRowHeight() * 1.3));
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JComponent component = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                component.setBorder(BorderFactory.createMatteBorder(1, 1, 0, 0, Color.LIGHT_GRAY));
+                component.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.LIGHT_GRAY));
+                if (column == 0)
+                    return component;
+
                 Position position = new Position(row, column);
+                Position nextPosition = new Position(row + 1, column);
                 Color color = colors.get(position);
                 String name = lectureNames.get(position);
+
+                Color nextColor = colors.get(nextPosition);
+                if (nextColor != null && nextColor.equals(color))
+                    component.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.LIGHT_GRAY));
                 setText(name);
-                if (color != null)
-                    component.setBackground(color);
-                else
-                    component.setBackground(Color.getColor("383E49"));
+                component.setBackground(color);
                 return component;
             }
         };
