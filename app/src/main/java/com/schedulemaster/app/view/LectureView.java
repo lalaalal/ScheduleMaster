@@ -20,7 +20,7 @@ public abstract class LectureView {
         updateView();
     }
 
-    public void setLectures(LectureGroup lectures) {
+    public void setLectures(LinkedList<Lecture> lectures) {
         this.lectures = lectures;
         updateView();
     }
