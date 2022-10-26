@@ -1,13 +1,14 @@
 package com.schedulemaster.app.controller;
 
 import com.schedulemaster.app.Client;
+import com.schedulemaster.app.Subject;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureBook;
 
 import java.io.IOException;
 
-public class LectureController {
+public class LectureController extends Subject {
     public enum AttributeName {
         Professor, Major, Name
     }
@@ -27,6 +28,7 @@ public class LectureController {
     public void refresh() throws IOException {
         LinkedList<Lecture> lectures = client.getLectures();
         lectureBook.setLectures(lectures);
+        notice();
     }
 
     public LinkedList<Lecture> findByAttributeName(AttributeName attributeName, String value) {

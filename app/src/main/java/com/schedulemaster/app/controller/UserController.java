@@ -37,7 +37,7 @@ public class UserController extends Subject {
 
     public boolean enrollLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.ENROLL, lecture);
-        notice();
+        refresh();
         if (result)
             user.enrollLecture(lecture);
         return result;
@@ -45,7 +45,7 @@ public class UserController extends Subject {
 
     public boolean cancelLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.CANCEL, lecture);
-        notice();
+        refresh();
         if (result)
             user.cancelLecture(lecture);
         return result;
@@ -53,7 +53,7 @@ public class UserController extends Subject {
 
     public boolean selectLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.SELECT, lecture);
-        notice();
+        refresh();
         if (result)
             user.selectLecture(lecture);
         return result;
@@ -61,7 +61,7 @@ public class UserController extends Subject {
 
     public boolean unselectLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.UNSELECT, lecture);
-        notice();
+        refresh();
         if (result)
             user.unselectLecture(lecture);
         return result;
@@ -101,5 +101,6 @@ public class UserController extends Subject {
     public void refresh() throws IOException {
         if (user != null)
             user = client.getUserData();
+        notice();
     }
 }

@@ -2,6 +2,7 @@ package com.schedulemaster.app.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.schedulemaster.app.observers.Observer;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -11,7 +12,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-public class TimeTableForm extends LectureView {
+public class TimeTableForm extends LectureView implements Observer {
+
     private record Position(int row, int column) {
     }
 
@@ -65,6 +67,8 @@ public class TimeTableForm extends LectureView {
             setClassTimes(lecture.getTime(), colorIndex);
             colorIndex += 1;
         }
+        panel.revalidate();
+        panel.repaint();
     }
 
     private void setClassTimes(LectureTime lectureTime, int colorIndex) {
@@ -74,7 +78,7 @@ public class TimeTableForm extends LectureView {
             int[] rows = calcClassTimes(timeSet);
             for (int row : rows) {
                 Position position = new Position(row, timeSet.dayOfWeek() + 1);
-                colors.put(position, COLORS[colorIndex % COLORS.length]);
+                colors.set(position, COLORS[colorIndex % COLORS.length]);
             }
 
         }
@@ -111,6 +115,11 @@ public class TimeTableForm extends LectureView {
 
     public JPanel getPanel() {
         return panel;
+    }
+
+    @Override
+    public void update() {
+
     }
 
     private void createUIComponents() {

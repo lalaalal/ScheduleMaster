@@ -1,5 +1,6 @@
 package com.schedulemaster.app;
 
+import com.schedulemaster.app.observers.Observer;
 import com.schedulemaster.misc.LinkedList;
 
 public class Subject {

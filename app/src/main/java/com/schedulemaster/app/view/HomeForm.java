@@ -34,12 +34,15 @@ public class HomeForm {
         searchLectureTableForm.updateView();
 
         UserController userController = frame.getUserController();
-        userController.addObserver(searchLectureTableForm);
 
         selectedLectureTableForm.setLectures(userController.getSelectedLectures());
         selectedLectureTableForm.updateView();
 
-        userController.addObserver(selectedLectureTableForm);
+        timeTableForm.setLectures(userController.getSelectedLectures());
+        timeTableForm.update();
+
+        frame.addSelectedLectureView(selectedLectureTableForm);
+        frame.addSelectedLectureView(timeTableForm);
     }
 
     public JPanel getPanel() {

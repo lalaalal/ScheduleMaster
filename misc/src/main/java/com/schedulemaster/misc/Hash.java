@@ -125,11 +125,15 @@ public class Hash<K, V> implements Iterable<V>, Serializable {
         @SuppressWarnings("unchecked")
         LinkedList<Bucket<K, V>> bucketList = (LinkedList<Bucket<K, V>>) elements[index];
 
-        if (bucketList == null)
-            throw new RuntimeException("No such key " + key);
+        if (bucketList == null) {
+            put(key, value);
+            return;
+        }
         for (Bucket<K, V> bucket : bucketList) {
-            if (bucket.key.equals(key))
+            if (bucket.key.equals(key)) {
                 bucket.value = value;
+                return;
+            }
         }
         throw new RuntimeException("No such key " + key);
     }

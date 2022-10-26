@@ -7,6 +7,9 @@ import com.schedulemaster.app.Client;
 import com.schedulemaster.app.controller.LectureController;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.observers.EnrolledLectureObserver;
+import com.schedulemaster.app.observers.LectureBookObserver;
+import com.schedulemaster.app.observers.SelectedLectureObserver;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -33,6 +36,9 @@ public class MainFrame extends JFrame {
     private LectureController lectureController;
     private UserController userController;
     private MagicController magicController;
+    private final EnrolledLectureObserver enrolledLectureObserver = new EnrolledLectureObserver(this);
+    private final SelectedLectureObserver selectedLectureObserver = new SelectedLectureObserver(this);
+    private final LectureBookObserver lectureBookObserver = new LectureBookObserver(this);
 
     public static final String RESOURCE_BUNDLE_NAME = "string";
 
@@ -79,6 +85,9 @@ public class MainFrame extends JFrame {
             lectureController = new LectureController(client);
             userController = new UserController(client);
             magicController = new MagicController(userController, lectureController.getLectureBook());
+            lectureController.addObserver(lectureBookObserver);
+            userController.addObserver(selectedLectureObserver);
+            userController.addObserver(enrolledLectureObserver);
             return true;
         } catch (IOException e) {
             String msg = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("connection_fail");
@@ -130,6 +139,18 @@ public class MainFrame extends JFrame {
 
     public MagicController getMagicController() {
         return magicController;
+    }
+
+    public void addEnrolledLectureView(LectureView lectureView) {
+        enrolledLectureObserver.addLectureView(lectureView);
+    }
+
+    public void addSelectedLectureView(LectureView lectureView) {
+        selectedLectureObserver.addLectureView(lectureView);
+    }
+
+    public void addBookLectureView(LectureView lectureView) {
+        lectureBookObserver.addLectureView(lectureView);
     }
 
     {

@@ -2,7 +2,6 @@ package com.schedulemaster.app.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.schedulemaster.app.Observer;
 import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -18,7 +17,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
-public abstract class LectureTableForm extends LectureView implements Observer {
+public abstract class LectureTableForm extends LectureView {
     private static class JButtonRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {

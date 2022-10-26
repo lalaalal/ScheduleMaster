@@ -4,7 +4,6 @@ import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.model.Lecture;
 
 import javax.swing.*;
-import java.io.IOException;
 
 public class SelectedLectureTableForm extends LectureTableForm {
 
@@ -20,17 +19,5 @@ public class SelectedLectureTableForm extends LectureTableForm {
     @Override
     public JButton createButton2(Lecture lecture) {
         return createButton(lecture, "빼기", UserController::unselectLecture);
-    }
-
-    @Override
-    public void update() {
-        try {
-            UserController userController = frame.getUserController();
-            userController.refresh();
-            setLectures(userController.getSelectedLectures());
-            updateView();
-        } catch (IOException e) {
-            JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
-        }
     }
 }
