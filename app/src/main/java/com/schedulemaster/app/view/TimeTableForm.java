@@ -141,8 +141,10 @@ public class TimeTableForm extends LectureView {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JComponent component = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 component.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.LIGHT_GRAY));
-                if (column == 0)
+                if (column == 0) {
+                    component.setBackground(null);
                     return component;
+                }
 
                 Position position = new Position(row, column);
                 Position nextPosition = new Position(row + 1, column);

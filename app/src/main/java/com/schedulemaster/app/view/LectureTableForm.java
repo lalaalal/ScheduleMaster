@@ -2,6 +2,7 @@ package com.schedulemaster.app.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -110,11 +111,10 @@ public abstract class LectureTableForm extends LectureView {
         enrollButton.addActionListener(event -> {
             try {
                 UserController userController = frame.getUserController();
-                String message = "failed";
-                if (userAction.action(userController, lecture))
-                    message = "succeed";
-                frame.getLectureController().refresh();
-                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(message), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
+                ResponseStatus enrollStatus = userAction.action(userController, lecture);
+                if (enrollStatus.status())
+                    frame.getLectureController().refresh();
+                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(enrollStatus.msg()), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
             } catch (IOException e) {
                 JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
             }
@@ -128,7 +128,7 @@ public abstract class LectureTableForm extends LectureView {
     protected abstract JButton createButton2(Lecture lecture);
 
     protected interface UserAction {
-        boolean action(UserController userController, Lecture lecture) throws IOException;
+        ResponseStatus action(UserController userController, Lecture lecture) throws IOException;
     }
 
     private String lectureTime(LectureTime time) {

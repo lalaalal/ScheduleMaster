@@ -29,7 +29,7 @@ public class ClientTest {
     @Test
     public void testLogin() throws IOException {
         try (Client client = new Client()) {
-            LoginStatus loginStatus = client.login("test", "test");
+            ResponseStatus loginStatus = client.login("test", "test");
             System.out.println(loginStatus.msg());
             Assertions.assertTrue(loginStatus.status());
 
@@ -49,7 +49,7 @@ public class ClientTest {
             LinkedList<Lecture> lectures =  client.getLectures();
             client.login("test", "test");
             Lecture lecture = lectures.at(10);
-            boolean result = client.lectureCommand(Request.ENROLL, lecture);
+            boolean result = client.lectureCommand(Request.ENROLL, lecture).status();
             System.out.println(result);
         }
     }
@@ -61,7 +61,7 @@ public class ClientTest {
                 LinkedList<Lecture> lectures =  client.getLectures();
                 client.login("test", "test");
                 Lecture lecture = lectures.at(13);
-                boolean result = client.lectureCommand(Request.ENROLL, lecture);
+                boolean result = client.lectureCommand(Request.ENROLL, lecture).status();
                 System.out.println(result);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -73,7 +73,7 @@ public class ClientTest {
                 LinkedList<Lecture> lectures =  client.getLectures();
                 client.login("test", "test");
                 Lecture lecture = lectures.at(13);
-                boolean result = client.lectureCommand(Request.ENROLL, lecture);
+                boolean result = client.lectureCommand(Request.ENROLL, lecture).status();
                 System.out.println(result);
             } catch (IOException e) {
                 e.printStackTrace();

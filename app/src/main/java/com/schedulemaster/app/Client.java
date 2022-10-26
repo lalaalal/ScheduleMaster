@@ -17,7 +17,7 @@ public class Client extends Communicator {
         super(new Socket(HOST, PORT));
     }
 
-    public LoginStatus login(String id, String pw) throws IOException {
+    public ResponseStatus login(String id, String pw) throws IOException {
         String hashedPassword = SHA256.encrypt(pw);
 
         String[] userInfo = new String[2];
@@ -27,10 +27,10 @@ public class Client extends Communicator {
         Request request = new Request(Request.LOGIN, userInfo);
         Response response = send(request);
 
-        return new LoginStatus(response.status() == Status.SUCCEED, (String) response.data());
+        return new ResponseStatus(response.status() == Status.SUCCEED, (String) response.data());
     }
 
-    public LoginStatus signup(String id, String pw) throws IOException {
+    public ResponseStatus signup(String id, String pw) throws IOException {
         String hashedPassword = SHA256.encrypt(pw);
 
         String[] userInfo = new String[2];
@@ -40,7 +40,7 @@ public class Client extends Communicator {
         Request request = new Request(Request.SIGNUP, userInfo);
         Response response = send(request);
 
-        return new LoginStatus(response.status() == Status.SUCCEED, (String) response.data());
+        return new ResponseStatus(response.status() == Status.SUCCEED, (String) response.data());
     }
 
     @SuppressWarnings("unchecked")
@@ -58,14 +58,15 @@ public class Client extends Communicator {
         return (User) response.data();
     }
 
-    public boolean lectureCommand(String command, Lecture lecture) throws IOException {
+    public ResponseStatus lectureCommand(String command, Lecture lecture) throws IOException {
         Request request = new Request(command, lecture);
         Response response = send(request);
-
-        return response != null && response.status() == Status.SUCCEED;
+        if (response == null)
+            return new ResponseStatus(false, "");
+        return new ResponseStatus(response.status() == Status.SUCCEED, response.data().toString());
     }
 
-    public boolean sendPriorities(Hash<Lecture, Integer> priorities) throws IOException{
+    public boolean sendPriorities(Hash<Lecture, Integer> priorities) throws IOException {
         Request request = new Request(Request.SET_PRIORITIES, priorities);
         Response response = send(request);
 
