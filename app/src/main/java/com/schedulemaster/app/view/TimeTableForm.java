@@ -44,7 +44,8 @@ public class TimeTableForm extends LectureView {
     private static final LectureTime.Time[] CLASS_TIME = new LectureTime.Time[RAW_DATA.length];
 
     private static final Color[] COLORS = {Color.decode("#FF8787"), Color.decode("#F8C4B4"), Color.decode("#E5EBB2"), Color.decode("#BCE29E"), Color.decode("#B8E8FC"), Color.decode("#B1AFFF"), Color.decode("#C8FFD4")};
-    private final Hash<Lecture, Integer> lectureColor = new Hash<>();
+    private final Hash<Lecture, Integer> lectureColors = new Hash<>();
+    private final Hash<Position, String> lectureNames = new Hash<>();
 
     static {
         for (int time = FIRST_CLASS_HOUR, index = 0; time < LAST_CLASS_HOUR; time++, index++) {
@@ -60,35 +61,48 @@ public class TimeTableForm extends LectureView {
     }
 
     @Override
+    public void setLectures(LinkedList<Lecture> lectures) {
+        super.setLectures(lectures);
+        lectureColors.clear();
+    }
+
+    @Override
     public void updateView() {
         colors.clear();
+        lectureNames.clear();
         int colorIndex = 0;
         for (Lecture lecture : lectures) {
             int color = colorIndex;
-            if (lectureColor.hasKey(lecture))
-                color = lectureColor.get(lecture);
-            setClassTimes(lecture.getTime(), color);
+            if (lectureColors.hasKey(lecture))
+                color = lectureColors.get(lecture);
+            setClassTimes(lecture, color);
 
-            if (!lectureColor.hasKey(lecture))
-                lectureColor.put(lecture, color);
+            if (!lectureColors.hasKey(lecture))
+                lectureColors.put(lecture, color);
             colorIndex += 1;
         }
         panel.revalidate();
         panel.repaint();
     }
 
-    private void setClassTimes(LectureTime lectureTime, int colorIndex) {
-        LinkedList<LectureTime.TimeSet> timeSets = lectureTime.getTimeSets();
+    private void setClassTimes(Lecture lecture, int colorIndex) {
+        LinkedList<LectureTime.TimeSet> timeSets = lecture.time.getTimeSets();
 
         for (LectureTime.TimeSet timeSet : timeSets) {
             int[] rows = calcClassTimes(timeSet);
+            if (rows.length > 0) {
+                Position firstPosition = new Position(rows[0], timeSet.dayOfWeek() + 1);
+                if (lectureNames.hasKey(firstPosition))
+                    lectureNames.set(firstPosition, lecture.name);
+                else
+                    lectureNames.put(firstPosition, lecture.name);
+            }
+
             for (int row : rows) {
                 Position position = new Position(row, timeSet.dayOfWeek() + 1);
                 colors.set(position, COLORS[colorIndex % COLORS.length]);
             }
-
         }
-
     }
 
     public int[] calcClassTimes(LectureTime.TimeSet timeSet) {
@@ -134,6 +148,8 @@ public class TimeTableForm extends LectureView {
                 component.setBorder(BorderFactory.createMatteBorder(1, 1, 0, 0, Color.LIGHT_GRAY));
                 Position position = new Position(row, column);
                 Color color = colors.get(position);
+                String name = lectureNames.get(position);
+                setText(name);
                 if (color != null)
                     component.setBackground(color);
                 else
