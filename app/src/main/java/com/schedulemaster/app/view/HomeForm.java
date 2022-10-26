@@ -3,6 +3,7 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.controller.LectureController;
+import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.model.LectureBook;
 
 import javax.swing.*;
@@ -23,11 +24,14 @@ public class HomeForm {
         $$$setupUI$$$();
     }
 
-    public void reload() {
+    public void load() {
         LectureController lectureController = frame.getLectureController();
         LectureBook lectureBook = lectureController.getLectureBook();
         lectureTableForm.setLectures(lectureBook.getLectures());
         lectureTableForm.updateView();
+
+        UserController userController = frame.getUserController();
+        userController.addObserver(lectureTableForm);
     }
 
     public JPanel getPanel() {

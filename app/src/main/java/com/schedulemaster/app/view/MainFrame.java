@@ -103,7 +103,7 @@ public class MainFrame extends JFrame {
 
     public void login() {
         super.setContentPane(mainPanel);
-        homeForm.reload();
+        homeForm.load();
         setContentPane(homeForm.getPanel());
         revalidate();
         repaint();

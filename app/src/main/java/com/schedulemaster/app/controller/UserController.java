@@ -2,6 +2,7 @@ package com.schedulemaster.app.controller;
 
 import com.schedulemaster.app.Client;
 import com.schedulemaster.app.LoginStatus;
+import com.schedulemaster.app.Subject;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.Request;
@@ -9,7 +10,7 @@ import com.schedulemaster.model.*;
 
 import java.io.IOException;
 
-public class UserController {
+public class UserController extends Subject {
     private User user;
     private final Client client;
 
@@ -31,6 +32,7 @@ public class UserController {
 
     public boolean enrollLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.ENROLL, lecture);
+        notice();
         if (result)
             user.enrollLecture(lecture);
         return result;
@@ -38,6 +40,7 @@ public class UserController {
 
     public boolean cancelLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.CANCEL, lecture);
+        notice();
         if (result)
             user.cancelLecture(lecture);
         return result;
@@ -45,6 +48,7 @@ public class UserController {
 
     public boolean selectLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.SELECT, lecture);
+        notice();
         if (result)
             user.selectLecture(lecture);
         return result;
@@ -52,6 +56,7 @@ public class UserController {
 
     public boolean unselectLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.UNSELECT, lecture);
+        notice();
         if (result)
             user.unselectLecture(lecture);
         return result;

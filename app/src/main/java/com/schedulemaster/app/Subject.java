@@ -6,7 +6,8 @@ public class Subject {
     private final LinkedList<Observer> observers = new LinkedList<>();
 
     public void addObserver(Observer observer) {
-        observers.push(observer);
+        if (!observers.has(observer))
+            observers.push(observer);
     }
 
     public void notice() {
