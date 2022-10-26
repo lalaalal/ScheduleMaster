@@ -3,6 +3,7 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.Observer;
+import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
@@ -14,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ResourceBundle;
 
 public abstract class LectureTableForm extends LectureView implements Observer {
@@ -42,7 +44,7 @@ public abstract class LectureTableForm extends LectureView implements Observer {
         }
     }
 
-    private static final String[] HEADER = {"전공", "강의번호", "강의명", "교수명", "학점", "강의시간", "강의실", "신청자", "최대", "1", "2"};
+    private static final String[] HEADER = {"전공", "강의번호", "강의명", "교수명", "학점", "강의시간", "강의실", "신청자", "최대", "-", "--"};
 
     private JTable lectureTable;
     private JPanel panel;
@@ -101,9 +103,30 @@ public abstract class LectureTableForm extends LectureView implements Observer {
         return rowData;
     }
 
-    public abstract JButton createButton1(Lecture lecture);
+    public JButton createButton(Lecture lecture, String name, UserAction userAction) {
+        JButton enrollButton = new JButton(name);
+        enrollButton.addActionListener(event -> {
+            try {
+                UserController userController = frame.getUserController();
+                String message = "failed";
+                if (userAction.action(userController, lecture))
+                    message = "succeed";
+                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(message), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
+            } catch (IOException e) {
+                JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
+            }
+        });
 
-    public abstract JButton createButton2(Lecture lecture);
+        return enrollButton;
+    }
+
+    protected abstract JButton createButton1(Lecture lecture);
+
+    protected abstract JButton createButton2(Lecture lecture);
+
+    protected interface UserAction {
+        boolean action(UserController userController, Lecture lecture) throws IOException;
+    }
 
     private String lectureTime(LectureTime time) {
         StringBuilder stringBuilder = new StringBuilder("<html>");
@@ -120,8 +143,8 @@ public abstract class LectureTableForm extends LectureView implements Observer {
     private void createUIComponents() {
         lectureTable = new JTable(tableModel);
         JButtonRenderer buttonRenderer = new JButtonRenderer();
-        lectureTable.getColumn("1").setCellRenderer(buttonRenderer);
-        lectureTable.getColumn("2").setCellRenderer(buttonRenderer);
+        lectureTable.getColumn("-").setCellRenderer(buttonRenderer);
+        lectureTable.getColumn("--").setCellRenderer(buttonRenderer);
     }
 
     /**

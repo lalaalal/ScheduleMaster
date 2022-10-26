@@ -14,12 +14,12 @@ public class SelectedLectureTableForm extends LectureTableForm {
 
     @Override
     public JButton createButton1(Lecture lecture) {
-        return new JButton("취소");
+        return createButton(lecture, "신청", UserController::enrollLecture);
     }
 
     @Override
     public JButton createButton2(Lecture lecture) {
-        return new JButton("빼기");
+        return createButton(lecture, "빼기", UserController::unselectLecture);
     }
 
     @Override

@@ -18,37 +18,12 @@ public class SearchLectureTableForm extends LectureTableForm {
 
     @Override
     public JButton createButton1(Lecture lecture) {
-        JButton enrollButton = new JButton("신청");
-        enrollButton.addActionListener(event -> {
-            try {
-                UserController userController = frame.getUserController();
-                String message = "failed";
-                if (userController.enrollLecture(lecture))
-                    message = "succeed";
-                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(message), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
-            } catch (IOException e) {
-                JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
-            }
-        });
-
-        return enrollButton;
+        return createButton(lecture, "신청", UserController::enrollLecture);
     }
 
     @Override
     public JButton createButton2(Lecture lecture) {
-        JButton selectButton = new JButton("담기");
-        selectButton.addActionListener(event -> {
-            try {
-                UserController userController = frame.getUserController();
-                String message = "failed";
-                if (userController.selectLecture(lecture))
-                    message = "succeed";
-                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(message), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
-            } catch (IOException e) {
-                JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
-            }
-        });
-        return selectButton;
+        return createButton(lecture, "담기", UserController::selectLecture);
     }
 
     @Override
