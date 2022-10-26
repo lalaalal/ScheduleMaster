@@ -117,7 +117,7 @@ public class MagicController {
     }
 
     private LectureTime getUsedTime() {
-        Lecture[] enrolledLectures = userController.getEnrolledLectures();
+        LinkedList<Lecture> enrolledLectures = userController.getEnrolledLectures();
         LectureTime usedTime = new LectureTime();
         usedTime.addTimeSets(userController.getUnwantedTime().getTimeSets());
         for (Lecture enrolledLecture : enrolledLectures) {

@@ -5,10 +5,11 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.LoginStatus;
 import com.schedulemaster.app.controller.UserController;
-import com.schedulemaster.misc.Status;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -27,9 +28,6 @@ public class LoginFrom {
     private JLabel signupLabel;
 
     private final MainFrame mainFrame;
-
-    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("string");
-
 
     public JPanel getPanel() {
         return panel;
@@ -54,6 +52,18 @@ public class LoginFrom {
                     signup();
             }
         });
+
+        KeyAdapter keyAdapter = new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.getKeyChar() == KeyEvent.VK_ENTER && mainFrame.connectServer()) {
+                    login();
+                }
+            }
+        };
+
+        idField.addKeyListener(keyAdapter);
+        passwordField.addKeyListener(keyAdapter);
     }
 
     public void login() {
@@ -67,11 +77,11 @@ public class LoginFrom {
                 mainFrame.login();
                 mainFrame.setUserID(id);
             } else {
-                String title = resourceBundle.getString("info");
+                String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
                 JOptionPane.showMessageDialog(mainFrame, status.msg(), title, JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException e) {
-            String title = resourceBundle.getString("error");
+            String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -83,10 +93,10 @@ public class LoginFrom {
             String id = idField.getText();
             String pw = new String(passwordField.getPassword());
             LoginStatus status = userController.signup(id, pw);
-            String title = resourceBundle.getString("info");
+            String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
             JOptionPane.showMessageDialog(mainFrame, status.msg(), title, JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
-            String title = resourceBundle.getString("error");
+            String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -123,19 +133,20 @@ public class LoginFrom {
         idField.setText("");
         panel1.add(idField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panel.add(spacer1, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final Spacer spacer2 = new Spacer();
-        panel.add(spacer2, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         loginButton = new JButton();
         this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("string", "login"));
         panel.add(loginButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        panel.add(spacer2, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
-        panel.add(spacer3, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer4 = new Spacer();
-        panel.add(spacer4, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panel.add(spacer3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         signupLabel = new JLabel();
         this.$$$loadLabelText$$$(signupLabel, this.$$$getMessageFromBundle$$$("string", "signup"));
         panel.add(signupLabel, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer4 = new Spacer();
+        panel.add(spacer4, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        signupLabel.setLabelFor(idField);
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;

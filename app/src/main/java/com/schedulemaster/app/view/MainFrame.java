@@ -7,6 +7,9 @@ import com.schedulemaster.app.Client;
 import com.schedulemaster.app.controller.LectureController;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.observers.EnrolledLectureObserver;
+import com.schedulemaster.app.observers.LectureBookObserver;
+import com.schedulemaster.app.observers.SelectedLectureObserver;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -21,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
     private final LoginFrom loginFrom = new LoginFrom(this);
+    private final HomeForm homeForm = new HomeForm(this);
     private JPanel mainPanel;
     private JPanel titleBar;
     private JPanel content;
@@ -32,21 +36,23 @@ public class MainFrame extends JFrame {
     private LectureController lectureController;
     private UserController userController;
     private MagicController magicController;
+    private final EnrolledLectureObserver enrolledLectureObserver = new EnrolledLectureObserver(this);
+    private final SelectedLectureObserver selectedLectureObserver = new SelectedLectureObserver(this);
+    private final LectureBookObserver lectureBookObserver = new LectureBookObserver(this);
 
-    private static final String RESOURCE_BUNDLE_NAME = "string";
-    private final ResourceBundle resourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME);
+    public static final String RESOURCE_BUNDLE_NAME = "string";
 
     @Override
     public void setContentPane(Container contentPane) {
         content.removeAll();
-        content.add(contentPane);
+        content.add(contentPane, BorderLayout.CENTER);
         repaint();
     }
 
     public MainFrame() {
         super("Main");
 
-        setSize(700, 500);
+        setSize(1400, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         super.setContentPane(loginFrom.getPanel());
         setLocationRelativeTo(null);
@@ -79,10 +85,14 @@ public class MainFrame extends JFrame {
             lectureController = new LectureController(client);
             userController = new UserController(client);
             magicController = new MagicController(userController, lectureController.getLectureBook());
+            lectureController.addObserver(lectureBookObserver);
+            userController.addObserver(selectedLectureObserver);
+            userController.addObserver(enrolledLectureObserver);
             return true;
         } catch (IOException e) {
-            String msg = resourceBundle.getString("connection_fail");
-            JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+            String msg = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("connection_fail");
+            String title = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("error");
+            JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
@@ -93,15 +103,18 @@ public class MainFrame extends JFrame {
                 client.close();
                 client = null;
             }
+            userController.logout();
         } catch (IOException e) {
-            String msg = resourceBundle.getString("disconnection_fail");
-            String title = resourceBundle.getString("error");
+            String msg = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("disconnection_fail");
+            String title = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public void login() {
         super.setContentPane(mainPanel);
+        homeForm.load();
+        setContentPane(homeForm.getPanel());
         revalidate();
         repaint();
     }
@@ -126,6 +139,18 @@ public class MainFrame extends JFrame {
 
     public MagicController getMagicController() {
         return magicController;
+    }
+
+    public void addEnrolledLectureView(LectureView lectureView) {
+        enrolledLectureObserver.addLectureView(lectureView);
+    }
+
+    public void addSelectedLectureView(LectureView lectureView) {
+        selectedLectureObserver.addLectureView(lectureView);
+    }
+
+    public void addBookLectureView(LectureView lectureView) {
+        lectureBookObserver.addLectureView(lectureView);
     }
 
     {
@@ -167,7 +192,7 @@ public class MainFrame extends JFrame {
         final Spacer spacer2 = new Spacer();
         titleBar.add(spacer2, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(15, -1), null, null, 0, false));
         content = new JPanel();
-        content.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        content.setLayout(new BorderLayout(0, 0));
         mainPanel.add(content, BorderLayout.CENTER);
     }
 

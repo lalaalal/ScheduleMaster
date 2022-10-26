@@ -2,14 +2,16 @@ package com.schedulemaster.app.controller;
 
 import com.schedulemaster.app.Client;
 import com.schedulemaster.app.LoginStatus;
+import com.schedulemaster.app.Subject;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
+import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.misc.Request;
 import com.schedulemaster.model.*;
 
 import java.io.IOException;
 
-public class UserController {
+public class UserController extends Subject {
     private User user;
     private final Client client;
 
@@ -25,12 +27,17 @@ public class UserController {
         return status;
     }
 
+    public void logout() {
+        user = null;
+    }
+
     public LoginStatus signup(String id, String pw) throws IOException {
         return client.signup(id, pw);
     }
 
     public boolean enrollLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.ENROLL, lecture);
+        refresh();
         if (result)
             user.enrollLecture(lecture);
         return result;
@@ -38,6 +45,7 @@ public class UserController {
 
     public boolean cancelLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.CANCEL, lecture);
+        refresh();
         if (result)
             user.cancelLecture(lecture);
         return result;
@@ -45,6 +53,7 @@ public class UserController {
 
     public boolean selectLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.SELECT, lecture);
+        refresh();
         if (result)
             user.selectLecture(lecture);
         return result;
@@ -52,17 +61,18 @@ public class UserController {
 
     public boolean unselectLecture(Lecture lecture) throws IOException {
         boolean result = client.lectureCommand(Request.UNSELECT, lecture);
+        refresh();
         if (result)
             user.unselectLecture(lecture);
         return result;
     }
 
-    public Lecture[] getEnrolledLectures() {
-        return user.enrolledLectures.toArray(new Lecture[0]);
+    public LinkedList<Lecture> getEnrolledLectures() {
+        return user.enrolledLectures;
     }
 
-    public Lecture[] getSelectedLectures() {
-        return user.selectedLectures.toArray(new Lecture[0]);
+    public LinkedList<Lecture> getSelectedLectures() {
+        return user.selectedLectures;
     }
 
     public boolean savePriorities(Hash<Lecture, Integer> priorities) throws IOException {
@@ -86,5 +96,11 @@ public class UserController {
 
     public LectureTime getUnwantedTime() {
         return user.unwantedTime;
+    }
+
+    public void refresh() throws IOException {
+        if (user != null)
+            user = client.getUserData();
+        notice();
     }
 }
