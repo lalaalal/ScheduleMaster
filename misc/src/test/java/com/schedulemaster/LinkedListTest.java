@@ -2,7 +2,6 @@ package com.schedulemaster;
 
 import com.schedulemaster.misc.LinkedList;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -54,5 +53,28 @@ public class LinkedListTest {
 
         }
 
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSerialize() throws IOException, ClassNotFoundException {
+        LinkedList<Integer> list = new LinkedList<>();
+
+        for (int i = 0; i < 5; i++) {
+            list.push(i);
+        }
+        try (FileOutputStream fileOutputStream = new FileOutputStream("test");
+             ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream)) {
+            oos.writeObject(list);
+        }
+
+        try (FileInputStream fileInputStream = new FileInputStream("test");
+             ObjectInputStream ois = new ObjectInputStream(fileInputStream)) {
+            LinkedList<Integer> read = (LinkedList<Integer>) ois.readObject();
+
+            for (Integer integer : read) {
+                System.out.println(integer);
+            }
+        }
     }
 }
