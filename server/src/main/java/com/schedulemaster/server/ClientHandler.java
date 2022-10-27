@@ -84,7 +84,7 @@ public class ClientHandler extends Communicator implements Runnable {
                 if (!userHandler.login(user)) {
                     logger.log("\"" + id + "\" already has login session", Logger.INFO);
                     user = null;
-                    return new Response(Status.FAILED, "Already login sessions");
+                    return new Response(Status.FAILED, "session_exists");
                 }
 
                 logger.log("\"" + id + "\" login succeed", Logger.INFO);
