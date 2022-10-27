@@ -3,6 +3,7 @@ package com.schedulemaster.server;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.misc.Request;
+import com.schedulemaster.misc.Response;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
@@ -73,26 +74,26 @@ public class LectureHandler {
         return list;
     }
 
-    public boolean doLectureCommand(String command, String lectureNum, User user) {
+    public String doLectureCommand(String command, String lectureNum, User user) {
         return switch (command) {
             case Request.ENROLL -> enrollLecture(lectureNum, user);
             case Request.SELECT -> selectLecture(lectureNum, user);
             case Request.CANCEL -> cancelLecture(lectureNum, user);
             case Request.UNSELECT -> unselectLecture(lectureNum, user);
-            default -> false;
+            default -> Response.FAILED;
         };
     }
 
-    public synchronized boolean enrollLecture(String lectureNum, User user) {
+    public synchronized String enrollLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" enroll " + lectureNum, Logger.INFO);
         Lecture lecture = lectures.get(lectureNum);
         if (user.enrolledLectures.has(lecture))
-            return false;
+            return "already_enrolled";
 
         for (Lecture enrolledLecture : user.enrolledLectures) {
             if (enrolledLecture.time.conflictWith(lecture.time)) {
                 logger.log(enrolledLecture.lectureNum + " conflict with " + lecture.lectureNum, Logger.INFO);
-                return false;
+                return "conflict";
             }
         }
 
@@ -100,44 +101,44 @@ public class LectureHandler {
             lecture.enrolled += 1;
             user.enrolledLectures.push(lecture);
             save();
-            return true;
+            return Response.SUCCEED;
         }
         logger.log("Lecture " +  lectureNum + "is already full", Logger.INFO);
-        return false;
+        return "lecture_full";
     }
 
-    public synchronized boolean selectLecture(String lectureNum, User user) {
+    public synchronized String selectLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" select " + lectureNum, Logger.INFO);
         Lecture lecture = lectures.get(lectureNum);
         if (user.selectedLectures.has(lecture))
-            return false;
+            return "already_selected";
 
         user.selectedLectures.push(lecture);
         save();
-        return true;
+        return Response.SUCCEED;
     }
 
-    public synchronized boolean cancelLecture(String lectureNum, User user) {
+    public synchronized String cancelLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" cancel " + lectureNum, Logger.INFO);
         Lecture lecture = lectures.get(lectureNum);
         if (!user.enrolledLectures.has(lecture))
-            return false;
+            return "not_enrolled";
 
         lecture.enrolled -= 1;
         user.enrolledLectures.remove(lecture);
         save();
-        return true;
+        return Response.SUCCEED;
     }
 
-    public synchronized boolean unselectLecture(String lectureNum, User user) {
+    public synchronized String unselectLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" unselect " + lectureNum, Logger.INFO);
         Lecture lecture = lectures.get(lectureNum);
         if (!user.selectedLectures.has(lecture))
-            return false;
+            return "not_selected";
 
         user.selectedLectures.remove(lecture);
         save();
-        return true;
+        return Response.SUCCEED;
     }
 
     public synchronized void save() {

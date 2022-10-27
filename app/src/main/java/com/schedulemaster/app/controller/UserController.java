@@ -1,7 +1,7 @@
 package com.schedulemaster.app.controller;
 
 import com.schedulemaster.app.Client;
-import com.schedulemaster.app.LoginStatus;
+import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.Subject;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
@@ -19,8 +19,8 @@ public class UserController extends Subject {
         this.client = client;
     }
 
-    public LoginStatus login(String id, String pw) throws IOException {
-        LoginStatus status = client.login(id, pw);
+    public ResponseStatus login(String id, String pw) throws IOException {
+        ResponseStatus status = client.login(id, pw);
         if (status.status())
             user = client.getUserData();
 
@@ -31,40 +31,40 @@ public class UserController extends Subject {
         user = null;
     }
 
-    public LoginStatus signup(String id, String pw) throws IOException {
+    public ResponseStatus signup(String id, String pw) throws IOException {
         return client.signup(id, pw);
     }
 
-    public boolean enrollLecture(Lecture lecture) throws IOException {
-        boolean result = client.lectureCommand(Request.ENROLL, lecture);
+    public ResponseStatus enrollLecture(Lecture lecture) throws IOException {
+        ResponseStatus status = client.lectureCommand(Request.ENROLL, lecture);
         refresh();
-        if (result)
+        if (status.status())
             user.enrollLecture(lecture);
-        return result;
+        return status;
     }
 
-    public boolean cancelLecture(Lecture lecture) throws IOException {
-        boolean result = client.lectureCommand(Request.CANCEL, lecture);
+    public ResponseStatus cancelLecture(Lecture lecture) throws IOException {
+        ResponseStatus status = client.lectureCommand(Request.CANCEL, lecture);
         refresh();
-        if (result)
+        if (status.status())
             user.cancelLecture(lecture);
-        return result;
+        return status;
     }
 
-    public boolean selectLecture(Lecture lecture) throws IOException {
-        boolean result = client.lectureCommand(Request.SELECT, lecture);
+    public ResponseStatus selectLecture(Lecture lecture) throws IOException {
+        ResponseStatus status = client.lectureCommand(Request.SELECT, lecture);
         refresh();
-        if (result)
+        if (status.status())
             user.selectLecture(lecture);
-        return result;
+        return status;
     }
 
-    public boolean unselectLecture(Lecture lecture) throws IOException {
-        boolean result = client.lectureCommand(Request.UNSELECT, lecture);
+    public ResponseStatus unselectLecture(Lecture lecture) throws IOException {
+        ResponseStatus status = client.lectureCommand(Request.UNSELECT, lecture);
         refresh();
-        if (result)
+        if (status.status())
             user.unselectLecture(lecture);
-        return result;
+        return status;
     }
 
     public LinkedList<Lecture> getEnrolledLectures() {

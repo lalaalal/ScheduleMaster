@@ -3,7 +3,7 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.schedulemaster.app.LoginStatus;
+import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.UserController;
 
 import javax.swing.*;
@@ -72,13 +72,14 @@ public class LoginFrom {
             UserController userController = mainFrame.getUserController();
             String id = idField.getText();
             String pw = new String(passwordField.getPassword());
-            LoginStatus status = userController.login(id, pw);
+            ResponseStatus status = userController.login(id, pw);
             if (status.status()) {
                 mainFrame.login();
                 mainFrame.setUserID(id);
             } else {
                 String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
-                JOptionPane.showMessageDialog(mainFrame, status.msg(), title, JOptionPane.ERROR_MESSAGE);
+                String msg = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString(status.msg());
+                JOptionPane.showMessageDialog(mainFrame, msg, title, JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException e) {
             String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
@@ -92,9 +93,11 @@ public class LoginFrom {
             UserController userController = mainFrame.getUserController();
             String id = idField.getText();
             String pw = new String(passwordField.getPassword());
-            LoginStatus status = userController.signup(id, pw);
+            ResponseStatus status = userController.signup(id, pw);
+
             String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
-            JOptionPane.showMessageDialog(mainFrame, status.msg(), title, JOptionPane.ERROR_MESSAGE);
+            String msg = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString(status.msg());
+            JOptionPane.showMessageDialog(mainFrame, msg, title, JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
