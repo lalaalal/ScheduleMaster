@@ -78,7 +78,8 @@ public class LoginFrom {
                 mainFrame.setUserID(id);
             } else {
                 String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
-                JOptionPane.showMessageDialog(mainFrame, status.msg(), title, JOptionPane.ERROR_MESSAGE);
+                String msg = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString(status.msg());
+                JOptionPane.showMessageDialog(mainFrame, msg, title, JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException e) {
             String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
@@ -93,8 +94,10 @@ public class LoginFrom {
             String id = idField.getText();
             String pw = new String(passwordField.getPassword());
             ResponseStatus status = userController.signup(id, pw);
+
             String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
-            JOptionPane.showMessageDialog(mainFrame, status.msg(), title, JOptionPane.ERROR_MESSAGE);
+            String msg = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString(status.msg());
+            JOptionPane.showMessageDialog(mainFrame, msg, title, JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
