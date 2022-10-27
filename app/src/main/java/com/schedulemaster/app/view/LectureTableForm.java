@@ -83,6 +83,8 @@ public abstract class LectureTableForm extends LectureView {
         while (tableModel.getRowCount() > 0) {
             tableModel.removeRow(0);
         }
+        if (lectures == null)
+            return;
         for (Lecture lecture : lectures) {
             Object[] rowData = createRowData(lecture);
             tableModel.addRow(rowData);
