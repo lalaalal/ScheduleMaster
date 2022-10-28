@@ -94,6 +94,7 @@ public class MainFrame extends JFrame {
             String msg = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("connection_fail");
             String title = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
+            client = null;
             return false;
         }
     }

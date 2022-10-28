@@ -1,6 +1,6 @@
 package com.schedulemaster.misc;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -37,7 +37,7 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
         }
     }
 
-    private final Node<E> head;
+    private Node<E> head;
 
     private int length = 0;
 
@@ -162,5 +162,24 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
             result = 31 * result + element.hashCode();
 
         return result;
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.writeInt(length);
+        for (E e : this) {
+            oos.writeObject(e);
+        }
+    }
+
+    @Serial
+    @SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        int readLength = ois.readInt();
+        head = new Node<>(null, null);
+        for (int i = 0; i < readLength; i++) {
+            E e = (E) ois.readObject();
+            push(e);
+        }
     }
 }

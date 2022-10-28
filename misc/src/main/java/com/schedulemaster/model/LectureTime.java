@@ -5,9 +5,9 @@ import com.schedulemaster.misc.LinkedList;
 import java.io.Serializable;
 
 public class LectureTime implements Serializable {
-    public static final long serialVersionUID = 11L;
+    public static final long serialVersionUID = 12L;
     public record Time(int hour, int minute) implements Serializable {
-        public static final long serialVersionUID = 11L;
+        public static final long serialVersionUID = 12L;
 
         public boolean isAfter(Time time) {
             return this.hour > time.hour
@@ -52,7 +52,7 @@ public class LectureTime implements Serializable {
     }
 
     public record TimeSet(int dayOfWeek, Time start, Time end) implements Serializable {
-        public static final long serialVersionUID = 10L;
+        public static final long serialVersionUID = 11L;
         public boolean conflictWith(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
                     && ((start.isAfter(timeSet.start) && start.isBefore(timeSet.end))
@@ -90,7 +90,7 @@ public class LectureTime implements Serializable {
         }
     }
 
-    public static final String[] DAY_OF_WEEK = { "월", "화", "수", "목", "금" };
+    public static final String[] DAY_OF_WEEK = { "월", "화", "수", "목", "금", "토" };
 
     private final LinkedList<TimeSet> timeSets = new LinkedList<>();
 
@@ -108,13 +108,13 @@ public class LectureTime implements Serializable {
     }
 
     public void addTimeSet(int dayOfWeek, Time start, Time end) {
-        if (!(0 <= dayOfWeek && dayOfWeek < 5))
+        if (!(0 <= dayOfWeek && dayOfWeek < DAY_OF_WEEK.length))
             throw new RuntimeException("Invalid value; dayOfWeek is " + dayOfWeek);
         timeSets.push(new TimeSet(dayOfWeek, start, end));
     }
 
     public void addTimeSet(TimeSet timeset) {
-        if (!(0 <= timeset.dayOfWeek && timeset.dayOfWeek < 5))
+        if (!(0 <= timeset.dayOfWeek && timeset.dayOfWeek < DAY_OF_WEEK.length))
             throw new RuntimeException("Invalid value; dayOfWeek is " + timeset.dayOfWeek);
         timeSets.push(timeset);
     }

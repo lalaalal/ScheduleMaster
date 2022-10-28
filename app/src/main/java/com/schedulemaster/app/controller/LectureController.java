@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class LectureController extends Subject {
     public enum AttributeName {
-        Professor, Major, Name
+        Professor, Major, Name, Grade
     }
 
     private final LectureBook lectureBook;

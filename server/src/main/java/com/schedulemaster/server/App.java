@@ -15,7 +15,7 @@ public class App implements AutoCloseable {
     private final UserHandler userHandler;
     private FileOutputStream logFileOutputStream = null;
 
-    private Logger logger = Logger.getInstance();
+    private final Logger logger = Logger.getInstance();
     private Thread serverThread;
 
     public static void main(String[] args) {

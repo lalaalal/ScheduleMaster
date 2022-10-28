@@ -9,6 +9,7 @@ import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class LectureHandler {
     private Hash<String, Lecture> lectures;
@@ -41,6 +42,7 @@ public class LectureHandler {
         try (CSVReader csvReader = new CSVReader(csvPath)) {
             String[] tuple = csvReader.read();
             while ((tuple = csvReader.read()) != null) {
+                logger.log("Read : " + Arrays.toString(tuple) + "", Logger.VERBOSE);
                 Lecture lecture = Lecture.createLecture(tuple);
                 addLecture(lecture);
             }

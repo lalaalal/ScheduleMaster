@@ -22,32 +22,28 @@ public class TimeTableForm extends LectureView {
     private JPanel panel;
     private JScrollPane scrollPane;
 
-    private static final String[] HEADER = {"", "월", "화", "수", "목", "금"};
-    private static final String[][] RAW_DATA = {
-            {"1교시", "", "", "", "", ""}, // 9
-            {"2교시", "", "", "", "", ""}, // 10
-            {"3교시", "", "", "", "", ""}, // 11
-            {"4교시", "", "", "", "", ""}, // 12
-            {"5교시", "", "", "", "", ""}, // 13
-            {"6교시", "", "", "", "", ""}, // 14
-            {"7교시", "", "", "", "", ""}, // 15
-            {"8교시", "", "", "", "", ""}, // 16
-            {"9교시", "", "", "", "", ""}, // 17
-            {"10교시", "", "", "", "", ""},// 18
-            {"11교시", "", "", "", "", ""},// 19
-            {"12교시", "", "", "", "", ""},// 19
-    };
+    private static final int N_CLASS = 14;
+
+    private static final String[] HEADER = {"", "월", "화", "수", "목", "금", "토"};
+    private static final String[][] RAW_DATA = new String[N_CLASS][HEADER.length];
 
     private static final int FIRST_CLASS_HOUR = 9;
     private static final int LAST_CLASS_HOUR = FIRST_CLASS_HOUR + RAW_DATA.length + 1;
 
     private static final LectureTime.Time[] CLASS_TIME = new LectureTime.Time[RAW_DATA.length + 1];
 
-    private static final Color[] COLORS = { Color.decode("#FF8787"), Color.decode("#F8C4B4"), Color.decode("#E5EBB2"), Color.decode("#BCE29E"), Color.decode("#B8E8FC"), Color.decode("#B1AFFF"), Color.decode("#C8FFD4"), Color.decode("#DFD3C3"), Color.decode("#F8EDE3"), Color.decode("#AEBDCA") };
+    private static final Color[] COLORS = {Color.decode("#FF8787"), Color.decode("#F8C4B4"), Color.decode("#E5EBB2"), Color.decode("#BCE29E"), Color.decode("#B8E8FC"), Color.decode("#B1AFFF"), Color.decode("#C8FFD4"), Color.decode("#DFD3C3"), Color.decode("#F8EDE3"), Color.decode("#AEBDCA")};
     private final Hash<Lecture, Integer> lectureColors = new Hash<>();
     private final Hash<Position, String> lectureNames = new Hash<>();
 
     static {
+        for (int row = 0; row < N_CLASS; row++) {
+            RAW_DATA[row][0] = (row + 1) + "교시";
+            for (int col = 1; col < HEADER.length; col++) {
+                RAW_DATA[row][col] = "";
+            }
+        }
+
         for (int time = FIRST_CLASS_HOUR, index = 0; time < LAST_CLASS_HOUR; time++, index++) {
             CLASS_TIME[index] = new LectureTime.Time(time, 0);
         }
