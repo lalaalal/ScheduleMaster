@@ -113,10 +113,10 @@ public abstract class LectureTableForm extends LectureView {
         enrollButton.addActionListener(event -> {
             try {
                 UserController userController = frame.getUserController();
-                ResponseStatus enrollStatus = userAction.action(userController, lecture);
-                if (enrollStatus.status())
+                ResponseStatus status = userAction.action(userController, lecture);
+                if (status.status())
                     frame.getLectureController().refresh();
-                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(enrollStatus.msg()), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(status.msg()), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
             } catch (IOException e) {
                 JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
             }
