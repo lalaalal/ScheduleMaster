@@ -136,6 +136,14 @@ public class TimeTableForm extends LectureView {
         return timeTable;
     }
 
+    @Override
+    public void clear() {
+        super.clear();
+        lectureColors.clear();
+        lectureNames.clear();
+        colors.clear();
+    }
+
     private void createUIComponents() {
         timeTable = new JTable(RAW_DATA, HEADER);
         timeTable.getTableHeader().setReorderingAllowed(false);

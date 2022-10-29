@@ -22,7 +22,7 @@ public class MagicWizardForm implements ContentForm {
 
     public MagicWizardForm(MainFrame frame) {
         this.frame = frame;
-        lectureGroupListForm = new LectureGroupListForm(frame);
+        lectureGroupListForm = new LectureGroupListForm(frame, selectableTimeTable);
         $$$setupUI$$$();
     }
 
@@ -43,6 +43,8 @@ public class MagicWizardForm implements ContentForm {
     public void load() {
         LectureTime unwantedTime = frame.getUserController().getUnwantedTime();
         selectableTimeTable.setSelectedTime(unwantedTime);
+
+        frame.getMagicController().init();
     }
 
     /**

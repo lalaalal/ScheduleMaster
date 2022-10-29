@@ -3,7 +3,11 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.schedulemaster.app.controller.MagicController;
+import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.misc.LinkedList;
+import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureTime;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -27,7 +31,7 @@ public class LectureGroupListForm implements ComponentForm {
 
     private int groupCount = 0;
 
-    public LectureGroupListForm(MainFrame frame) {
+    public LectureGroupListForm(MainFrame frame, SelectableTimeTable selectableTimeTable) {
         this.frame = frame;
         $$$setupUI$$$();
 
@@ -36,6 +40,26 @@ public class LectureGroupListForm implements ComponentForm {
             @Override
             public void mouseClicked(MouseEvent e) {
                 addGroup();
+            }
+        });
+        doneButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                UserController userController = frame.getUserController();
+                LectureTime unwantedTime = selectableTimeTable.getSelectedTime();
+                userController.setUnwantedTime(unwantedTime);
+
+                MagicController magicController = frame.getMagicController();
+                int i = 0;
+                for (LectureGroupForm lectureGroupForm : lectureGroupForms) {
+                    LinkedList<Lecture> lectures = lectureGroupForm.getLectures();
+                    magicController.addGroup();
+                    for (Lecture lecture : lectures)
+                        magicController.addLecture(i, lecture, 0);
+                    i += 1;
+                }
+
+                frame.setContentForm(ContentForm.Content.MagicSelector);
             }
         });
     }

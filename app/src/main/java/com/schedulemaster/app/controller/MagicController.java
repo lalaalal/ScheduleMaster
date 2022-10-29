@@ -7,6 +7,7 @@ import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.LinkedList;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class MagicController {
@@ -21,6 +22,12 @@ public class MagicController {
     public MagicController(UserController userController, LectureBook lectureBook) {
         this.userController = userController;
         this.lectureBook = lectureBook;
+    }
+
+    public void init() {
+        lectureGroups.clear();
+        priorities.clear();
+        schedules.clear();
     }
 
     public void addGroup() {
@@ -75,13 +82,15 @@ public class MagicController {
             next = iterator.next();
 
         Heap<Priority> priorityHeap = curr.createHeap(priorities);
+        LectureTime unwantedTime = userController.getUnwantedTime();
 
         while (!priorityHeap.isEmpty()) {
             Lecture lecture = priorityHeap.pop().lecture();
 
             Schedule clone = schedule.copy();
-            clone.addLecture(lecture);
-            if (next == null)
+            if (!lecture.time.conflictWith(unwantedTime))
+                clone.addLecture(lecture);
+            if (next == null && clone.getLectures().getLength() > 0 && !schedules.has(clone))
                 schedules.push(clone);
             else
                 createSchedules(iterator, next, clone);
@@ -89,7 +98,9 @@ public class MagicController {
     }
 
     public Schedule[] getSchedules() {
-        return schedules.toArray(new Schedule[0]);
+        Schedule[] result = schedules.toArray(new Schedule[0]);
+        Arrays.sort(result, (o1, o2) -> o2.getLectures().getLength() - o1.getLectures().getLength());
+        return result;
     }
 
     public LinkedList<Lecture> suggest(int maxSuggestion) {

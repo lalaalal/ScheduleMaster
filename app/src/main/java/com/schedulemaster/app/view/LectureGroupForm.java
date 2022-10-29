@@ -3,6 +3,8 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.schedulemaster.misc.LinkedList;
+import com.schedulemaster.model.Lecture;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -35,6 +37,10 @@ public class LectureGroupForm implements ComponentForm {
             }
         });
         groupNameLabel.setText(name);
+    }
+
+    public LinkedList<Lecture> getLectures() {
+        return lectureTableForm.getLectures();
     }
 
     @Override

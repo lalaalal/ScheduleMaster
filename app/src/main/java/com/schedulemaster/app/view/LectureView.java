@@ -31,6 +31,10 @@ public abstract class LectureView implements ComponentForm {
         updateView();
     }
 
+    public LinkedList<Lecture> getLectures() {
+        return lectures;
+    }
+
     public void clear() {
         lectures.clear();
     }

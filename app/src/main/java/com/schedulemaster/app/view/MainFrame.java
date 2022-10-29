@@ -77,6 +77,7 @@ public class MainFrame extends JFrame {
         contentForms.set(ContentForm.Content.Home, new HomeForm(this));
         contentForms.set(ContentForm.Content.LectureBag, new LectureBagForm(this));
         contentForms.set(ContentForm.Content.MagicWizard, new MagicWizardForm(this));
+        contentForms.set(ContentForm.Content.MagicSelector, new MagicSelectorForm(this));
         homeLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -103,6 +104,7 @@ public class MainFrame extends JFrame {
         ContentForm contentForm = contentForms.get(content);
         if (contentForm == null)
             return;
+        contentForm.load();
 
         contentPanel.removeAll();
         contentPanel.add(contentForm.getPanel(), BorderLayout.CENTER);
@@ -150,9 +152,6 @@ public class MainFrame extends JFrame {
 
     public void login() {
         setContentPane(mainPanel);
-        for (ContentForm contentForm : contentForms) {
-            contentForm.load();
-        }
         setContentForm(ContentForm.Content.Home);
         revalidate();
         repaint();
