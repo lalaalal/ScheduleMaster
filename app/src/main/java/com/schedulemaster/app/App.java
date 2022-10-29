@@ -5,6 +5,8 @@ import mdlaf.MaterialLookAndFeel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Locale;
 
@@ -23,9 +25,14 @@ public class App {
         try {
             Locale.setDefault(Locale.KOREAN);
             UIManager.setLookAndFeel(new MaterialLookAndFeel());
-            setUIFont (new javax.swing.plaf.FontUIResource("Sans", Font.PLAIN,12));
+            try (InputStream is = App.class.getClassLoader().getResourceAsStream("font/SCDream4.otf")) {
+                if (is == null)
+                    throw new IOException("Font not found");
+                Font font = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(12f);
+                setUIFont (new javax.swing.plaf.FontUIResource(font));
+            }
             MainFrame frame = new MainFrame();
-        } catch (UnsupportedLookAndFeelException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

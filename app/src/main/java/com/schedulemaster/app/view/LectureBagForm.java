@@ -34,12 +34,13 @@ public class LectureBagForm implements ContentForm {
 
         $$$setupUI$$$();
 
+        Font headerFont = UIManager.getDefaults().getFont("Label.font").deriveFont(18f);
         enrolledLecturesLabel.setBorder(BorderFactory.createEmptyBorder(5, 35, 0, 5));
-        enrolledLecturesLabel.setFont(new Font("Sans", Font.PLAIN, 18));
-        selectedLectureLabel.setBorder(BorderFactory.createEmptyBorder(24, 35, 0, 5));
-        selectedLectureLabel.setFont(new Font("Sans", Font.PLAIN, 18));
+        enrolledLecturesLabel.setFont(headerFont);
+        selectedLectureLabel.setBorder(BorderFactory.createEmptyBorder(23, 35, 0, 5));
+        selectedLectureLabel.setFont(headerFont);
         timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
-        timeTableLabel.setFont(new Font("Sans", Font.PLAIN, 18));
+        timeTableLabel.setFont(headerFont);
     }
 
     @Override

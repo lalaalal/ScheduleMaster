@@ -65,12 +65,13 @@ public class HomeForm implements ContentForm {
             }
         });
 
+        Font headerFont = UIManager.getDefaults().getFont("Label.font").deriveFont(18f);
         lectureBagLabel.setBorder(BorderFactory.createEmptyBorder(5, 35, 0, 5));
-        lectureBagLabel.setFont(new Font("Sans", Font.PLAIN, 18));
+        lectureBagLabel.setFont(headerFont);
         searchLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
-        searchLabel.setFont(new Font("Sans", Font.PLAIN, 18));
+        searchLabel.setFont(headerFont);
         timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
-        timeTableLabel.setFont(new Font("Sans", Font.PLAIN, 18));
+        timeTableLabel.setFont(headerFont);
     }
 
     @Override
