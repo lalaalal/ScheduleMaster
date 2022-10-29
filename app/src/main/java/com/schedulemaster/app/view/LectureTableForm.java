@@ -72,6 +72,7 @@ public abstract class LectureTableForm extends LectureView {
         this.frame = frame;
 
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(scrollPane.getBorder(), BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)));
     }
 
     public JPanel getPanel() {
