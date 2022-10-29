@@ -15,7 +15,8 @@ public abstract class LectureView implements ComponentForm {
     }
 
     public void addLecture(Lecture lecture) {
-        lectures.push(lecture);
+        if (!lectures.has(lecture))
+            lectures.push(lecture);
     }
 
     public void addLectures(LinkedList<Lecture> lectures) {

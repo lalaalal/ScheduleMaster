@@ -16,9 +16,9 @@ public class MagicControllerTest {
     @Test
     public void testMagic() throws IOException {
         try (Client client = new Client()) {
-            UserController userController = new UserController(client);
-            userController.login("test", "test");
             LectureController lectureController = new LectureController(client);
+            UserController userController = new UserController(client, lectureController.getLectureBook());
+            userController.login("test", "test");
             MagicController magicController = new MagicController(userController, lectureController.getLectureBook());
 
             LinkedList<Lecture> lectures = client.getLectures();
@@ -43,7 +43,8 @@ public class MagicControllerTest {
     @Test
     public void testSuggestion() throws IOException {
         try (Client client = new Client()) {
-            UserController userController = new UserController(client);
+            LectureController lectureController = new LectureController(client);
+            UserController userController = new UserController(client, lectureController.getLectureBook());
             userController.login("test", "test");
 
             for (Lecture enrolledLecture : userController.getEnrolledLectures()) {

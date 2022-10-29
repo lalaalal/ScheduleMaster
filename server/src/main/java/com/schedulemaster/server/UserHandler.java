@@ -30,7 +30,7 @@ public class UserHandler {
             logger.log("Class not found while reading data from \"" + filePath + "\"", Logger.ERROR);
         } catch (IOException e) {
             users = new Hash<>();
-            logger.log("Something went wrong while load lectures from \"" + filePath + "\"", Logger.ERROR);
+            logger.log("Something went wrong while load users from \"" + filePath + "\"", Logger.ERROR);
         }
     }
 

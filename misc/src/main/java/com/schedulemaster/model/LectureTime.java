@@ -5,9 +5,9 @@ import com.schedulemaster.misc.LinkedList;
 import java.io.Serializable;
 
 public class LectureTime implements Serializable {
-    public static final long serialVersionUID = 12L;
+    public static final long serialVersionUID = 13L;
     public record Time(int hour, int minute) implements Serializable {
-        public static final long serialVersionUID = 12L;
+        public static final long serialVersionUID = 13L;
 
         public boolean isAfter(Time time) {
             return this.hour > time.hour
@@ -52,7 +52,7 @@ public class LectureTime implements Serializable {
     }
 
     public record TimeSet(int dayOfWeek, Time start, Time end) implements Serializable {
-        public static final long serialVersionUID = 11L;
+        public static final long serialVersionUID = 13L;
         public boolean conflictWith(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
                     && ((start.isAfter(timeSet.start) && start.isBefore(timeSet.end))

@@ -4,7 +4,9 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.controller.MagicController;
+import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.model.Schedule;
+import com.schedulemaster.model.Lecture;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -44,6 +46,21 @@ public class MagicSelectorForm implements ContentForm {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selectSchedule(selectedScheduleIndex + 1);
+            }
+        });
+        selectButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    UserController userController = frame.getUserController();
+                    for (Lecture lecture : schedules[selectedScheduleIndex].getLectures()) {
+                        userController.selectLecture(lecture);
+                    }
+                    frame.setContentForm(Content.LectureBag);
+                } catch (IOException ex) {
+                    String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
+                    JOptionPane.showMessageDialog(frame, ex.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }

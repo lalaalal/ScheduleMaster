@@ -88,20 +88,21 @@ public class LectureHandler {
 
     public synchronized String enrollLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" enroll " + lectureNum, Logger.INFO);
-        Lecture lecture = lectures.get(lectureNum);
-        if (user.enrolledLectures.has(lecture))
+        Lecture enrollLecture = lectures.get(lectureNum);
+        if (user.enrolledLectures.has(lectureNum))
             return "already_enrolled";
 
-        for (Lecture enrolledLecture : user.enrolledLectures) {
-            if (enrolledLecture.time.conflictWith(lecture.time)) {
-                logger.log(enrolledLecture.lectureNum + " conflict with " + lecture.lectureNum, Logger.INFO);
+        for (String enrolledLectureNum : user.enrolledLectures) {
+            Lecture enrolledLecture = lectures.get(enrolledLectureNum);
+            if (enrolledLecture.time.conflictWith(enrollLecture.time)) {
+                logger.log(enrolledLecture.lectureNum + " conflict with " + enrollLecture.lectureNum, Logger.INFO);
                 return "conflict";
             }
         }
 
-        if (lecture.enrolled < lecture.max) {
-            lecture.enrolled += 1;
-            user.enrolledLectures.push(lecture);
+        if (enrollLecture.enrolled < enrollLecture.max) {
+            enrollLecture.enrolled += 1;
+            user.enrolledLectures.push(lectureNum);
             save();
             return Response.SUCCEED;
         }
@@ -111,11 +112,10 @@ public class LectureHandler {
 
     public synchronized String selectLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" select " + lectureNum, Logger.INFO);
-        Lecture lecture = lectures.get(lectureNum);
-        if (user.selectedLectures.has(lecture))
+        if (user.selectedLectures.has(lectureNum))
             return "already_selected";
 
-        user.selectedLectures.push(lecture);
+        user.selectedLectures.push(lectureNum);
         save();
         return Response.SUCCEED;
     }
@@ -123,22 +123,21 @@ public class LectureHandler {
     public synchronized String cancelLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" cancel " + lectureNum, Logger.INFO);
         Lecture lecture = lectures.get(lectureNum);
-        if (!user.enrolledLectures.has(lecture))
+        if (!user.enrolledLectures.has(lectureNum))
             return "not_enrolled";
 
         lecture.enrolled -= 1;
-        user.enrolledLectures.remove(lecture);
+        user.enrolledLectures.remove(lectureNum);
         save();
         return Response.SUCCEED;
     }
 
     public synchronized String unselectLecture(String lectureNum, User user) {
         logger.log("\"" + user.id + "\" unselect " + lectureNum, Logger.INFO);
-        Lecture lecture = lectures.get(lectureNum);
-        if (!user.selectedLectures.has(lecture))
+        if (!user.selectedLectures.has(lectureNum))
             return "not_selected";
 
-        user.selectedLectures.remove(lecture);
+        user.selectedLectures.remove(lectureNum);
         save();
         return Response.SUCCEED;
     }

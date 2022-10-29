@@ -41,10 +41,15 @@ public class MagicWizardForm implements ContentForm {
 
     @Override
     public void load() {
-        LectureTime unwantedTime = frame.getUserController().getUnwantedTime();
-        selectableTimeTable.setSelectedTime(unwantedTime);
+        try {
+            frame.getUserController().refresh();
+            LectureTime unwantedTime = frame.getUserController().getUnwantedTime();
+            selectableTimeTable.setSelectedTime(unwantedTime);
 
-        frame.getMagicController().init();
+            frame.getMagicController().init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

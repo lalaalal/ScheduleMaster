@@ -14,9 +14,11 @@ import java.io.IOException;
 public class UserController extends Subject {
     private User user;
     private final Client client;
+    private final LectureBook lectureBook;
 
-    public UserController(Client client) {
+    public UserController(Client client, LectureBook lectureBook) {
         this.client = client;
+        this.lectureBook = lectureBook;
     }
 
     public ResponseStatus login(String id, String pw) throws IOException {
@@ -38,44 +40,48 @@ public class UserController extends Subject {
     public ResponseStatus enrollLecture(Lecture lecture) throws IOException {
         ResponseStatus status = client.lectureCommand(Request.ENROLL, lecture);
         refresh();
-        if (status.status())
-            user.enrollLecture(lecture);
         return status;
     }
 
     public ResponseStatus cancelLecture(Lecture lecture) throws IOException {
         ResponseStatus status = client.lectureCommand(Request.CANCEL, lecture);
         refresh();
-        if (status.status())
-            user.cancelLecture(lecture);
         return status;
     }
 
     public ResponseStatus selectLecture(Lecture lecture) throws IOException {
         ResponseStatus status = client.lectureCommand(Request.SELECT, lecture);
         refresh();
-        if (status.status())
-            user.selectLecture(lecture);
         return status;
     }
 
     public ResponseStatus unselectLecture(Lecture lecture) throws IOException {
         ResponseStatus status = client.lectureCommand(Request.UNSELECT, lecture);
         refresh();
-        if (status.status())
-            user.unselectLecture(lecture);
         return status;
     }
 
     public LinkedList<Lecture> getEnrolledLectures() {
-        return user.enrolledLectures;
+        LinkedList<Lecture> enrolledLectures = new LinkedList<>();
+        for (String lectureNum : user.enrolledLectures) {
+            Lecture lecture = lectureBook.findLecture(lectureNum);
+            if (lecture != null)
+                enrolledLectures.push(lecture);
+        }
+        return enrolledLectures;
     }
 
     public LinkedList<Lecture> getSelectedLectures() {
-        return user.selectedLectures;
+        LinkedList<Lecture> selectedLectures = new LinkedList<>();
+        for (String lectureNum : user.selectedLectures) {
+            Lecture lecture = lectureBook.findLecture(lectureNum);
+            if (lecture != null)
+                selectedLectures.push(lecture);
+        }
+        return selectedLectures;
     }
 
-    public boolean savePriorities(Hash<Lecture, Integer> priorities) throws IOException {
+    public boolean savePriorities(Hash<String, Integer> priorities) throws IOException {
         user.priorities = priorities;
         return client.sendPriorities(priorities);
     }
@@ -105,6 +111,7 @@ public class UserController extends Subject {
     public void refresh() throws IOException {
         if (user != null)
             user = client.getUserData();
+
         notice();
     }
 }

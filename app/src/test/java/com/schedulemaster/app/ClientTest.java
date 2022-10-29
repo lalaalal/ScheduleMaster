@@ -55,6 +55,19 @@ public class ClientTest {
     }
 
     @Test
+    public void testUnwantedTime() throws IOException {
+        try (Client client = new Client()) {
+            LinkedList<Lecture> lectures =  client.getLectures();
+            client.login("test", "test");
+            Lecture lecture = lectures.at(10);
+            boolean result = client.sendUnwantedTime(lecture.time);
+            System.out.println(result);
+            result = client.sendUnwantedTime(lecture.time);
+            System.out.println(result);
+        }
+    }
+
+    @Test
     public void testMultiUser() throws InterruptedException {
         Thread thread1 = new Thread(() -> {
             try (Client client = new Client()) {

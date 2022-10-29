@@ -14,9 +14,9 @@ public class MagicController {
 
     private final UserController userController;
 
-    private final LinkedList<Schedule> schedules = new LinkedList<>();
-    private final LinkedList<LectureGroup> lectureGroups = new LinkedList<>();
-    private final Hash<Lecture, Integer> priorities = new Hash<>();
+    private LinkedList<Schedule> schedules = new LinkedList<>();
+    private LinkedList<LectureGroup> lectureGroups = new LinkedList<>();
+    private Hash<String, Integer> priorities = new Hash<>();
     private final LectureBook lectureBook;
 
     public MagicController(UserController userController, LectureBook lectureBook) {
@@ -25,9 +25,9 @@ public class MagicController {
     }
 
     public void init() {
-        lectureGroups.clear();
-        priorities.clear();
-        schedules.clear();
+        lectureGroups = new LinkedList<>();
+        priorities = new Hash<>();
+        schedules = new LinkedList<>();
     }
 
     public void addGroup() {
@@ -38,16 +38,16 @@ public class MagicController {
         if (lectureGroups.getLength() <= groupNumber)
             throw new IndexOutOfBoundsException();
         LectureGroup group = lectureGroups.at(groupNumber);
-        priorities.put(lecture, priority);
-        group.push(lecture);
+        priorities.put(lecture.lectureNum, priority);
+        group.push(lecture.lectureNum);
     }
 
     public void removeLecture(int groupNumber, Lecture lecture) {
         if (lectureGroups.getLength() <= groupNumber)
             throw new IndexOutOfBoundsException();
         LectureGroup group = lectureGroups.at(groupNumber);
-        group.remove(lecture);
-        priorities.remove(lecture);
+        group.remove(lecture.lectureNum);
+        priorities.remove(lecture.lectureNum);
     }
 
     /** *
@@ -61,7 +61,7 @@ public class MagicController {
     }
 
     public void changePriority(Lecture lecture, int priority) {
-        priorities.set(lecture, priority);
+        priorities.set(lecture.lectureNum, priority);
     }
 
     public void magic() throws IOException {
@@ -85,12 +85,14 @@ public class MagicController {
         LectureTime unwantedTime = userController.getUnwantedTime();
 
         while (!priorityHeap.isEmpty()) {
-            Lecture lecture = priorityHeap.pop().lecture();
+            String lectureNum = priorityHeap.pop().lectureNum();
+            Lecture lecture = lectureBook.findLecture(lectureNum);
 
             Schedule clone = schedule.copy();
             if (!lecture.time.conflictWith(unwantedTime))
                 clone.addLecture(lecture);
-            if (next == null && clone.getLectures().getLength() > 0 && !schedules.has(clone))
+            if (next == null && clone.getLectures().getLength() == lectureGroups.getLength()
+                    && !schedules.has(clone))
                 schedules.push(clone);
             else
                 createSchedules(iterator, next, clone);
@@ -109,7 +111,8 @@ public class MagicController {
         LinkedList<Lecture> suggestion = new LinkedList<>();
         Heap<Priority> priorityHeap = userController.getPriorityHeap();
         while (!priorityHeap.isEmpty()) {
-            Lecture lecture = priorityHeap.pop().lecture();
+            String lectureNum = priorityHeap.pop().lectureNum();
+            Lecture lecture = lectureBook.findLecture(lectureNum);
             if (!lecture.time.conflictWith(usedTime))
                 suggestion.push(lecture);
             if (suggestion.getLength() >= maxSuggestion)

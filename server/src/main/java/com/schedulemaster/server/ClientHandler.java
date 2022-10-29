@@ -41,6 +41,12 @@ public class ClientHandler extends Communicator implements Runnable {
 
         logger.log("Bye bye", Logger.INFO);
         logger.log("", Logger.INFO);
+
+        try {
+            close();
+        } catch (IOException e) {
+            logger.log("Something went wrong while closing", Logger.ERROR);
+        }
     }
 
     @Override
@@ -120,6 +126,7 @@ public class ClientHandler extends Communicator implements Runnable {
         public Response userDataResponse() {
             if (user == null)
                 return new Response(Status.FAILED, Response.FAILED);
+            logger.log("Get user data", Logger.INFO);
             return new Response(Status.SUCCEED, user);
         }
 
@@ -151,8 +158,8 @@ public class ClientHandler extends Communicator implements Runnable {
             if (!(request.data() instanceof Hash<?, ?> priorities))
                 return new Response(Status.FAILED, Response.WRONG_REQUEST);
 
-            logger.log("Update \"" + user.id + "\"'s priorities", Logger.DEBUG);
-            user.priorities = (Hash<Lecture, Integer>) priorities;
+            logger.log("Update \"" + user.id + "\"'s priorities", Logger.INFO);
+            user.priorities = (Hash<String, Integer>) priorities;
             userHandler.save();
 
             return new Response(Status.SUCCEED, Response.SUCCEED);
