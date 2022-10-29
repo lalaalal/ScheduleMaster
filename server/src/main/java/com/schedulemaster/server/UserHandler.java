@@ -35,7 +35,7 @@ public class UserHandler {
     }
 
     public synchronized void save() {
-        logger.log("Saving users to \"" + filePath + "\"", Logger.INFO);
+        logger.log("Saving users to \"" + filePath + "\"", Logger.DEBUG);
         try (FileOutputStream fos = new FileOutputStream(filePath);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(users);

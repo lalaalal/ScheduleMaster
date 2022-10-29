@@ -139,6 +139,7 @@ public class ClientHandler extends Communicator implements Runnable {
                 return new Response(Status.FAILED, result);
 
             userHandler.save();
+            logger.log("Succeed", Logger.INFO);
             return new Response(Status.SUCCEED, Response.SUCCEED);
         }
 
