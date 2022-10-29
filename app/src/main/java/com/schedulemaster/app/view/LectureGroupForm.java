@@ -36,6 +36,10 @@ public class LectureGroupForm implements ComponentForm {
                 searchDialog.setVisible(true);
             }
         });
+        lectureTableForm.addButtonColumn(ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("unselect"), ((lecture) -> {
+            lectureTableForm.removeLecture(lecture);
+            lectureTableForm.updateView();
+        }));
         groupNameLabel.setText(name);
     }
 

@@ -104,10 +104,11 @@ public class MainFrame extends JFrame {
         ContentForm contentForm = contentForms.get(content);
         if (contentForm == null)
             return;
-        contentForm.load();
 
         contentPanel.removeAll();
         contentPanel.add(contentForm.getPanel(), BorderLayout.CENTER);
+
+        contentForm.load();
         revalidate();
         repaint();
     }

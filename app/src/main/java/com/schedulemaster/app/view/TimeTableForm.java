@@ -104,7 +104,7 @@ public class TimeTableForm extends LectureView {
         if (timeSet.start().isAfter(CLASS_TIME[CLASS_TIME.length - 1]))
             return new int[0];
         LectureTime.TimeSet compare = new LectureTime.TimeSet(timeSet.dayOfWeek(), CLASS_TIME[startClassIndex], CLASS_TIME[CLASS_TIME.length - 1]);
-        while (compare.include(timeSet)) {
+        while (compare.include(timeSet) && startClassIndex < CLASS_TIME.length - 1) {
             startClassIndex += 1;
             compare = new LectureTime.TimeSet(timeSet.dayOfWeek(), CLASS_TIME[startClassIndex], CLASS_TIME[CLASS_TIME.length - 1]);
         }

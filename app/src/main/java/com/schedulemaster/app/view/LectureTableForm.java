@@ -55,9 +55,12 @@ public class LectureTableForm extends LectureView {
     protected final MainFrame frame;
     protected final ResourceBundle resourceBundle = ResourceBundle.getBundle("string");
 
-    private int buttonColumnCount = 0;
+    private int lastColumnIndex = HEADER.length - 1;
+    private final LinkedList<Integer> userActionButtonColumns = new LinkedList<>();
+    private final LinkedList<Integer> actionButtonColumns = new LinkedList<>();
 
-    private final Hash<Integer, UserAction> actions = new Hash<>();
+    private final Hash<Integer, UserAction> userActions = new Hash<>();
+    private final Hash<Integer, Action> actions = new Hash<>();
 
     private final DefaultTableModel tableModel = new DefaultTableModel(HEADER, 0) {
         @Override
@@ -98,7 +101,7 @@ public class LectureTableForm extends LectureView {
     }
 
     private Object[] createRowData(Lecture lecture) {
-        Object[] rowData = new Object[HEADER.length + buttonColumnCount];
+        Object[] rowData = new Object[HEADER.length + lastColumnIndex];
         rowData[0] = lecture.major;
         rowData[1] = lecture.lectureNum;
         rowData[2] = lecture.name;
@@ -109,28 +112,49 @@ public class LectureTableForm extends LectureView {
         rowData[7] = String.valueOf(lecture.enrolled);
         rowData[8] = String.valueOf(lecture.max);
 
-        for (int i = 0; i < buttonColumnCount; i++) {
-            int columnIndex = HEADER.length + i;
+        for (Integer columnIndex : userActionButtonColumns) {
             String columnName = tableModel.getColumnName(columnIndex);
-            rowData[columnIndex] = createUserControlButton(lecture, columnName, actions.get(columnIndex));
+            rowData[columnIndex] = createUserControlButton(lecture, columnName, userActions.get(columnIndex));
+        }
+        for (Integer columnIndex : actionButtonColumns) {
+            String columnName = tableModel.getColumnName(columnIndex);
+            rowData[columnIndex] = createButton(lecture, columnName, actions.get(columnIndex));
         }
 
         return rowData;
     }
 
-    public void addButtonColumn(String columnName, UserAction userAction) {
+    private void addColumn(String columnName) {
         tableModel.addColumn(columnName);
-        for (int i = 0; i < buttonColumnCount + 1; i++) {
-            int columnIndex = HEADER.length + i;
+        for (int columnIndex : userActionButtonColumns) {
             String identifier = tableModel.getColumnName(columnIndex);
             lectureTable.getColumn(identifier).setCellRenderer(buttonRenderer);
-
-            lectureTable.getColumn("강의명").setMinWidth(200);
-            lectureTable.getColumn("강의시간").setMinWidth(175);
-            lectureTable.getColumn("강의번호").setMinWidth(50);
         }
-        actions.put(HEADER.length + buttonColumnCount, userAction);
-        buttonColumnCount += 1;
+        for (int columnIndex : actionButtonColumns) {
+            String identifier = tableModel.getColumnName(columnIndex);
+            lectureTable.getColumn(identifier).setCellRenderer(buttonRenderer);
+        }
+        lectureTable.getColumn("강의명").setMinWidth(200);
+        lectureTable.getColumn("강의시간").setMinWidth(175);
+        lectureTable.getColumn("강의번호").setMinWidth(50);
+    }
+
+    public void addButtonColumn(String columnName, UserAction userAction) {
+        lastColumnIndex += 1;
+        userActionButtonColumns.push(lastColumnIndex);
+
+        addColumn(columnName);
+
+        userActions.put(lastColumnIndex, userAction);
+    }
+
+    public void addButtonColumn(String columnName, Action action) {
+        lastColumnIndex += 1;
+        actionButtonColumns.push(lastColumnIndex);
+
+        addColumn(columnName);
+
+        actions.put(lastColumnIndex, action);
     }
 
     public JButton createUserControlButton(Lecture lecture, String name, UserAction userAction) {
@@ -150,7 +174,20 @@ public class LectureTableForm extends LectureView {
         return enrollButton;
     }
 
-    protected interface UserAction {
+    public JButton createButton(Lecture lecture, String name, Action action) {
+        JButton button = new JButton(name);
+        button.addActionListener(event -> action.action(lecture));
+
+        return button;
+    }
+
+    @FunctionalInterface
+    public interface Action {
+        void action(Lecture lecture);
+    }
+
+    @FunctionalInterface
+    public interface UserAction {
         ResponseStatus action(UserController userController, Lecture lecture) throws IOException;
     }
 

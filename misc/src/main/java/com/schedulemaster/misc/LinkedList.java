@@ -109,6 +109,7 @@ public class LinkedList<E> implements Iterable<E>, Serializable {
     }
 
     public void clear() {
+        length = 0;
         head.next = null;
     }
 

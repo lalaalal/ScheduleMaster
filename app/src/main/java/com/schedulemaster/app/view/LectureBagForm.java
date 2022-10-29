@@ -2,6 +2,7 @@ package com.schedulemaster.app.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -57,6 +58,9 @@ public class LectureBagForm implements ContentForm {
         frame.addSelectedLectureView(selectedLectureTableForm);
         frame.addEnrolledLectureView(enrolledLectureTableForm);
         frame.addEnrolledLectureView(timeTableForm);
+
+        MagicController magicController = frame.getMagicController();
+        selectedLectureTableForm.addLectures(magicController.suggest(5));
     }
 
     private void createUIComponents() {

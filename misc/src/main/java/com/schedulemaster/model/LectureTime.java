@@ -11,12 +11,12 @@ public class LectureTime implements Serializable {
 
         public boolean isAfter(Time time) {
             return this.hour > time.hour
-                    || (this.hour == time.hour && this.minute >= time.minute);
+                    || (this.hour == time.hour && this.minute > time.minute);
         }
 
         public boolean isBefore(Time time) {
             return this.hour < time.hour
-                    || (this.hour == time.hour && this.minute <= time.minute);
+                    || (this.hour == time.hour && this.minute < time.minute);
         }
 
         public static Time parseTime(String time) {
@@ -56,12 +56,14 @@ public class LectureTime implements Serializable {
         public boolean conflictWith(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
                     && ((start.isAfter(timeSet.start) && start.isBefore(timeSet.end))
-                    || (end.isAfter(timeSet.start) && end.isBefore(timeSet.end)));
+                    || (end.isAfter(timeSet.start) && end.isBefore(timeSet.end))
+                    || include(timeSet) || timeSet.include(this));
         }
 
         public boolean include(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
-                    && (start.isBefore(timeSet.start) && end.isAfter(timeSet.end));
+                    && ((start.isBefore(timeSet.start) || start.equals(timeSet.start))
+                    && (end.isAfter(timeSet.end)) || end.equals(timeSet.end));
         }
 
         @Override

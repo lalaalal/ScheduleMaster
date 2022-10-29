@@ -49,19 +49,29 @@ public class LectureGroupListForm implements ComponentForm {
                 LectureTime unwantedTime = selectableTimeTable.getSelectedTime();
                 userController.setUnwantedTime(unwantedTime);
 
-                MagicController magicController = frame.getMagicController();
-                int i = 0;
-                for (LectureGroupForm lectureGroupForm : lectureGroupForms) {
-                    LinkedList<Lecture> lectures = lectureGroupForm.getLectures();
-                    magicController.addGroup();
-                    for (Lecture lecture : lectures)
-                        magicController.addLecture(i, lecture, 0);
-                    i += 1;
-                }
-
-                frame.setContentForm(ContentForm.Content.MagicSelector);
+                setupMagic();
             }
         });
+    }
+
+    private void setupMagic() {
+        try {
+            MagicController magicController = frame.getMagicController();
+            int i = 0;
+            for (LectureGroupForm lectureGroupForm : lectureGroupForms) {
+                LinkedList<Lecture> lectures = lectureGroupForm.getLectures();
+                magicController.addGroup();
+                for (Lecture lecture : lectures)
+                    magicController.addLecture(i, lecture, 0);
+                i += 1;
+            }
+            frame.setContentForm(ContentForm.Content.MagicSelector);
+        } catch (RuntimeException e) {
+            String msg = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("reduplication");
+            String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
+            JOptionPane.showMessageDialog(frame, msg, title, JOptionPane.ERROR_MESSAGE);
+            frame.getMagicController().init();
+        }
     }
 
     public void addGroup() {

@@ -36,6 +36,10 @@ public abstract class LectureView implements ComponentForm {
         return lectures;
     }
 
+    public void removeLecture(Lecture lecture) {
+        lectures.remove(lecture);
+    }
+
     public void clear() {
         lectures.clear();
     }

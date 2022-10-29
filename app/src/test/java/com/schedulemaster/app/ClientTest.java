@@ -3,6 +3,7 @@ package com.schedulemaster.app;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.misc.Request;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -59,10 +60,12 @@ public class ClientTest {
         try (Client client = new Client()) {
             LinkedList<Lecture> lectures =  client.getLectures();
             client.login("test", "test");
-            Lecture lecture = lectures.at(10);
-            boolean result = client.sendUnwantedTime(lecture.time);
+            LectureTime lectureTime = new LectureTime();
+            lectureTime.addTimeSet(0, LectureTime.Time.parseTime("09:00"), LectureTime.Time.parseTime("10:00"));
+            boolean result = client.sendUnwantedTime(lectureTime);
             System.out.println(result);
-            result = client.sendUnwantedTime(lecture.time);
+            lectureTime.addTimeSet(0, LectureTime.Time.parseTime("10:00"), LectureTime.Time.parseTime("11:00"));
+            result = client.sendUnwantedTime(lectureTime);
             System.out.println(result);
         }
     }

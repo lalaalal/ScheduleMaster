@@ -7,16 +7,14 @@ import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.LinkedList;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
 
 public class MagicController {
 
     private final UserController userController;
 
-    private LinkedList<Schedule> schedules = new LinkedList<>();
-    private LinkedList<LectureGroup> lectureGroups = new LinkedList<>();
-    private Hash<String, Integer> priorities = new Hash<>();
+    private final LinkedList<Schedule> schedules = new LinkedList<>();
+    private final LinkedList<LectureGroup> lectureGroups = new LinkedList<>();
+    private final Hash<String, Integer> priorities = new Hash<>();
     private final LectureBook lectureBook;
 
     public MagicController(UserController userController, LectureBook lectureBook) {
@@ -25,9 +23,9 @@ public class MagicController {
     }
 
     public void init() {
-        lectureGroups = new LinkedList<>();
-        priorities = new Hash<>();
-        schedules = new LinkedList<>();
+        lectureGroups.clear();
+        priorities.clear();
+        schedules.clear();
     }
 
     public void addGroup() {
@@ -66,20 +64,15 @@ public class MagicController {
 
     public void magic() throws IOException {
         schedules.clear();
-        createSchedules(lectureGroups.iterator(), null, new Schedule());
+        createSchedules(lectureGroups, 0, new Schedule());
         userController.savePriorities(priorities);
         userController.saveUnwantedTime();
     }
 
-    private void createSchedules(Iterator<LectureGroup> iterator, LectureGroup curr, Schedule schedule) {
-        if (curr == null && iterator.hasNext())
-            curr = iterator.next();
-        if (curr == null)
+    private void createSchedules(LinkedList<LectureGroup> groups, int index, Schedule schedule) {
+        if (index >= groups.getLength())
             return;
-
-        LectureGroup next = null;
-        if (iterator.hasNext())
-            next = iterator.next();
+        LectureGroup curr = groups.at(index);
 
         Heap<Priority> priorityHeap = curr.createHeap(priorities);
         LectureTime unwantedTime = userController.getUnwantedTime();
@@ -91,18 +84,15 @@ public class MagicController {
             Schedule clone = schedule.copy();
             if (!lecture.time.conflictWith(unwantedTime))
                 clone.addLecture(lecture);
-            if (next == null && clone.getLectures().getLength() == lectureGroups.getLength()
-                    && !schedules.has(clone))
+            if (index + 1 == groups.getLength() && clone.getLectures().getLength() == groups.getLength())
                 schedules.push(clone);
             else
-                createSchedules(iterator, next, clone);
+                createSchedules(groups, index + 1, clone);
         }
     }
 
     public Schedule[] getSchedules() {
-        Schedule[] result = schedules.toArray(new Schedule[0]);
-        Arrays.sort(result, (o1, o2) -> o2.getLectures().getLength() - o1.getLectures().getLength());
-        return result;
+        return schedules.toArray(new Schedule[0]);
     }
 
     public LinkedList<Lecture> suggest(int maxSuggestion) {
@@ -113,7 +103,8 @@ public class MagicController {
         while (!priorityHeap.isEmpty()) {
             String lectureNum = priorityHeap.pop().lectureNum();
             Lecture lecture = lectureBook.findLecture(lectureNum);
-            if (!lecture.time.conflictWith(usedTime))
+
+            if (!lecture.time.conflictWith(usedTime) && !hasSameName(suggestion, lecture))
                 suggestion.push(lecture);
             if (suggestion.getLength() >= maxSuggestion)
                 return suggestion;
@@ -123,7 +114,7 @@ public class MagicController {
         for (Lecture lecture : lectures) {
             if (suggestion.getLength() >= maxSuggestion)
                 return suggestion;
-            if (!lecture.time.conflictWith(usedTime) && !suggestion.has(lecture))
+            if (!lecture.time.conflictWith(usedTime) && !hasSameName(suggestion, lecture))
                 suggestion.push(lecture);
         }
 
@@ -139,5 +130,14 @@ public class MagicController {
         }
 
         return usedTime;
+    }
+
+    private boolean hasSameName(LinkedList<Lecture> lectures, Lecture lecture) {
+        for (Lecture compare : lectures) {
+            if (compare.name.equals(lecture.name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
