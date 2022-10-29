@@ -5,18 +5,18 @@ import com.schedulemaster.misc.LinkedList;
 import java.io.Serializable;
 
 public class LectureTime implements Serializable {
-    public static final long serialVersionUID = 12L;
+    public static final long serialVersionUID = 13L;
     public record Time(int hour, int minute) implements Serializable {
-        public static final long serialVersionUID = 12L;
+        public static final long serialVersionUID = 13L;
 
         public boolean isAfter(Time time) {
             return this.hour > time.hour
-                    || (this.hour == time.hour && this.minute >= time.minute);
+                    || (this.hour == time.hour && this.minute > time.minute);
         }
 
         public boolean isBefore(Time time) {
             return this.hour < time.hour
-                    || (this.hour == time.hour && this.minute <= time.minute);
+                    || (this.hour == time.hour && this.minute < time.minute);
         }
 
         public static Time parseTime(String time) {
@@ -52,16 +52,18 @@ public class LectureTime implements Serializable {
     }
 
     public record TimeSet(int dayOfWeek, Time start, Time end) implements Serializable {
-        public static final long serialVersionUID = 11L;
+        public static final long serialVersionUID = 13L;
         public boolean conflictWith(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
                     && ((start.isAfter(timeSet.start) && start.isBefore(timeSet.end))
-                    || (end.isAfter(timeSet.start) && end.isBefore(timeSet.end)));
+                    || (end.isAfter(timeSet.start) && end.isBefore(timeSet.end))
+                    || include(timeSet) || timeSet.include(this));
         }
 
         public boolean include(TimeSet timeSet) {
             return this.dayOfWeek == timeSet.dayOfWeek
-                    && (start.isBefore(timeSet.start) && end.isAfter(timeSet.end));
+                    && ((start.isBefore(timeSet.start) || start.equals(timeSet.start))
+                    && (end.isAfter(timeSet.end)) || end.equals(timeSet.end));
         }
 
         @Override
@@ -123,6 +125,27 @@ public class LectureTime implements Serializable {
         for (TimeSet timeSet : timeSets) {
             this.timeSets.push(timeSet);
         }
+    }
+
+    public boolean hasTimeSet(int dayOfWeek, Time start, Time end) {
+        return hasTimeSet(new TimeSet(dayOfWeek, start, end));
+    }
+
+    public boolean hasTimeSet(TimeSet timeSet) {
+        return timeSets.has(timeSet);
+    }
+
+    public void removeTimeSet(int dayOfWeek, Time start, Time end) {
+        removeTimeSet(new TimeSet(dayOfWeek, start, end));
+    }
+
+    public void removeTimeSet(TimeSet timeSet) {
+        if (timeSets.has(timeSet))
+            timeSets.remove(timeSet);
+    }
+
+    public void clear() {
+        timeSets.clear();
     }
 
     public boolean conflictWith(LectureTime lectureTime) {

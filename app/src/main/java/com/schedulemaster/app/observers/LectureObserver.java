@@ -13,6 +13,7 @@ public abstract class LectureObserver implements Observer {
     }
 
     public void addLectureView(LectureView lectureView) {
-        lectureViews.push(lectureView);
+        if (!lectureViews.has(lectureView))
+            lectureViews.push(lectureView);
     }
 }

@@ -70,16 +70,7 @@ public class Lecture implements Serializable {
 
         Lecture lecture = (Lecture) o;
 
-        if (grade != lecture.grade) return false;
-        if (score != lecture.score) return false;
-        if (max != lecture.max) return false;
-        if (enrolled != lecture.enrolled) return false;
-        if (!Objects.equals(name, lecture.name)) return false;
-        if (!Objects.equals(time, lecture.time)) return false;
-        if (!Objects.equals(professor, lecture.professor)) return false;
-        if (!Objects.equals(lectureNum, lecture.lectureNum)) return false;
-        if (!Objects.equals(classRoom, lecture.classRoom)) return false;
-        return Objects.equals(major, lecture.major);
+        return Objects.equals(lectureNum, lecture.lectureNum);
     }
 
     @Override

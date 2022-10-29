@@ -6,14 +6,14 @@ import com.schedulemaster.misc.LinkedList;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    public static final long serialVersionUID = 14L;
+    public static final long serialVersionUID = 15L;
 
     public final String id;
     private final String hashedPassword;
 
-    public final LinkedList<Lecture> selectedLectures = new LinkedList<>(); // 책가방 강의
-    public final LinkedList<Lecture> enrolledLectures = new LinkedList<>(); // 신청 완료된 강의
-    public Hash<Lecture, Integer> priorities = new Hash<>();
+    public final LinkedList<String> selectedLectures = new LinkedList<>(); // 책가방 강의
+    public final LinkedList<String> enrolledLectures = new LinkedList<>(); // 신청 완료된 강의
+    public Hash<String, Integer> priorities = new Hash<>();
     public LectureTime unwantedTime = new LectureTime();
 
     public User(String id, String hashedPassword) {
@@ -26,21 +26,21 @@ public class User implements Serializable {
     }
 
     public void enrollLecture(Lecture lecture) {
-        enrolledLectures.push(lecture);
+        enrolledLectures.push(lecture.lectureNum);
         lecture.enrolled += 1;
     }
 
     public void selectLecture(Lecture lecture) {
-        selectedLectures.push(lecture);
+        selectedLectures.push(lecture.lectureNum);
     }
 
     public void cancelLecture(Lecture lecture) {
-        enrolledLectures.remove(lecture);
+        enrolledLectures.remove(lecture.lectureNum);
         lecture.enrolled -= 1;
     }
 
     public void unselectLecture(Lecture lecture) {
-        selectedLectures.remove(lecture);
+        selectedLectures.remove(lecture.lectureNum);
     }
 
     public void addUnwantedTime(LectureTime.TimeSet timeSet) {

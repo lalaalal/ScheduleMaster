@@ -27,13 +27,13 @@ public class TimeTableForm extends LectureView {
     private static final String[] HEADER = {"", "월", "화", "수", "목", "금", "토"};
     private static final String[][] RAW_DATA = new String[N_CLASS][HEADER.length];
 
-    private static final int FIRST_CLASS_HOUR = 9;
-    private static final int LAST_CLASS_HOUR = FIRST_CLASS_HOUR + RAW_DATA.length + 1;
+    public static final int FIRST_CLASS_HOUR = 9;
+    public static final int LAST_CLASS_HOUR = FIRST_CLASS_HOUR + RAW_DATA.length + 1;
 
-    private static final LectureTime.Time[] CLASS_TIME = new LectureTime.Time[RAW_DATA.length + 1];
+    public static final LectureTime.Time[] CLASS_TIME = new LectureTime.Time[RAW_DATA.length + 1];
 
     private static final Color[] COLORS = {Color.decode("#FF8787"), Color.decode("#F8C4B4"), Color.decode("#E5EBB2"), Color.decode("#BCE29E"), Color.decode("#B8E8FC"), Color.decode("#B1AFFF"), Color.decode("#C8FFD4"), Color.decode("#DFD3C3"), Color.decode("#F8EDE3"), Color.decode("#AEBDCA")};
-    private final Hash<Lecture, Integer> lectureColors = new Hash<>();
+    private final Hash<String, Integer> lectureColors = new Hash<>();
     private final Hash<Position, String> lectureNames = new Hash<>();
 
     static {
@@ -57,21 +57,25 @@ public class TimeTableForm extends LectureView {
     }
 
     @Override
-    public void updateView() {
+    public void setLectures(LinkedList<Lecture> lectures) {
+        super.setLectures(lectures);
         if (lectures.getLength() < 1)
             lectureColors.clear();
+    }
 
+    @Override
+    public void updateView() {
         colors.clear();
         lectureNames.clear();
         int colorIndex = 0;
         for (Lecture lecture : lectures) {
             int color = colorIndex;
-            if (lectureColors.hasKey(lecture))
-                color = lectureColors.get(lecture);
+            if (lectureColors.hasKey(lecture.name))
+                color = lectureColors.get(lecture.name);
             setClassTimes(lecture, color);
 
-            if (!lectureColors.hasKey(lecture))
-                lectureColors.put(lecture, color);
+            if (!lectureColors.hasKey(lecture.name))
+                lectureColors.put(lecture.name, color);
             colorIndex += 1;
         }
         panel.revalidate();
@@ -100,7 +104,7 @@ public class TimeTableForm extends LectureView {
         if (timeSet.start().isAfter(CLASS_TIME[CLASS_TIME.length - 1]))
             return new int[0];
         LectureTime.TimeSet compare = new LectureTime.TimeSet(timeSet.dayOfWeek(), CLASS_TIME[startClassIndex], CLASS_TIME[CLASS_TIME.length - 1]);
-        while (compare.include(timeSet)) {
+        while (compare.include(timeSet) && startClassIndex < CLASS_TIME.length - 1) {
             startClassIndex += 1;
             compare = new LectureTime.TimeSet(timeSet.dayOfWeek(), CLASS_TIME[startClassIndex], CLASS_TIME[CLASS_TIME.length - 1]);
         }
@@ -123,8 +127,21 @@ public class TimeTableForm extends LectureView {
         return result;
     }
 
+    @Override
     public JPanel getPanel() {
         return panel;
+    }
+
+    public JTable getTimeTable() {
+        return timeTable;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        lectureColors.clear();
+        lectureNames.clear();
+        colors.clear();
     }
 
     private void createUIComponents() {

@@ -7,7 +7,6 @@ import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.LinkedList;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 public class MagicController {
 
@@ -15,12 +14,18 @@ public class MagicController {
 
     private final LinkedList<Schedule> schedules = new LinkedList<>();
     private final LinkedList<LectureGroup> lectureGroups = new LinkedList<>();
-    private final Hash<Lecture, Integer> priorities = new Hash<>();
+    private final Hash<String, Integer> priorities = new Hash<>();
     private final LectureBook lectureBook;
 
     public MagicController(UserController userController, LectureBook lectureBook) {
         this.userController = userController;
         this.lectureBook = lectureBook;
+    }
+
+    public void init() {
+        lectureGroups.clear();
+        priorities.clear();
+        schedules.clear();
     }
 
     public void addGroup() {
@@ -31,16 +36,16 @@ public class MagicController {
         if (lectureGroups.getLength() <= groupNumber)
             throw new IndexOutOfBoundsException();
         LectureGroup group = lectureGroups.at(groupNumber);
-        priorities.put(lecture, priority);
-        group.push(lecture);
+        priorities.put(lecture.lectureNum, priority);
+        group.push(lecture.lectureNum);
     }
 
     public void removeLecture(int groupNumber, Lecture lecture) {
         if (lectureGroups.getLength() <= groupNumber)
             throw new IndexOutOfBoundsException();
         LectureGroup group = lectureGroups.at(groupNumber);
-        group.remove(lecture);
-        priorities.remove(lecture);
+        group.remove(lecture.lectureNum);
+        priorities.remove(lecture.lectureNum);
     }
 
     /** *
@@ -54,37 +59,35 @@ public class MagicController {
     }
 
     public void changePriority(Lecture lecture, int priority) {
-        priorities.set(lecture, priority);
+        priorities.set(lecture.lectureNum, priority);
     }
 
     public void magic() throws IOException {
         schedules.clear();
-        createSchedules(lectureGroups.iterator(), null, new Schedule());
+        createSchedules(lectureGroups, 0, new Schedule());
         userController.savePriorities(priorities);
         userController.saveUnwantedTime();
     }
 
-    private void createSchedules(Iterator<LectureGroup> iterator, LectureGroup curr, Schedule schedule) {
-        if (curr == null && iterator.hasNext())
-            curr = iterator.next();
-        if (curr == null)
+    private void createSchedules(LinkedList<LectureGroup> groups, int index, Schedule schedule) {
+        if (index >= groups.getLength())
             return;
-
-        LectureGroup next = null;
-        if (iterator.hasNext())
-            next = iterator.next();
+        LectureGroup curr = groups.at(index);
 
         Heap<Priority> priorityHeap = curr.createHeap(priorities);
+        LectureTime unwantedTime = userController.getUnwantedTime();
 
         while (!priorityHeap.isEmpty()) {
-            Lecture lecture = priorityHeap.pop().lecture();
+            String lectureNum = priorityHeap.pop().lectureNum();
+            Lecture lecture = lectureBook.findLecture(lectureNum);
 
             Schedule clone = schedule.copy();
-            clone.addLecture(lecture);
-            if (next == null)
+            if (!lecture.time.conflictWith(unwantedTime))
+                clone.addLecture(lecture);
+            if (index + 1 == groups.getLength() && clone.getLectures().getLength() == groups.getLength())
                 schedules.push(clone);
             else
-                createSchedules(iterator, next, clone);
+                createSchedules(groups, index + 1, clone);
         }
     }
 
@@ -98,8 +101,10 @@ public class MagicController {
         LinkedList<Lecture> suggestion = new LinkedList<>();
         Heap<Priority> priorityHeap = userController.getPriorityHeap();
         while (!priorityHeap.isEmpty()) {
-            Lecture lecture = priorityHeap.pop().lecture();
-            if (!lecture.time.conflictWith(usedTime))
+            String lectureNum = priorityHeap.pop().lectureNum();
+            Lecture lecture = lectureBook.findLecture(lectureNum);
+
+            if (!lecture.time.conflictWith(usedTime) && !hasSameName(suggestion, lecture))
                 suggestion.push(lecture);
             if (suggestion.getLength() >= maxSuggestion)
                 return suggestion;
@@ -109,7 +114,7 @@ public class MagicController {
         for (Lecture lecture : lectures) {
             if (suggestion.getLength() >= maxSuggestion)
                 return suggestion;
-            if (!lecture.time.conflictWith(usedTime) && !suggestion.has(lecture))
+            if (!lecture.time.conflictWith(usedTime) && !hasSameName(suggestion, lecture))
                 suggestion.push(lecture);
         }
 
@@ -125,5 +130,14 @@ public class MagicController {
         }
 
         return usedTime;
+    }
+
+    private boolean hasSameName(LinkedList<Lecture> lectures, Lecture lecture) {
+        for (Lecture compare : lectures) {
+            if (compare.name.equals(lecture.name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

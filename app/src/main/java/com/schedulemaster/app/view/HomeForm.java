@@ -2,72 +2,38 @@ package com.schedulemaster.app.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.schedulemaster.app.controller.LectureController;
 import com.schedulemaster.app.controller.UserController;
-import com.schedulemaster.misc.LinkedList;
-import com.schedulemaster.model.Lecture;
-import com.schedulemaster.model.LectureBook;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class HomeForm {
+public class HomeForm implements ContentForm {
     private final MainFrame frame;
     private JPanel panel;
     private JPanel timeTablePanel;
-    private JPanel searchTablePanel;
     private JPanel selectedTablePanel;
-    private JTextField searchField;
-    private JButton searchButton;
-    private JPanel searchPanel;
-    private JComboBox<LectureController.AttributeName> classifyComboBox;
-    private JButton showAll;
-    private final LectureTableForm searchLectureTableForm;
+    private JLabel lectureBagLabel;
+    private JLabel timeTableLabel;
+    private JPanel searchFormPanel;
     private final LectureTableForm selectedLectureTableForm;
+    private final SearchForm searchForm;
     private final TimeTableForm timeTableForm = new TimeTableForm();
 
     public HomeForm(MainFrame frame) {
         this.frame = frame;
-        searchLectureTableForm = new SearchLectureTableForm(frame);
         selectedLectureTableForm = new SelectedLectureTableForm(frame);
+        searchForm = new SearchForm(frame, new HomeLectureTableForm(frame));
 
         $$$setupUI$$$();
 
-        searchField.setBorder(BorderFactory.createCompoundBorder(searchField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        searchField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getKeyChar() == KeyEvent.VK_ENTER)
-                    search();
-            }
-        });
-        searchButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                search();
-            }
-        });
-        showAll.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                LinkedList<Lecture> lectures = frame.getLectureController().getLectureBook().getLectures();
-                searchLectureTableForm.setLectures(lectures);
-            }
-        });
+        lectureBagLabel.setBorder(BorderFactory.createEmptyBorder(5, 35, 0, 5));
+        timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
     }
 
+    @Override
     public void load() {
-        LectureController lectureController = frame.getLectureController();
-        LectureBook lectureBook = lectureController.getLectureBook();
-        searchLectureTableForm.setLectures(lectureBook.getLectures());
-
         UserController userController = frame.getUserController();
 
         selectedLectureTableForm.setLectures(userController.getSelectedLectures());
@@ -76,18 +42,11 @@ public class HomeForm {
 
         frame.addSelectedLectureView(selectedLectureTableForm);
         frame.addSelectedLectureView(timeTableForm);
-        frame.addBookLectureView(searchLectureTableForm);
+
+        searchForm.load();
     }
 
-    private void search() {
-        LectureController lectureController = frame.getLectureController();
-        int selectedIndex = classifyComboBox.getSelectedIndex();
-        LectureController.AttributeName attributeName = classifyComboBox.getItemAt(selectedIndex);
-
-        LinkedList<Lecture> search = lectureController.findByAttributeName(attributeName, searchField.getText());
-        searchLectureTableForm.setLectures(search);
-    }
-
+    @Override
     public JPanel getPanel() {
         return panel;
     }
@@ -103,25 +62,19 @@ public class HomeForm {
         createUIComponents();
         panel = new JPanel();
         panel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel.add(timeTablePanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel1.add(searchTablePanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel1.add(selectedTablePanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        searchPanel = new JPanel();
-        searchPanel.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
-        panel1.add(searchPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, 1, null, null, null, 0, false));
-        searchPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(15, 15, 0, 15), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        searchField = new JTextField();
-        searchPanel.add(searchField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        searchButton = new JButton();
-        this.$$$loadButtonText$$$(searchButton, this.$$$getMessageFromBundle$$$("string", "search_btn"));
-        searchPanel.add(searchButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        searchPanel.add(classifyComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        showAll = new JButton();
-        this.$$$loadButtonText$$$(showAll, this.$$$getMessageFromBundle$$$("string", "show_all_btn"));
-        searchPanel.add(showAll, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        this.$$$loadLabelText$$$(lectureBagLabel, this.$$$getMessageFromBundle$$$("string", "lecture_bag"));
+        panel1.add(lectureBagLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.add(searchFormPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel.add(panel2, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel2.add(timeTablePanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        this.$$$loadLabelText$$$(timeTableLabel, this.$$$getMessageFromBundle$$$("string", "lecture_bag"));
+        panel2.add(timeTableLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;
@@ -144,7 +97,7 @@ public class HomeForm {
     /**
      * @noinspection ALL
      */
-    private void $$$loadButtonText$$$(AbstractButton component, String text) {
+    private void $$$loadLabelText$$$(JLabel component, String text) {
         StringBuffer result = new StringBuffer();
         boolean haveMnemonic = false;
         char mnemonic = '\0';
@@ -163,7 +116,7 @@ public class HomeForm {
         }
         component.setText(result.toString());
         if (haveMnemonic) {
-            component.setMnemonic(mnemonic);
+            component.setDisplayedMnemonic(mnemonic);
             component.setDisplayedMnemonicIndex(mnemonicIndex);
         }
     }
@@ -177,10 +130,10 @@ public class HomeForm {
 
     private void createUIComponents() {
         timeTablePanel = timeTableForm.getPanel();
-        searchTablePanel = searchLectureTableForm.getPanel();
         selectedTablePanel = selectedLectureTableForm.getPanel();
+        searchFormPanel = searchForm.getPanel();
 
-        LectureController.AttributeName[] attributeNames = {LectureController.AttributeName.Professor, LectureController.AttributeName.Major, LectureController.AttributeName.Name};
-        classifyComboBox = new JComboBox<>(attributeNames);
+        lectureBagLabel = new HeaderLabel();
+        timeTableLabel = new HeaderLabel();
     }
 }
