@@ -75,6 +75,7 @@ public abstract class LectureTableForm extends LectureView {
         scrollPane.setBorder(BorderFactory.createCompoundBorder(scrollPane.getBorder(), BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)));
     }
 
+    @Override
     public JPanel getPanel() {
         return panel;
     }
@@ -144,6 +145,15 @@ public abstract class LectureTableForm extends LectureView {
                 stringBuilder.append("<br>");
         }
         return stringBuilder.toString();
+    }
+
+    public LinkedList<Lecture> getSelectedLectures() {
+        LinkedList<Lecture> selectedLectures = new LinkedList<>();
+        for (int selectedRow : lectureTable.getSelectedRows()) {
+            selectedLectures.push(lectures.at(selectedRow));
+        }
+
+        return selectedLectures;
     }
 
     private void createUIComponents() {

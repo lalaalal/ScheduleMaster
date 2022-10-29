@@ -1,12 +1,8 @@
 package com.schedulemaster.app.view;
 
-import javax.swing.*;
-
-public interface ContentForm {
+public interface ContentForm extends ComponentForm {
     enum Content {
         Home, LectureBag, MagicWizard, MagicSelector
     }
-
-    JPanel getPanel();
     void load();
 }

@@ -5,8 +5,8 @@ import com.schedulemaster.model.Lecture;
 
 import javax.swing.*;
 
-public class SearchLectureTableForm extends LectureTableForm {
-    public SearchLectureTableForm(MainFrame frame) {
+public class HomeLectureTableForm extends LectureTableForm {
+    public HomeLectureTableForm(MainFrame frame) {
         super(frame);
     }
 

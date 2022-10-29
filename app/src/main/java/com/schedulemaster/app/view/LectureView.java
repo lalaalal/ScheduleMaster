@@ -3,7 +3,7 @@ package com.schedulemaster.app.view;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 
-public abstract class LectureView {
+public abstract class LectureView implements ComponentForm {
     protected LinkedList<Lecture> lectures;
 
     public LectureView() {
@@ -16,6 +16,14 @@ public abstract class LectureView {
 
     public void addLecture(Lecture lecture) {
         lectures.push(lecture);
+    }
+
+    public void addLectures(LinkedList<Lecture> lectures) {
+        for (Lecture lecture : lectures) {
+            if (!this.lectures.has(lecture))
+                this.lectures.push(lecture);
+        }
+        updateView();
     }
 
     public void setLectures(LinkedList<Lecture> lectures) {

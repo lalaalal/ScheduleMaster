@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class LoginFrom {
+public class LoginFrom implements ComponentForm {
 
     private JPasswordField passwordField;
     private JTextField idField;
@@ -28,10 +28,6 @@ public class LoginFrom {
     private JLabel signupLabel;
 
     private final MainFrame mainFrame;
-
-    public JPanel getPanel() {
-        return panel;
-    }
 
     public LoginFrom(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -64,6 +60,11 @@ public class LoginFrom {
 
         idField.addKeyListener(keyAdapter);
         passwordField.addKeyListener(keyAdapter);
+    }
+
+    @Override
+    public JPanel getPanel() {
+        return panel;
     }
 
     public void login() {

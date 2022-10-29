@@ -127,6 +127,7 @@ public class TimeTableForm extends LectureView {
         return result;
     }
 
+    @Override
     public JPanel getPanel() {
         return panel;
     }
