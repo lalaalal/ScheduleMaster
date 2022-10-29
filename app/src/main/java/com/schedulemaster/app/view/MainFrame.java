@@ -10,6 +10,7 @@ import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.observers.EnrolledLectureObserver;
 import com.schedulemaster.app.observers.LectureBookObserver;
 import com.schedulemaster.app.observers.SelectedLectureObserver;
+import com.schedulemaster.misc.Hash;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -24,13 +25,17 @@ import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
     private final LoginFrom loginFrom = new LoginFrom(this);
-    private final HomeForm homeForm = new HomeForm(this);
+
+    private final Hash<ContentForm.Content, ContentForm> contentForms = new Hash<>();
     private JPanel mainPanel;
     private JPanel titleBar;
-    private JPanel content;
+    private JPanel contentPanel;
     private JLabel titleLabel;
     private JLabel userIDLabel;
     private JLabel logoutLabel;
+    private JLabel homeLabel;
+    private JLabel lectureBagLabel;
+    private JLabel wizardLabel;
 
     private Client client;
     private LectureController lectureController;
@@ -42,19 +47,12 @@ public class MainFrame extends JFrame {
 
     public static final String RESOURCE_BUNDLE_NAME = "string";
 
-    @Override
-    public void setContentPane(Container contentPane) {
-        content.removeAll();
-        content.add(contentPane, BorderLayout.CENTER);
-        repaint();
-    }
-
     public MainFrame() {
         super("Main");
 
         setSize(1400, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        super.setContentPane(loginFrom.getPanel());
+        setContentPane(loginFrom.getPanel());
         setLocationRelativeTo(null);
 
         titleBar.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -75,6 +73,40 @@ public class MainFrame extends JFrame {
                 disconnectServer();
             }
         });
+
+        contentForms.set(ContentForm.Content.Home, new HomeForm(this));
+        contentForms.set(ContentForm.Content.LectureBag, new LectureBagForm(this));
+        homeLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setContentForm(ContentForm.Content.Home);
+            }
+        });
+        lectureBagLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setContentForm(ContentForm.Content.LectureBag);
+            }
+        });
+        wizardLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setContentForm(ContentForm.Content.MagicWizard);
+            }
+        });
+
+
+    }
+
+    public void setContentForm(ContentForm.Content content) {
+        ContentForm contentForm = contentForms.get(content);
+        if (contentForm == null)
+            return;
+
+        contentPanel.removeAll();
+        contentPanel.add(contentForm.getPanel(), BorderLayout.CENTER);
+        revalidate();
+        repaint();
     }
 
     public boolean connectServer() {
@@ -116,15 +148,17 @@ public class MainFrame extends JFrame {
     }
 
     public void login() {
-        super.setContentPane(mainPanel);
-        homeForm.load();
-        setContentPane(homeForm.getPanel());
+        setContentPane(mainPanel);
+        for (ContentForm contentForm : contentForms) {
+            contentForm.load();
+        }
+        setContentForm(ContentForm.Content.Home);
         revalidate();
         repaint();
     }
 
     private void showLoginForm() {
-        super.setContentPane(loginFrom.getPanel());
+        setContentPane(loginFrom.getPanel());
         revalidate();
         repaint();
     }
@@ -175,7 +209,7 @@ public class MainFrame extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         titleBar = new JPanel();
-        titleBar.setLayout(new GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), -1, -1));
+        titleBar.setLayout(new GridLayoutManager(1, 9, new Insets(0, 0, 0, 0), -1, -1));
         titleBar.setBackground(new Color(-13156691));
         titleBar.setForeground(new Color(-13156691));
         mainPanel.add(titleBar, BorderLayout.NORTH);
@@ -186,18 +220,32 @@ public class MainFrame extends JFrame {
         userIDLabel = new JLabel();
         userIDLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(userIDLabel, this.$$$getMessageFromBundle$$$("string", "default_id"));
-        titleBar.add(userIDLabel, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        titleBar.add(userIDLabel, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         logoutLabel = new JLabel();
         logoutLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(logoutLabel, this.$$$getMessageFromBundle$$$("string", "logout"));
-        titleBar.add(logoutLabel, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        titleBar.add(logoutLabel, new GridConstraints(0, 8, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        titleBar.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        titleBar.add(spacer1, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
-        titleBar.add(spacer2, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(15, -1), null, null, 0, false));
-        content = new JPanel();
-        content.setLayout(new BorderLayout(0, 0));
-        mainPanel.add(content, BorderLayout.CENTER);
+        titleBar.add(spacer2, new GridConstraints(0, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(15, -1), null, null, 0, false));
+        homeLabel = new JLabel();
+        homeLabel.setForeground(new Color(-1));
+        this.$$$loadLabelText$$$(homeLabel, this.$$$getMessageFromBundle$$$("string", "home"));
+        titleBar.add(homeLabel, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer3 = new Spacer();
+        titleBar.add(spacer3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(15, -1), null, null, 0, false));
+        lectureBagLabel = new JLabel();
+        lectureBagLabel.setForeground(new Color(-1));
+        this.$$$loadLabelText$$$(lectureBagLabel, this.$$$getMessageFromBundle$$$("string", "enrolled"));
+        titleBar.add(lectureBagLabel, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        wizardLabel = new JLabel();
+        wizardLabel.setForeground(new Color(-1));
+        this.$$$loadLabelText$$$(wizardLabel, this.$$$getMessageFromBundle$$$("string", "wizard"));
+        titleBar.add(wizardLabel, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout(0, 0));
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;

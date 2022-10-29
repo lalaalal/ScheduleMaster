@@ -18,7 +18,7 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class HomeForm {
+public class HomeForm implements ContentForm {
     private final MainFrame frame;
     private JPanel panel;
     private JPanel timeTablePanel;
@@ -73,6 +73,7 @@ public class HomeForm {
         timeTableLabel.setFont(new Font("Sans", Font.PLAIN, 18));
     }
 
+    @Override
     public void load() {
         LectureController lectureController = frame.getLectureController();
         LectureBook lectureBook = lectureController.getLectureBook();
@@ -98,6 +99,7 @@ public class HomeForm {
         searchLectureTableForm.setLectures(search);
     }
 
+    @Override
     public JPanel getPanel() {
         return panel;
     }
