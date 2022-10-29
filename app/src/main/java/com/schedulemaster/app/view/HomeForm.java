@@ -2,7 +2,6 @@ package com.schedulemaster.app.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.schedulemaster.app.controller.LectureController;
 import com.schedulemaster.app.controller.UserController;
 
 import javax.swing.*;
@@ -14,14 +13,8 @@ public class HomeForm implements ContentForm {
     private final MainFrame frame;
     private JPanel panel;
     private JPanel timeTablePanel;
-    private JPanel searchTablePanel;
     private JPanel selectedTablePanel;
-    private JTextField searchField;
-    private JButton searchButton;
-    private JComboBox<LectureController.AttributeName> classifyComboBox;
-    private JButton showAll;
     private JLabel lectureBagLabel;
-    private JLabel searchLabel;
     private JLabel timeTableLabel;
     private JPanel searchFormPanel;
     private final LectureTableForm selectedLectureTableForm;

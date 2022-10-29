@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
@@ -18,7 +19,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
-public abstract class LectureTableForm extends LectureView {
+public class LectureTableForm extends LectureView {
     private static class JButtonRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -44,14 +45,19 @@ public abstract class LectureTableForm extends LectureView {
         }
     }
 
-    private static final String[] HEADER = {"전공", "강의번호", "강의명", "교수명", "학점", "강의시간", "강의실", "신청자", "최대", "-", "--"};
+    private static final String[] HEADER = {"전공", "강의번호", "강의명", "교수명", "학점", "강의시간", "강의실", "신청자", "최대"};
 
     private JTable lectureTable;
     private JPanel panel;
     private JScrollPane scrollPane;
+    private final JButtonRenderer buttonRenderer = new JButtonRenderer();
 
     protected final MainFrame frame;
     protected final ResourceBundle resourceBundle = ResourceBundle.getBundle("string");
+
+    private int buttonColumnCount = 0;
+
+    private final Hash<Integer, UserAction> actions = new Hash<>();
 
     private final DefaultTableModel tableModel = new DefaultTableModel(HEADER, 0) {
         @Override
@@ -65,8 +71,6 @@ public abstract class LectureTableForm extends LectureView {
         lectureTable.getColumn("강의명").setMinWidth(200);
         lectureTable.getColumn("강의시간").setMinWidth(175);
         lectureTable.getColumn("강의번호").setMinWidth(50);
-        lectureTable.getColumn("-").setMinWidth(50);
-        lectureTable.getColumn("--").setMinWidth(50);
         lectureTable.addMouseListener(new TableMouseAdapter());
         lectureTable.setRowHeight((int) (lectureTable.getRowHeight() * 1.2));
         this.frame = frame;
@@ -94,7 +98,7 @@ public abstract class LectureTableForm extends LectureView {
     }
 
     private Object[] createRowData(Lecture lecture) {
-        Object[] rowData = new Object[HEADER.length];
+        Object[] rowData = new Object[HEADER.length + buttonColumnCount];
         rowData[0] = lecture.major;
         rowData[1] = lecture.lectureNum;
         rowData[2] = lecture.name;
@@ -104,13 +108,32 @@ public abstract class LectureTableForm extends LectureView {
         rowData[6] = lecture.classRoom;
         rowData[7] = String.valueOf(lecture.enrolled);
         rowData[8] = String.valueOf(lecture.max);
-        rowData[9] = createButton1(lecture);
-        rowData[10] = createButton2(lecture);
+
+        for (int i = 0; i < buttonColumnCount; i++) {
+            int columnIndex = HEADER.length + i;
+            String columnName = tableModel.getColumnName(columnIndex);
+            rowData[columnIndex] = createUserControlButton(lecture, columnName, actions.get(columnIndex));
+        }
 
         return rowData;
     }
 
-    public JButton createButton(Lecture lecture, String name, UserAction userAction) {
+    public void addButtonColumn(String columnName, UserAction userAction) {
+        tableModel.addColumn(columnName);
+        for (int i = 0; i < buttonColumnCount + 1; i++) {
+            int columnIndex = HEADER.length + i;
+            String identifier = tableModel.getColumnName(columnIndex);
+            lectureTable.getColumn(identifier).setCellRenderer(buttonRenderer);
+
+            lectureTable.getColumn("강의명").setMinWidth(200);
+            lectureTable.getColumn("강의시간").setMinWidth(175);
+            lectureTable.getColumn("강의번호").setMinWidth(50);
+        }
+        actions.put(HEADER.length + buttonColumnCount, userAction);
+        buttonColumnCount += 1;
+    }
+
+    public JButton createUserControlButton(Lecture lecture, String name, UserAction userAction) {
         JButton enrollButton = new JButton(name);
         enrollButton.addActionListener(event -> {
             try {
@@ -126,10 +149,6 @@ public abstract class LectureTableForm extends LectureView {
 
         return enrollButton;
     }
-
-    protected abstract JButton createButton1(Lecture lecture);
-
-    protected abstract JButton createButton2(Lecture lecture);
 
     protected interface UserAction {
         ResponseStatus action(UserController userController, Lecture lecture) throws IOException;
@@ -158,9 +177,6 @@ public abstract class LectureTableForm extends LectureView {
 
     private void createUIComponents() {
         lectureTable = new JTable(tableModel);
-        JButtonRenderer buttonRenderer = new JButtonRenderer();
-        lectureTable.getColumn("-").setCellRenderer(buttonRenderer);
-        lectureTable.getColumn("--").setCellRenderer(buttonRenderer);
     }
 
     /**

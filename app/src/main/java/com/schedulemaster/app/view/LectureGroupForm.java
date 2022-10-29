@@ -19,13 +19,11 @@ public class LectureGroupForm implements ComponentForm {
     private JButton searchButton;
     private JPanel headerPanel;
 
-    private final DefaultLectureTableForm lectureTableForm;
+    private final LectureTableForm lectureTableForm;
     private final SearchDialog searchDialog;
-    private final MainFrame frame;
 
     public LectureGroupForm(MainFrame frame, String name) {
-        this.frame = frame;
-        lectureTableForm = new DefaultLectureTableForm(frame);
+        lectureTableForm = new LectureTableForm(frame);
         searchDialog = new SearchDialog(frame);
         $$$setupUI$$$();
 

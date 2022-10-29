@@ -29,7 +29,7 @@ public class SearchDialog extends JDialog {
     public SearchDialog(MainFrame frame) {
         super(frame, ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("select_label"), ModalityType.APPLICATION_MODAL);
 
-        searchForm = new SearchForm(frame, new DefaultLectureTableForm(frame));
+        searchForm = new SearchForm(frame, new LectureTableForm(frame));
         $$$setupUI$$$();
         setContentPane(panel);
         setSize(900, 500);

@@ -1,23 +1,16 @@
 package com.schedulemaster.app.view;
 
 import com.schedulemaster.app.controller.UserController;
-import com.schedulemaster.model.Lecture;
 
-import javax.swing.*;
+import java.util.ResourceBundle;
 
 public class SelectedLectureTableForm extends LectureTableForm {
 
     public SelectedLectureTableForm(MainFrame frame) {
         super(frame);
-    }
-
-    @Override
-    public JButton createButton1(Lecture lecture) {
-        return createButton(lecture, "신청", UserController::enrollLecture);
-    }
-
-    @Override
-    public JButton createButton2(Lecture lecture) {
-        return createButton(lecture, "빼기", UserController::unselectLecture);
+        String enrollColumnName = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("enroll");
+        String unselectColumnName = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("unselect");
+        addButtonColumn(enrollColumnName, UserController::enrollLecture);
+        addButtonColumn(unselectColumnName, UserController::unselectLecture);
     }
 }
