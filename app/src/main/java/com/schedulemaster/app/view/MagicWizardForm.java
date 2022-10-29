@@ -16,18 +16,18 @@ public class MagicWizardForm implements ContentForm {
     private JLabel unwantedTimeLabel;
 
     private final SelectableTimeTable selectableTimeTable = new SelectableTimeTable();
+    private final LectureGroupListForm lectureGroupListForm;
 
     private final MainFrame frame;
 
     public MagicWizardForm(MainFrame frame) {
         this.frame = frame;
+        lectureGroupListForm = new LectureGroupListForm(frame);
         $$$setupUI$$$();
-        addGroupPanel.add(new LectureGroupForm(frame, "그룹 1").getPanel());
     }
 
     private void createUIComponents() {
-        addGroupPanel = new JPanel();
-        addGroupPanel.setLayout(new GridLayout(1, 1));
+        addGroupPanel = lectureGroupListForm.getPanel();
 
         selectTimeTablePanel = selectableTimeTable.getPanel();
         unwantedTimeLabel = new HeaderLabel();

@@ -32,7 +32,7 @@ public class SearchDialog extends JDialog {
         searchForm = new SearchForm(frame, new DefaultLectureTableForm(frame));
         $$$setupUI$$$();
         setContentPane(panel);
-        setSize(700, 500);
+        setSize(900, 500);
         selectButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
