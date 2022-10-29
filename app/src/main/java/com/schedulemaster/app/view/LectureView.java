@@ -2,7 +2,6 @@ package com.schedulemaster.app.view;
 
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
-import com.schedulemaster.model.LectureGroup;
 
 public abstract class LectureView {
     protected LinkedList<Lecture> lectures;
@@ -22,6 +21,10 @@ public abstract class LectureView {
     public void setLectures(LinkedList<Lecture> lectures) {
         this.lectures = lectures;
         updateView();
+    }
+
+    public void clear() {
+        lectures.clear();
     }
 
     public abstract void updateView();

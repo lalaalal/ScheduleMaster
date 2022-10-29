@@ -90,6 +90,10 @@ public class UserController extends Subject {
         user.unwantedTime.addTimeSet(timeSet);
     }
 
+    public void setUnwantedTime(LectureTime unwantedTime) {
+        user.unwantedTime = unwantedTime;
+    }
+
     public boolean saveUnwantedTime() throws IOException {
         return client.sendUnwantedTime(user.unwantedTime);
     }

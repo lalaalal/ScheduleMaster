@@ -125,6 +125,23 @@ public class LectureTime implements Serializable {
         }
     }
 
+    public boolean hasTimeSet(int dayOfWeek, Time start, Time end) {
+        return hasTimeSet(new TimeSet(dayOfWeek, start, end));
+    }
+
+    public boolean hasTimeSet(TimeSet timeSet) {
+        return timeSets.has(timeSet);
+    }
+
+    public void removeTimeSet(int dayOfWeek, Time start, Time end) {
+        removeTimeSet(new TimeSet(dayOfWeek, start, end));
+    }
+
+    public void removeTimeSet(TimeSet timeSet) {
+        if (timeSets.has(timeSet))
+            timeSets.remove(timeSet);
+    }
+
     public boolean conflictWith(LectureTime lectureTime) {
         for (TimeSet timeSet : timeSets) {
             for (TimeSet compare : lectureTime.timeSets) {
