@@ -65,13 +65,9 @@ public class HomeForm implements ContentForm {
             }
         });
 
-        Font headerFont = UIManager.getDefaults().getFont("Label.font").deriveFont(18f);
         lectureBagLabel.setBorder(BorderFactory.createEmptyBorder(5, 35, 0, 5));
-        lectureBagLabel.setFont(headerFont);
         searchLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
-        searchLabel.setFont(headerFont);
         timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
-        timeTableLabel.setFont(headerFont);
     }
 
     @Override
@@ -134,17 +130,14 @@ public class HomeForm implements ContentForm {
         showAll = new JButton();
         this.$$$loadButtonText$$$(showAll, this.$$$getMessageFromBundle$$$("string", "show_all_btn"));
         searchPanel.add(showAll, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        searchLabel = new JLabel();
         this.$$$loadLabelText$$$(searchLabel, this.$$$getMessageFromBundle$$$("string", "search"));
         searchPanel.add(searchLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        lectureBagLabel = new JLabel();
         this.$$$loadLabelText$$$(lectureBagLabel, this.$$$getMessageFromBundle$$$("string", "lecture_bag"));
         panel1.add(lectureBagLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel.add(panel2, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel2.add(timeTablePanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        timeTableLabel = new JLabel();
         this.$$$loadLabelText$$$(timeTableLabel, this.$$$getMessageFromBundle$$$("string", "lecture_bag"));
         panel2.add(timeTableLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
@@ -234,5 +227,9 @@ public class HomeForm implements ContentForm {
 
         LectureController.AttributeName[] attributeNames = {LectureController.AttributeName.Professor, LectureController.AttributeName.Major, LectureController.AttributeName.Name};
         classifyComboBox = new JComboBox<>(attributeNames);
+
+        lectureBagLabel = new HeaderLabel();
+        searchLabel = new HeaderLabel();
+        timeTableLabel = new HeaderLabel();
     }
 }

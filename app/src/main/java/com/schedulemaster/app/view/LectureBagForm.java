@@ -34,13 +34,9 @@ public class LectureBagForm implements ContentForm {
 
         $$$setupUI$$$();
 
-        Font headerFont = UIManager.getDefaults().getFont("Label.font").deriveFont(18f);
         enrolledLecturesLabel.setBorder(BorderFactory.createEmptyBorder(5, 35, 0, 5));
-        enrolledLecturesLabel.setFont(headerFont);
         selectedLectureLabel.setBorder(BorderFactory.createEmptyBorder(23, 35, 0, 5));
-        selectedLectureLabel.setFont(headerFont);
         timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
-        timeTableLabel.setFont(headerFont);
     }
 
     @Override
@@ -67,6 +63,10 @@ public class LectureBagForm implements ContentForm {
         selectedLecturePanel = selectedLectureTableForm.getPanel();
         enrolledLecturePanel = enrolledLectureTableForm.getPanel();
         timeTablePanel = timeTableForm.getPanel();
+
+        enrolledLecturesLabel = new HeaderLabel();
+        timeTableLabel = new HeaderLabel();
+        selectedLectureLabel = new HeaderLabel();
     }
 
     /**
@@ -85,17 +85,14 @@ public class LectureBagForm implements ContentForm {
         panel.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel1.add(selectedLecturePanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel1.add(enrolledLecturePanel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        selectedLectureLabel = new JLabel();
         this.$$$loadLabelText$$$(selectedLectureLabel, this.$$$getMessageFromBundle$$$("string", "lecture_bag"));
         panel1.add(selectedLectureLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        enrolledLecturesLabel = new JLabel();
         this.$$$loadLabelText$$$(enrolledLecturesLabel, this.$$$getMessageFromBundle$$$("string", "enrolled_lecture"));
         panel1.add(enrolledLecturesLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel.add(panel2, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel2.add(timeTablePanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        timeTableLabel = new JLabel();
         this.$$$loadLabelText$$$(timeTableLabel, this.$$$getMessageFromBundle$$$("string", "enrolled_lecture"));
         panel2.add(timeTableLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }

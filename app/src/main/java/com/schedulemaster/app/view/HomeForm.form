@@ -74,7 +74,7 @@
                   <text resource-bundle="string" key="show_all_btn"/>
                 </properties>
               </component>
-              <component id="6c20e" class="javax.swing.JLabel" binding="searchLabel">
+              <component id="6c20e" class="javax.swing.JLabel" binding="searchLabel" custom-create="true">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -84,7 +84,7 @@
               </component>
             </children>
           </grid>
-          <component id="cf8ee" class="javax.swing.JLabel" binding="lectureBagLabel">
+          <component id="cf8ee" class="javax.swing.JLabel" binding="lectureBagLabel" custom-create="true">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -111,7 +111,7 @@
             <border type="none"/>
             <children/>
           </grid>
-          <component id="9effa" class="javax.swing.JLabel" binding="timeTableLabel">
+          <component id="9effa" class="javax.swing.JLabel" binding="timeTableLabel" custom-create="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>

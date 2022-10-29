@@ -142,6 +142,10 @@ public class LectureTime implements Serializable {
             timeSets.remove(timeSet);
     }
 
+    public void clear() {
+        timeSets.clear();
+    }
+
     public boolean conflictWith(LectureTime lectureTime) {
         for (TimeSet timeSet : timeSets) {
             for (TimeSet compare : lectureTime.timeSets) {

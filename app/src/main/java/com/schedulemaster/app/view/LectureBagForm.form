@@ -34,7 +34,7 @@
             <border type="none"/>
             <children/>
           </grid>
-          <component id="4f427" class="javax.swing.JLabel" binding="selectedLectureLabel">
+          <component id="4f427" class="javax.swing.JLabel" binding="selectedLectureLabel" custom-create="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -42,7 +42,7 @@
               <text resource-bundle="string" key="lecture_bag"/>
             </properties>
           </component>
-          <component id="c8a1e" class="javax.swing.JLabel" binding="enrolledLecturesLabel">
+          <component id="c8a1e" class="javax.swing.JLabel" binding="enrolledLecturesLabel" custom-create="true">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -69,7 +69,7 @@
             <border type="none"/>
             <children/>
           </grid>
-          <component id="5885c" class="javax.swing.JLabel" binding="timeTableLabel">
+          <component id="5885c" class="javax.swing.JLabel" binding="timeTableLabel" custom-create="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
