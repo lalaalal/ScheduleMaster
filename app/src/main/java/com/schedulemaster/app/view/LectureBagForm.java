@@ -18,18 +18,6 @@ import java.util.ResourceBundle;
 public class LectureBagForm implements ContentForm {
 
     private class SuggestionChangeListener implements ChangeListener, Observer {
-        private void updateSelectedLectureTable() {
-            selectedLectureTableForm.clear();
-            if (suggestionCheckBox.isSelected()) {
-                MagicController magicController = frame.getMagicController();
-                selectedLectureTableForm.setLectures(magicController.suggest(10));
-            } else {
-                UserController userController = frame.getUserController();
-                LinkedList<Lecture> selectedLectures = userController.getSelectedLectures();
-                selectedLectureTableForm.setLectures(selectedLectures);
-            }
-        }
-
         @Override
         public void update() {
             updateSelectedLectureTable();
@@ -78,13 +66,23 @@ public class LectureBagForm implements ContentForm {
         return panel;
     }
 
+    private void updateSelectedLectureTable() {
+        if (suggestionCheckBox.isSelected()) {
+            MagicController magicController = frame.getMagicController();
+            selectedLectureTableForm.setLectures(magicController.suggest(10));
+        } else {
+            UserController userController = frame.getUserController();
+            LinkedList<Lecture> selectedLectures = userController.getSelectedLectures();
+            selectedLectureTableForm.setLectures(selectedLectures);
+        }
+    }
+
     @Override
     public void load() {
         UserController userController = frame.getUserController();
-        LinkedList<Lecture> selectedLectures = userController.getSelectedLectures();
         LinkedList<Lecture> enrolledLectures = userController.getEnrolledLectures();
 
-        selectedLectureTableForm.setLectures(selectedLectures);
+        updateSelectedLectureTable();
         enrolledLectureTableForm.setLectures(enrolledLectures);
         timeTableForm.setLectures(enrolledLectures);
 
