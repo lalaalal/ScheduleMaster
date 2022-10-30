@@ -2,15 +2,32 @@ package com.schedulemaster.app.controller;
 
 import com.schedulemaster.app.Client;
 import com.schedulemaster.app.Subject;
+import com.schedulemaster.app.view.MainFrame;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureBook;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 public class LectureController extends Subject {
     public enum AttributeName {
-        Professor, Major, Name, Grade
+        Professor {
+            @Override
+            public String toString() {
+                return ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("professor");
+            }
+        }, Major {
+            @Override
+            public String toString() {
+                return ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("major");
+            }
+        }, Name {
+            @Override
+            public String toString() {
+                return ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("lecture_name");
+            }
+        }, Grade
     }
 
     private final LectureBook lectureBook;
