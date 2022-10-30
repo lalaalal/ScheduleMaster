@@ -13,11 +13,11 @@ public class LectureControllerTest {
             System.out.println("Data size : " + lectureController.getLectureBook().getLectures().getLength());
 
             long start = System.currentTimeMillis();
-            lectureController.findByAttributeName(LectureController.AttributeName.Professor, "홍민기");
+            lectureController.findByAttributeName(LectureController.AttributeName.Professor, "박현민");
             long end = System.currentTimeMillis();
             System.out.println((end - start) + " ms");
             start = System.currentTimeMillis();
-            lectureController.findWithComparator((lecture) -> lecture.professor.equals("홍민기"));
+            lectureController.findWithComparator((lecture) -> lecture.professor.equals("박현민"));
             end = System.currentTimeMillis();
             System.out.println((end - start) + " ms");
         }

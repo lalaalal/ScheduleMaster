@@ -73,6 +73,9 @@ public class MagicSelectorForm implements ContentForm {
     @Override
     public void load() {
         try {
+            lectureTableForm.clear();
+            timeTableForm.clear();
+            selectedScheduleIndex = 0;
             MagicController magicController = frame.getMagicController();
             magicController.magic();
             schedules = magicController.getSchedules();
@@ -80,7 +83,7 @@ public class MagicSelectorForm implements ContentForm {
                 String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
                 String msg = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("no_available_schedule");
                 JOptionPane.showMessageDialog(frame, msg, title, JOptionPane.ERROR_MESSAGE);
-                frame.setContentForm(Content.Home);
+                frame.setContentForm(Content.MagicWizard);
                 return;
             }
             lectureTableForm.setLectures(schedules[0].getLectures());
