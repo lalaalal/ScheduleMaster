@@ -22,7 +22,7 @@ public class LectureBagForm implements ContentForm {
             selectedLectureTableForm.clear();
             if (suggestionCheckBox.isSelected()) {
                 MagicController magicController = frame.getMagicController();
-                selectedLectureTableForm.setLectures(magicController.suggest(5));
+                selectedLectureTableForm.setLectures(magicController.suggest(10));
             } else {
                 UserController userController = frame.getUserController();
                 LinkedList<Lecture> selectedLectures = userController.getSelectedLectures();
