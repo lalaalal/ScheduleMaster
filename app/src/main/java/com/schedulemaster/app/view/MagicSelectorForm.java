@@ -56,7 +56,7 @@ public class MagicSelectorForm implements ContentForm {
                     for (Lecture lecture : schedules[selectedScheduleIndex].getLectures()) {
                         userController.selectLecture(lecture);
                     }
-                    frame.setContentForm(Content.LectureBag);
+                    frame.setContentForm(ContentForm.Content.Home);
                 } catch (IOException ex) {
                     String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
                     JOptionPane.showMessageDialog(frame, ex.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
