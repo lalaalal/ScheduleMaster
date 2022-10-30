@@ -91,7 +91,7 @@ public class SearchForm implements ContentForm {
     private void createUIComponents() {
         searchTablePanel = lectureTableForm.getPanel();
 
-        LectureController.AttributeName[] attributeNames = {LectureController.AttributeName.Professor, LectureController.AttributeName.Major, LectureController.AttributeName.Name};
+        LectureController.AttributeName[] attributeNames = {LectureController.AttributeName.Name, LectureController.AttributeName.Professor, LectureController.AttributeName.Major};
         classifyComboBox = new JComboBox<>(attributeNames);
 
         searchLabel = new HeaderLabel();
