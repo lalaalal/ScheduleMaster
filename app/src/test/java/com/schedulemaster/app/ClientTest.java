@@ -87,7 +87,7 @@ public class ClientTest {
         Thread thread2 = new Thread(() -> {
             try (Client client = new Client()) {
                 LinkedList<Lecture> lectures =  client.getLectures();
-                client.login("test", "test");
+                client.login("test1", "test1");
                 Lecture lecture = lectures.at(13);
                 boolean result = client.lectureCommand(Request.ENROLL, lecture).status();
                 System.out.println(result);
