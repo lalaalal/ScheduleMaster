@@ -4,15 +4,43 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.observers.Observer;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
 public class LectureBagForm implements ContentForm {
+
+    private class SuggestionChangeListener implements ChangeListener, Observer {
+        private void updateSelectedLectureTable() {
+            selectedLectureTableForm.clear();
+            if (suggestionCheckBox.isSelected()) {
+                MagicController magicController = frame.getMagicController();
+                selectedLectureTableForm.setLectures(magicController.suggest(5));
+            } else {
+                UserController userController = frame.getUserController();
+                LinkedList<Lecture> selectedLectures = userController.getSelectedLectures();
+                selectedLectureTableForm.setLectures(selectedLectures);
+            }
+        }
+
+        @Override
+        public void update() {
+            updateSelectedLectureTable();
+        }
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            updateSelectedLectureTable();
+        }
+    }
+
     private JPanel panel;
     private JPanel selectedLecturePanel;
     private JPanel enrolledLecturePanel;
@@ -20,12 +48,15 @@ public class LectureBagForm implements ContentForm {
     private JLabel selectedLectureLabel;
     private JLabel enrolledLecturesLabel;
     private JLabel timeTableLabel;
+    private JCheckBox suggestionCheckBox;
 
     private final MainFrame frame;
 
     private final SelectedLectureTableForm selectedLectureTableForm;
     private final EnrolledLectureTableForm enrolledLectureTableForm;
     private final TimeTableForm timeTableForm;
+
+    private final SuggestionChangeListener changeListener = new SuggestionChangeListener();
 
     public LectureBagForm(MainFrame frame) {
         this.frame = frame;
@@ -38,6 +69,8 @@ public class LectureBagForm implements ContentForm {
         enrolledLecturesLabel.setBorder(BorderFactory.createEmptyBorder(5, 35, 0, 5));
         selectedLectureLabel.setBorder(BorderFactory.createEmptyBorder(23, 35, 0, 5));
         timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
+        suggestionCheckBox.setBorder(BorderFactory.createEmptyBorder(23, 0, 0, 15));
+        suggestionCheckBox.addChangeListener(changeListener);
     }
 
     @Override
@@ -55,12 +88,10 @@ public class LectureBagForm implements ContentForm {
         enrolledLectureTableForm.setLectures(enrolledLectures);
         timeTableForm.setLectures(enrolledLectures);
 
-        frame.addSelectedLectureView(selectedLectureTableForm);
+        userController.addObserver(changeListener);
+        frame.getLectureController().addObserver(changeListener);
         frame.addEnrolledLectureView(enrolledLectureTableForm);
         frame.addEnrolledLectureView(timeTableForm);
-
-        MagicController magicController = frame.getMagicController();
-        selectedLectureTableForm.addLectures(magicController.suggest(5));
     }
 
     private void createUIComponents() {
@@ -85,14 +116,17 @@ public class LectureBagForm implements ContentForm {
         panel = new JPanel();
         panel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel1.add(selectedLecturePanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel1.add(enrolledLecturePanel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel1.add(selectedLecturePanel, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel1.add(enrolledLecturePanel, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         this.$$$loadLabelText$$$(selectedLectureLabel, this.$$$getMessageFromBundle$$$("string", "lecture_bag"));
         panel1.add(selectedLectureLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         this.$$$loadLabelText$$$(enrolledLecturesLabel, this.$$$getMessageFromBundle$$$("string", "enrolled_lecture"));
-        panel1.add(enrolledLecturesLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.add(enrolledLecturesLabel, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        suggestionCheckBox = new JCheckBox();
+        this.$$$loadButtonText$$$(suggestionCheckBox, this.$$$getMessageFromBundle$$$("string", "suggest_check_box"));
+        panel1.add(suggestionCheckBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel.add(panel2, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -141,6 +175,33 @@ public class LectureBagForm implements ContentForm {
         component.setText(result.toString());
         if (haveMnemonic) {
             component.setDisplayedMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadButtonText$$$(AbstractButton component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) break;
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setMnemonic(mnemonic);
             component.setDisplayedMnemonicIndex(mnemonicIndex);
         }
     }
