@@ -4,12 +4,14 @@ import com.schedulemaster.app.view.TimeTableForm;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
 import mdlaf.MaterialLookAndFeel;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 
+@Disabled
 public class TimeTableFormTest {
     @Test
     public void testCalcClassTime(){
