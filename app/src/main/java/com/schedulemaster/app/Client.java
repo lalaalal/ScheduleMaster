@@ -8,9 +8,10 @@ import com.schedulemaster.util.SHA256;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 
 public class Client extends Communicator {
-    private static final String HOST = "127.0.0.1";
+    private static final String HOST = Objects.requireNonNullElse(System.getenv("CUSTOM_HOST"), "aws.lalaalal.com");
     private static final int PORT = 5678;
 
     public Client() throws IOException {
