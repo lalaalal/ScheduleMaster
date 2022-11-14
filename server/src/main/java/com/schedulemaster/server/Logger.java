@@ -7,6 +7,11 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Log to provided output streams. Call Logger.getInstance() to get logger instance.
+ *
+ * @author lalaalal
+ */
 public class Logger {
     public static final int ERROR = 0;
     public static final int INFO = 1;
@@ -20,6 +25,11 @@ public class Logger {
 
     private static Logger _instance;
 
+    /**
+     * Get logger instance. Create if instance is not initialized.
+     *
+     * @return Logger instance.
+     */
     public static Logger getInstance() {
         if (_instance == null)
             return _instance = new Logger();
@@ -30,6 +40,11 @@ public class Logger {
 
     }
 
+    /**
+     * Add output stream to log.
+     *
+     * @param os New output stream.
+     */
     public void addOutputStream(OutputStream os) {
         if (outputStreams.has(os))
             return;
@@ -37,6 +52,10 @@ public class Logger {
         outputStreams.push(os);
     }
 
+    /**
+     * Set log level with integer.
+     * @param logLevel Number of log level. (0 <= logLevel < LOG_LEVEL.length)
+     */
     public void setLogLevel(int logLevel) {
         if (0 <= logLevel && logLevel < LOG_LEVEL.length)
             this.logLevel = logLevel;
@@ -52,6 +71,12 @@ public class Logger {
         }
     }
 
+    /**
+     * Log message to all output streams if current log level is lower than provided log level.
+     *
+     * @param msg Message to log.
+     * @param logLevel Log level for message.
+     */
     public synchronized void log(String msg, int logLevel) {
         if (this.logLevel < logLevel)
             return;

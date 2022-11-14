@@ -7,10 +7,16 @@ import com.schedulemaster.misc.Response;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
+import com.schedulemaster.util.CSVReader;
 
 import java.io.*;
 import java.util.Arrays;
 
+/**
+ * LectureHandler.
+ *
+ * @author lalaalal
+ */
 public class LectureHandler {
     private Hash<String, Lecture> lectures;
     private final String lectureDataPath;
