@@ -24,7 +24,7 @@ public class User implements Serializable {
     /**
      * Create a new User.
      *
-     * @param id User id.
+     * @param id             User id.
      * @param hashedPassword Password that is hashed.
      */
     public User(String id, String hashedPassword) {
@@ -34,6 +34,7 @@ public class User implements Serializable {
 
     /**
      * Compare hashed password.
+     *
      * @param hashedPassword Hashed password to compare.
      * @return True if password matches.
      */

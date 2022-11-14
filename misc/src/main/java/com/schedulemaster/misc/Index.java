@@ -4,7 +4,7 @@ package com.schedulemaster.misc;
  * Provide Index using hash table. Index saves lists of tuples that matches with a specific attribute value.
  *
  * @param <Attribute> Type of attribute (member variables).
- * @param <Tuple> Type of tuple (class).
+ * @param <Tuple>     Type of tuple (class).
  * @author lalaalal
  */
 public class Index<Attribute, Tuple> {
@@ -12,7 +12,7 @@ public class Index<Attribute, Tuple> {
      * Interface able to get attribute from tuple.
      *
      * @param <Attribute> Type of attribute (member variables).
-     * @param <Tuple> Type of tuple (class).
+     * @param <Tuple>     Type of tuple (class).
      */
     public interface AttributeSelector<Attribute, Tuple> {
         /**
@@ -29,7 +29,8 @@ public class Index<Attribute, Tuple> {
 
     /**
      * Initialize with list of tuples (table) and attributeSelector.
-     * @param table List of tuples.
+     *
+     * @param table             List of tuples.
      * @param attributeSelector Chooser for tuple's attribute.
      */
     public Index(LinkedList<Tuple> table, AttributeSelector<Attribute, Tuple> attributeSelector) {

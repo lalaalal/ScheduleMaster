@@ -49,6 +49,7 @@ public abstract class Communicator implements AutoCloseable {
 
     /**
      * Receive request and handle. And send response.
+     *
      * @return Response for request.
      * @throws IOException If an I/O error occurs.
      */

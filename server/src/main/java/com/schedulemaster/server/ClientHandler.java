@@ -26,9 +26,9 @@ public class ClientHandler extends Communicator implements Runnable {
     /**
      * Initialize ClientHandler.
      *
-     * @param client Client socket.
+     * @param client         Client socket.
      * @param lectureHandler LectureHandler.
-     * @param userHandler UserHandler.
+     * @param userHandler    UserHandler.
      * @throws IOException If getting stream is not fine.
      */
     public ClientHandler(Socket client, LectureHandler lectureHandler, UserHandler userHandler) throws IOException {
@@ -87,7 +87,7 @@ public class ClientHandler extends Communicator implements Runnable {
             };
 
             logger.log("Response.status : " + response.status(), Logger.DEBUG);
-            logger.log("Response.data : "  + response.getDataType(), Logger.VERBOSE);
+            logger.log("Response.data : " + response.getDataType(), Logger.VERBOSE);
             logger.log("", Logger.DEBUG);
             return response;
         }

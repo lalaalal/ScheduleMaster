@@ -17,7 +17,7 @@ public class Logger {
     public static final int INFO = 1;
     public static final int DEBUG = 2;
     public static final int VERBOSE = 3;
-    public static final String[] LOG_LEVEL = { "ERROR  ", "INFO   ", "DEBUG  ", "VERBOSE" };
+    public static final String[] LOG_LEVEL = {"ERROR  ", "INFO   ", "DEBUG  ", "VERBOSE"};
     private final LinkedList<OutputStream> outputStreams = new LinkedList<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -54,6 +54,7 @@ public class Logger {
 
     /**
      * Set log level with integer.
+     *
      * @param logLevel Number of log level. (0 <= logLevel < LOG_LEVEL.length)
      */
     public void setLogLevel(int logLevel) {
@@ -74,7 +75,7 @@ public class Logger {
     /**
      * Log message to all output streams if current log level is lower than provided log level.
      *
-     * @param msg Message to log.
+     * @param msg      Message to log.
      * @param logLevel Log level for message.
      */
     public synchronized void log(String msg, int logLevel) {

@@ -112,7 +112,7 @@ public class LectureHandler {
             save();
             return Response.SUCCEED;
         }
-        logger.log("Lecture " +  lectureNum + "is already full", Logger.INFO);
+        logger.log("Lecture " + lectureNum + "is already full", Logger.INFO);
         return "lecture_full";
     }
 

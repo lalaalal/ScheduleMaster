@@ -67,6 +67,7 @@ public class Client extends Communicator {
 
     /**
      * Get all lectures from server.
+     *
      * @return List of lectures.
      * @throws IOException If an I/O error occurs.
      */
@@ -80,6 +81,7 @@ public class Client extends Communicator {
 
     /**
      * Get user data from server.
+     *
      * @return User data.
      * @throws IOException If an I/O error occurs.
      */
@@ -108,6 +110,7 @@ public class Client extends Communicator {
 
     /**
      * Save user priorities of lectures at server.
+     *
      * @param priorities Priorities of lectures.
      * @return True if succeeded.
      * @throws IOException If an I/O error occurs.
@@ -121,6 +124,7 @@ public class Client extends Communicator {
 
     /**
      * Save unwanted time to server.
+     *
      * @param unwantedTime Unwanted time.
      * @return True if succeeded.
      * @throws IOException If an I/O error occurs.
