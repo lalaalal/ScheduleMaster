@@ -1,9 +1,11 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.table;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.view.LectureView;
+import com.schedulemaster.app.view.MainFrame;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;

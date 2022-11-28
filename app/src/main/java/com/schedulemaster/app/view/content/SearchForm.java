@@ -1,8 +1,12 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.content;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.controller.LectureController;
+import com.schedulemaster.app.view.HeaderLabel;
+import com.schedulemaster.app.view.MainFrame;
+import com.schedulemaster.app.view.content.ContentForm;
+import com.schedulemaster.app.view.table.LectureTableForm;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureBook;
@@ -17,7 +21,7 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class SearchForm implements ContentForm {
+public class SearchForm extends ContentForm {
     private JPanel panel;
     private JPanel searchTablePanel;
     private JPanel searchPanel;

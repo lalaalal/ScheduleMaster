@@ -19,7 +19,7 @@ public class Logger {
     public static final int VERBOSE = 3;
     public static final String[] LOG_LEVEL = {"ERROR  ", "INFO   ", "DEBUG  ", "VERBOSE"};
     private final LinkedList<OutputStream> outputStreams = new LinkedList<>();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public int logLevel = INFO;
 

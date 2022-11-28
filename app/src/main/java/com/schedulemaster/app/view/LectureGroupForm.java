@@ -3,6 +3,7 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.schedulemaster.app.view.table.LectureTableForm;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 
@@ -14,7 +15,7 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class LectureGroupForm implements ComponentForm {
+public class LectureGroupForm extends ComponentForm {
     private JPanel panel;
     private JLabel groupNameLabel;
     private JPanel groupTablePanel;

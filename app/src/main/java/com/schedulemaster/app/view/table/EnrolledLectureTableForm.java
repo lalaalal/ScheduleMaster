@@ -1,6 +1,7 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.table;
 
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.view.MainFrame;
 
 import java.util.ResourceBundle;
 

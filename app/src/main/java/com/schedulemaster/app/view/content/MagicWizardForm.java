@@ -1,7 +1,8 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.content;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.schedulemaster.app.view.*;
 import com.schedulemaster.model.LectureTime;
 
 import javax.swing.*;
@@ -9,7 +10,7 @@ import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class MagicWizardForm implements ContentForm {
+public class MagicWizardForm extends ContentForm {
     private JPanel panel;
     private JPanel addGroupPanel;
     private JPanel selectTimeTablePanel;

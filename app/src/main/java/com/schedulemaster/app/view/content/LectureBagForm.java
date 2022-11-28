@@ -1,10 +1,13 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.content;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.observers.Observer;
+import com.schedulemaster.app.view.*;
+import com.schedulemaster.app.view.table.EnrolledLectureTableForm;
+import com.schedulemaster.app.view.table.SelectedLectureTableForm;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 
@@ -15,7 +18,7 @@ import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class LectureBagForm implements ContentForm {
+public class LectureBagForm extends ContentForm {
 
     private class SuggestionChangeListener implements ChangeListener, Observer {
         @Override
