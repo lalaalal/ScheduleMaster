@@ -71,6 +71,7 @@ public class MainFrame extends JFrame {
             }
         });
 
+        contentForms.set(ContentForm.Content.Login, loginFrom);
         contentForms.set(ContentForm.Content.Home, new HomeForm(this));
         contentForms.set(ContentForm.Content.LectureBag, new LectureBagForm(this));
         contentForms.set(ContentForm.Content.MagicWizard, new MagicWizardForm(this));

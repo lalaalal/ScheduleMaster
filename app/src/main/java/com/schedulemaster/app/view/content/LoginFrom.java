@@ -5,7 +5,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.UserController;
-import com.schedulemaster.app.view.ComponentForm;
 import com.schedulemaster.app.view.MainFrame;
 import com.schedulemaster.app.view.SignupDialog;
 
@@ -19,7 +18,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class LoginFrom extends ComponentForm {
+public class LoginFrom extends ContentForm {
 
     private JPasswordField passwordField;
     private JTextField idField;
@@ -29,6 +28,8 @@ public class LoginFrom extends ComponentForm {
     private JLabel pwLabel;
     private JButton loginButton;
     private JLabel signupLabel;
+    private JButton toggleThemeButton;
+    private JComboBox<String> comboBox1;
 
     private final MainFrame mainFrame;
     private final SignupDialog signupDialog;
@@ -36,9 +37,8 @@ public class LoginFrom extends ComponentForm {
     public LoginFrom(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         signupDialog = new SignupDialog(mainFrame);
-        idField.setBorder(BorderFactory.createCompoundBorder(idField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        passwordField.setBorder(BorderFactory.createCompoundBorder(passwordField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        signupLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        updateComponentUI();
+        addThemeChangeListener(this::updateComponentUI);
         loginButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -65,6 +65,23 @@ public class LoginFrom extends ComponentForm {
 
         idField.addKeyListener(keyAdapter);
         passwordField.addKeyListener(keyAdapter);
+        toggleThemeButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mainFrame.toggleTheme();
+            }
+        });
+    }
+
+    @Override
+    public void load() {
+
+    }
+
+    public void updateComponentUI() {
+        idField.setBorder(BorderFactory.createCompoundBorder(idField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        passwordField.setBorder(BorderFactory.createCompoundBorder(passwordField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        signupLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
     }
 
     @Override
@@ -138,6 +155,16 @@ public class LoginFrom extends ComponentForm {
         panel.add(signupLabel, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer4 = new Spacer();
         panel.add(spacer4, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel.add(panel2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        toggleThemeButton = new JButton();
+        this.$$$loadButtonText$$$(toggleThemeButton, this.$$$getMessageFromBundle$$$("string", "toggle_theme"));
+        panel2.add(toggleThemeButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer5 = new Spacer();
+        panel2.add(spacer5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        comboBox1 = new JComboBox();
+        panel2.add(comboBox1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         signupLabel.setLabelFor(idField);
     }
 
@@ -218,5 +245,4 @@ public class LoginFrom extends ComponentForm {
     public JComponent $$$getRootComponent$$$() {
         return panel;
     }
-
 }

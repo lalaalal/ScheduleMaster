@@ -14,6 +14,14 @@ public abstract class ComponentForm {
 
     public abstract JPanel getPanel();
 
+    public void addLocaleChangeListener(LocaleChangeListener listener) {
+        localeChangeListeners.push(listener);
+    }
+
+    public void addThemeChangeListener(ThemeChangeListener listener) {
+        themeChangeListeners.push(listener);
+    }
+
     public void onLocaleChange() {
         for (LocaleChangeListener localeChangeListener : localeChangeListeners)
             localeChangeListener.onLocaleChange();
