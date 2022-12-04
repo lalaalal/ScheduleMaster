@@ -104,22 +104,19 @@ public class ClientHandler extends Communicator implements Runnable {
         }
 
         public Response signupResponse(Request request) {
-            if (!(request.data() instanceof String[] userInfo))
+            if (!(request.data() instanceof User newUser))
                 return new Response(Status.FAILED, Response.WRONG_REQUEST);
 
-            String id = userInfo[0];
-            String hashedPassword = userInfo[1];
-
-            if (id.length() == 0)
+            if (newUser.id.length() == 0)
                 return new Response(Status.FAILED, "id_is_empty");
 
-            if (userHandler.hasId(id)) {
-                logger.log("\"" + id + "\" signup failed", Logger.INFO);
+            if (userHandler.hasId(newUser.id)) {
+                logger.log("\"" + newUser.id + "\" signup failed", Logger.INFO);
                 return new Response(Status.FAILED, "id_exists");
             }
 
-            userHandler.addUser(id, hashedPassword);
-            logger.log("\"" + id + "\" signup succeed", Logger.INFO);
+            userHandler.addUser(newUser);
+            logger.log("\"" + newUser.id + "\" signup succeed", Logger.INFO);
             return new Response(Status.SUCCEED, Response.SUCCEED);
         }
 

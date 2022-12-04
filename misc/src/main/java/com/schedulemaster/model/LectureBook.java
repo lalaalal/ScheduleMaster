@@ -23,6 +23,10 @@ public class LectureBook {
         indexes.put(attributeName, index);
     }
 
+    public LinkedList<String> getIndexAttributes(String attributeName) {
+        return indexes.get(attributeName).getAttributes();
+    }
+
     public LinkedList<Lecture> findLectures(String attributeName, String value) {
         Index<String, Lecture> index = indexes.get(attributeName);
         return index.get(value);
@@ -30,6 +34,20 @@ public class LectureBook {
 
     public Lecture findLecture(String lectureNum) {
         return lectureHash.get(lectureNum);
+    }
+
+    public LinkedList<Lecture> findWithComparator(Comparator comparator) {
+        return findWithComparator(getLectures(), comparator);
+    }
+
+    public static LinkedList<Lecture> findWithComparator(LinkedList<Lecture> source, Comparator comparator) {
+        LinkedList<Lecture> result = new LinkedList<>();
+        for (Lecture lecture : source) {
+            if (comparator.compare(lecture))
+                result.push(lecture);
+        }
+
+        return result;
     }
 
     public LinkedList<Lecture> getLectures() {
@@ -45,5 +63,9 @@ public class LectureBook {
         for (Lecture lecture : lectures) {
             lectureHash.put(lecture.lectureNum, lecture);
         }
+    }
+
+    public interface Comparator {
+        boolean compare(Lecture lecture);
     }
 }

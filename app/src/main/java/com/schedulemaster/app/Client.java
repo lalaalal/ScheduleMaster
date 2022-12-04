@@ -31,14 +31,14 @@ public class Client extends Communicator {
         return new ResponseStatus(response.status() == Status.SUCCEED, (String) response.data());
     }
 
-    public ResponseStatus signup(String id, String pw) throws IOException {
+    public ResponseStatus signup(String id, String pw, String major, int grade) throws IOException {
         String hashedPassword = SHA256.encrypt(pw);
 
-        String[] userInfo = new String[2];
-        userInfo[0] = id;
-        userInfo[1] = hashedPassword;
+        User user = new User(id, hashedPassword);
+        user.setGrade(grade);
+        user.setMajor(major);
 
-        Request request = new Request(Request.SIGNUP, userInfo);
+        Request request = new Request(Request.SIGNUP, user);
         Response response = send(request);
 
         return new ResponseStatus(response.status() == Status.SUCCEED, (String) response.data());

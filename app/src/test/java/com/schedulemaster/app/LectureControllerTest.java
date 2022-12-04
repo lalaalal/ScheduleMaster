@@ -19,7 +19,7 @@ public class LectureControllerTest {
             long end = System.currentTimeMillis();
             System.out.println((end - start) + " ms");
             start = System.currentTimeMillis();
-            lectureController.findWithComparator((lecture) -> lecture.professor.equals("박현민"));
+            lectureController.getLectureBook().findWithComparator((lecture) -> lecture.professor.equals("박현민"));
             end = System.currentTimeMillis();
             System.out.println((end - start) + " ms");
         }

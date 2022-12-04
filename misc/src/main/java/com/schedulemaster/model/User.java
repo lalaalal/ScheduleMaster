@@ -6,10 +6,30 @@ import com.schedulemaster.misc.LinkedList;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    public static final long serialVersionUID = 15L;
+    public static final long serialVersionUID = 20L;
 
     public final String id;
     private final String hashedPassword;
+
+    public int getGrade() {
+        return grade;
+    }
+
+    public void setGrade(int grade) {
+        if (1 <= grade && grade <= 4)
+            this.grade = grade;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    private int grade = 1;
+    private String major = "교필";
 
     public final LinkedList<String> selectedLectures = new LinkedList<>(); // 책가방 강의
     public final LinkedList<String> enrolledLectures = new LinkedList<>(); // 신청 완료된 강의

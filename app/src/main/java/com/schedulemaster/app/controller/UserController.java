@@ -33,8 +33,8 @@ public class UserController extends Subject {
         user = null;
     }
 
-    public ResponseStatus signup(String id, String pw) throws IOException {
-        return client.signup(id, pw);
+    public ResponseStatus signup(String id, String pw, String major, int grade) throws IOException {
+        return client.signup(id, pw, major, grade);
     }
 
     public ResponseStatus enrollLecture(Lecture lecture) throws IOException {
@@ -106,6 +106,14 @@ public class UserController extends Subject {
 
     public LectureTime getUnwantedTime() {
         return user.unwantedTime;
+    }
+
+    public int getUserGrade() {
+        return user.getGrade();
+    }
+
+    public String getUserMajor() {
+        return user.getMajor();
     }
 
     public void refresh() throws IOException {

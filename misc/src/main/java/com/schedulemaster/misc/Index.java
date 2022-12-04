@@ -15,6 +15,10 @@ public class Index<Attribute, Tuple> {
         }
     }
 
+    public LinkedList<Attribute> getAttributes() {
+        return index.getKeys();
+    }
+
     public LinkedList<Tuple> get(Attribute attribute) {
         return index.get(attribute);
     }

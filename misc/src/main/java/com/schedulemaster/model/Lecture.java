@@ -41,7 +41,7 @@ public class Lecture implements Serializable {
 
     public static int parseGrade(String grade) {
         try {
-            return Integer.parseInt(grade);
+            return Integer.parseInt(grade.substring(0, 1));
         } catch (NumberFormatException e) {
             return 0;
         }

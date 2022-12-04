@@ -25,7 +25,7 @@ public class ClientTest {
     @Test
     public void testSignup() throws IOException {
         try (Client client = new Client()) {
-            client.signup("test1", "test1");
+            client.signup("test1", "test1", "컴공", 1);
         }
     }
 
