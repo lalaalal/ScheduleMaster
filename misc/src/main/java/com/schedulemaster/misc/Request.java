@@ -2,6 +2,13 @@ package com.schedulemaster.misc;
 
 import java.io.Serializable;
 
+/**
+ * Request record provides some available request commands.
+ *
+ * @param command
+ * @param data
+ * @author lalaalal
+ */
 public record Request(String command, Object data) implements Serializable {
     public static final long serialVersionUID = 11L;
 
@@ -17,6 +24,9 @@ public record Request(String command, Object data) implements Serializable {
     public static final String SET_PRIORITIES = "set_priorities";
     public static final String SET_UNWANTED_TIME = "set_unwanted_time";
 
+    /**
+     * @return Simple name of data type.
+     */
     public String getDataType() {
         if (data == null)
             return "null";

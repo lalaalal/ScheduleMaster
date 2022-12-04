@@ -3,6 +3,11 @@ package com.schedulemaster.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Provides SHA256 encryption.
+ *
+ * @author lalaalal
+ */
 public class SHA256 {
     public static String encrypt(String text) {
         try {

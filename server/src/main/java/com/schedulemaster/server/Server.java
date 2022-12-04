@@ -5,6 +5,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+/**
+ * Server able to run in thread.
+ * Handling client threads.
+ *
+ * @author lalaalal
+ */
 public class Server implements AutoCloseable, Runnable {
     private static final int PORT = 5678;
 

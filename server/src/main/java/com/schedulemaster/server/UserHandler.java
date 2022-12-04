@@ -6,6 +6,11 @@ import com.schedulemaster.model.User;
 
 import java.io.*;
 
+/**
+ * UserHandler. Saves login users.
+ *
+ * @author lalaalal
+ */
 public class UserHandler {
     private Hash<String, User> users;
     private final LinkedList<User> loginUsers = new LinkedList<>();

@@ -1,10 +1,13 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.content;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.view.ComponentForm;
+import com.schedulemaster.app.view.MainFrame;
+import com.schedulemaster.app.view.SignupDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class LoginFrom implements ComponentForm {
+public class LoginFrom extends ComponentForm {
 
     private JPasswordField passwordField;
     private JTextField idField;

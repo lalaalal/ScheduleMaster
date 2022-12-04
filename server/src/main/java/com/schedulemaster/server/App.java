@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+/**
+ * Server app handling server thread, commands.
+ *
+ * @author lalaalal
+ */
 public class App implements AutoCloseable {
     public static final String DEFAULT_LECTURE_FILE_PATH = "lectures";
     public static final String DEFAULT_USER_FILE_PATH = "users";
@@ -27,6 +32,13 @@ public class App implements AutoCloseable {
         }
 
     }
+
+    /**
+     * Create an application instance.
+     *
+     * @param args Arguments for server.
+     * @throws IOException If file not found.
+     */
     public App(String[] args) throws IOException {
         logger.addOutputStream(System.out);
 
@@ -50,6 +62,9 @@ public class App implements AutoCloseable {
         userHandler = new UserHandler(userFilePath);
     }
 
+    /**
+     * Start server, actually.
+     */
     public void startServer() {
         try (Server server = new Server(lectureHandler, userHandler);
              Scanner scanner = new Scanner(System.in)) {
@@ -68,10 +83,9 @@ public class App implements AutoCloseable {
         }
     }
 
-    public Thread getServerThread() {
+    private Thread getServerThread() {
         return serverThread;
     }
-
 
     private void handleCommand(String command, Scanner scanner) {
         switch (command) {

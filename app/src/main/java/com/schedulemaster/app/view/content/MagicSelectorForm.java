@@ -1,4 +1,4 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.content;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -6,6 +6,8 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.model.Schedule;
+import com.schedulemaster.app.view.*;
+import com.schedulemaster.app.view.table.LectureTableForm;
 import com.schedulemaster.model.Lecture;
 
 import javax.swing.*;
@@ -17,7 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class MagicSelectorForm implements ContentForm {
+public class MagicSelectorForm extends ContentForm {
     private JPanel panel;
     private JButton previousButton;
     private JButton nextButton;

@@ -5,6 +5,11 @@ import com.schedulemaster.misc.LinkedList;
 
 import java.io.Serializable;
 
+/**
+ * User class. Password should be hashed.
+ *
+ * @author lalaalal
+ */
 public class User implements Serializable {
     public static final long serialVersionUID = 20L;
 
@@ -36,35 +41,25 @@ public class User implements Serializable {
     public Hash<String, Integer> priorities = new Hash<>();
     public LectureTime unwantedTime = new LectureTime();
 
+    /**
+     * Create a new User.
+     *
+     * @param id             User id.
+     * @param hashedPassword Password that is hashed.
+     */
     public User(String id, String hashedPassword) {
         this.id = id;
         this.hashedPassword = hashedPassword;
     }
 
+    /**
+     * Compare hashed password.
+     *
+     * @param hashedPassword Hashed password to compare.
+     * @return True if password matches.
+     */
     public boolean verifyPassword(String hashedPassword) {
         return this.hashedPassword.equals(hashedPassword);
-    }
-
-    public void enrollLecture(Lecture lecture) {
-        enrolledLectures.push(lecture.lectureNum);
-        lecture.enrolled += 1;
-    }
-
-    public void selectLecture(Lecture lecture) {
-        selectedLectures.push(lecture.lectureNum);
-    }
-
-    public void cancelLecture(Lecture lecture) {
-        enrolledLectures.remove(lecture.lectureNum);
-        lecture.enrolled -= 1;
-    }
-
-    public void unselectLecture(Lecture lecture) {
-        selectedLectures.remove(lecture.lectureNum);
-    }
-
-    public void addUnwantedTime(LectureTime.TimeSet timeSet) {
-        unwantedTime.addTimeSet(timeSet);
     }
 
     @Override
