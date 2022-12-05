@@ -62,6 +62,8 @@ public class SearchForm extends ContentForm {
         });
 
         searchLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 5));
+
+        addComponentForm(lectureTableForm);
     }
 
     @Override

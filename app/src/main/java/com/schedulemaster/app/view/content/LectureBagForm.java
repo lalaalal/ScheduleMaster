@@ -62,6 +62,10 @@ public class LectureBagForm extends ContentForm {
         timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
         suggestionCheckBox.setBorder(BorderFactory.createEmptyBorder(23, 0, 0, 15));
         suggestionCheckBox.addChangeListener(changeListener);
+
+        addComponentForm(selectedLectureTableForm);
+        addComponentForm(enrolledLectureTableForm);
+        addComponentForm(timeTableForm);
     }
 
     @Override

@@ -65,6 +65,9 @@ public class MagicSelectorForm extends ContentForm {
                 }
             }
         });
+
+        addComponentForm(lectureTableForm);
+        addComponentForm(timeTableForm);
     }
 
     @Override

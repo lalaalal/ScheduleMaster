@@ -174,6 +174,10 @@ public class TimeTableForm extends LectureView {
         };
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         timeTable.setDefaultRenderer(Object.class, renderer);
+        addThemeChangeListener(() -> {
+            timeTable.setDefaultRenderer(Object.class, renderer);
+            timeTable.setRowHeight((int) (timeTable.getRowHeight() * 1.3));
+        });
     }
 
     /**

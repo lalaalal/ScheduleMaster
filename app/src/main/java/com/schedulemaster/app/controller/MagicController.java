@@ -111,7 +111,7 @@ public class MagicController {
 
         addLectures(suggestion, userController.getSelectedLectures(), usedTime, maxSuggestion);
         LinkedList<Lecture> majorMatchLectures = lectureBook.findLectures(LectureController.AttributeName.Major.name(), userController.getUserMajor());
-        addLectures(suggestion, LectureBook.findWithComparator(majorMatchLectures, lecture -> lecture.grade == userController.getUserGrade()), usedTime, maxSuggestion);
+        addLectures(suggestion, LectureBook.findWithComparator(majorMatchLectures, lecture -> lecture.grade <= userController.getUserGrade()), usedTime, maxSuggestion);
         addLectures(suggestion, lectureBook.getLectures(), usedTime, maxSuggestion);
 
         return suggestion;

@@ -34,6 +34,10 @@ public class HomeForm extends ContentForm {
 
         lectureBagLabel.setBorder(BorderFactory.createEmptyBorder(5, 35, 0, 5));
         timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
+
+        addComponentForm(selectedLectureTableForm);
+        addComponentForm(searchForm);
+        addComponentForm(timeTableForm);
     }
 
     @Override

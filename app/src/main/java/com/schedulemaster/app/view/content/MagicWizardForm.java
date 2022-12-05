@@ -16,21 +16,23 @@ public class MagicWizardForm extends ContentForm {
     private JPanel selectTimeTablePanel;
     private JLabel unwantedTimeLabel;
 
-    private final SelectableTimeTable selectableTimeTable = new SelectableTimeTable();
+    private final SelectableTimeTable selectableTimeTableForm = new SelectableTimeTable();
     private final LectureGroupListForm lectureGroupListForm;
 
     private final MainFrame frame;
 
     public MagicWizardForm(MainFrame frame) {
         this.frame = frame;
-        lectureGroupListForm = new LectureGroupListForm(frame, selectableTimeTable);
+        lectureGroupListForm = new LectureGroupListForm(frame, selectableTimeTableForm);
         $$$setupUI$$$();
+        addComponentForm(lectureGroupListForm);
+        addComponentForm(selectableTimeTableForm);
     }
 
     private void createUIComponents() {
         addGroupPanel = lectureGroupListForm.getPanel();
 
-        selectTimeTablePanel = selectableTimeTable.getPanel();
+        selectTimeTablePanel = selectableTimeTableForm.getPanel();
         unwantedTimeLabel = new HeaderLabel();
         unwantedTimeLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
     }
@@ -45,7 +47,7 @@ public class MagicWizardForm extends ContentForm {
         try {
             frame.getUserController().refresh();
             LectureTime unwantedTime = frame.getUserController().getUnwantedTime();
-            selectableTimeTable.setSelectedTime(unwantedTime);
+            selectableTimeTableForm.setSelectedTime(unwantedTime);
 
             frame.getMagicController().init();
         } catch (Exception e) {
