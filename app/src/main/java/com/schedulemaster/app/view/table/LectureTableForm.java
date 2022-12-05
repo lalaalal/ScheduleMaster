@@ -1,9 +1,11 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.table;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.view.LectureView;
+import com.schedulemaster.app.view.MainFrame;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -45,7 +47,7 @@ public class LectureTableForm extends LectureView {
         }
     }
 
-    private static final String[] HEADER = {"전공", "강의번호", "강의명", "교수명", "학점", "강의시간", "강의실", "신청자", "최대"};
+    private static final String[] HEADER = {"전공", "학년", "강의번호", "강의명", "교수명", "학점", "강의시간", "강의실", "신청자", "최대"};
 
     private JTable lectureTable;
     private JPanel panel;
@@ -71,9 +73,7 @@ public class LectureTableForm extends LectureView {
 
     public LectureTableForm(MainFrame frame) {
         $$$setupUI$$$();
-        lectureTable.getColumn("강의명").setMinWidth(200);
-        lectureTable.getColumn("강의시간").setMinWidth(175);
-        lectureTable.getColumn("강의번호").setMinWidth(50);
+        setColumnWidth();
         lectureTable.addMouseListener(new TableMouseAdapter());
         lectureTable.setRowHeight((int) (lectureTable.getRowHeight() * 1.2));
         this.frame = frame;
@@ -103,14 +103,15 @@ public class LectureTableForm extends LectureView {
     private Object[] createRowData(Lecture lecture) {
         Object[] rowData = new Object[HEADER.length + lastColumnIndex];
         rowData[0] = lecture.major;
-        rowData[1] = lecture.lectureNum;
-        rowData[2] = lecture.name;
-        rowData[3] = lecture.professor;
-        rowData[4] = String.valueOf(lecture.score);
-        rowData[5] = lectureTime(lecture.time);
-        rowData[6] = lecture.classRoom;
-        rowData[7] = String.valueOf(lecture.enrolled);
-        rowData[8] = String.valueOf(lecture.max);
+        rowData[1] = String.valueOf(lecture.grade);
+        rowData[2] = lecture.lectureNum;
+        rowData[3] = lecture.name;
+        rowData[4] = lecture.professor;
+        rowData[5] = String.valueOf(lecture.score);
+        rowData[6] = lectureTime(lecture.time);
+        rowData[7] = lecture.classRoom;
+        rowData[8] = String.valueOf(lecture.enrolled);
+        rowData[9] = String.valueOf(lecture.max);
 
         for (Integer columnIndex : userActionButtonColumns) {
             String columnName = tableModel.getColumnName(columnIndex);
@@ -124,6 +125,12 @@ public class LectureTableForm extends LectureView {
         return rowData;
     }
 
+    private void setColumnWidth() {
+        lectureTable.getColumn("강의명").setMinWidth(150);
+        lectureTable.getColumn("강의시간").setMinWidth(150);
+        lectureTable.getColumn("강의번호").setMinWidth(50);
+    }
+
     private void addColumn(String columnName) {
         tableModel.addColumn(columnName);
         for (int columnIndex : userActionButtonColumns) {
@@ -134,9 +141,7 @@ public class LectureTableForm extends LectureView {
             String identifier = tableModel.getColumnName(columnIndex);
             lectureTable.getColumn(identifier).setCellRenderer(buttonRenderer);
         }
-        lectureTable.getColumn("강의명").setMinWidth(200);
-        lectureTable.getColumn("강의시간").setMinWidth(175);
-        lectureTable.getColumn("강의번호").setMinWidth(50);
+        setColumnWidth();
     }
 
     public void addButtonColumn(String columnName, UserAction userAction) {

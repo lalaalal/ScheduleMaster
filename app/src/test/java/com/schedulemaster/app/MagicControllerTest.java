@@ -8,10 +8,12 @@ import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureBook;
 import com.schedulemaster.model.LectureTime;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+@Disabled
 public class MagicControllerTest {
     @Test
     public void testMagic() throws IOException {

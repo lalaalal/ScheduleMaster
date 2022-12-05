@@ -5,10 +5,12 @@ import com.schedulemaster.misc.Request;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+@Disabled
 public class ClientTest {
     @Test
     public void testGetLectures() throws IOException {
@@ -23,7 +25,7 @@ public class ClientTest {
     @Test
     public void testSignup() throws IOException {
         try (Client client = new Client()) {
-            client.signup("test1", "test1");
+            client.signup("test1", "test1", "컴공", 1);
         }
     }
 

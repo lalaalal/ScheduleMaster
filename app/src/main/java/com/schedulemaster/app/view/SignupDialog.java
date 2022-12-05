@@ -4,112 +4,99 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.ResponseStatus;
+import com.schedulemaster.app.controller.LectureController;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.misc.LinkedList;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class LoginFrom implements ComponentForm {
-
+public class SignupDialog extends JDialog {
     private JPasswordField passwordField;
-    private JTextField idField;
-
-    private JPanel panel;
     private JLabel idLabel;
     private JLabel pwLabel;
-    private JButton loginButton;
-    private JLabel signupLabel;
-
+    private JTextField idField;
+    private JComboBox<Integer> gradeComboBox;
+    private JButton doneButton;
+    private JComboBox<String> majorComboBox;
+    private JPanel panel;
     private final MainFrame mainFrame;
 
-    public LoginFrom(MainFrame mainFrame) {
+    public SignupDialog(MainFrame mainFrame) {
+        super(mainFrame, ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("signup"), ModalityType.APPLICATION_MODAL);
+        setSize(300, 300);
         this.mainFrame = mainFrame;
-        idField.setBorder(BorderFactory.createCompoundBorder(idField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        passwordField.setBorder(BorderFactory.createCompoundBorder(passwordField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        signupLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-        loginButton.addMouseListener(new MouseAdapter() {
+        $$$setupUI$$$();
+        initComponents();
+
+        setContentPane(panel);
+    }
+
+    private void initComponents() {
+        Border idFieldBorder = idField.getBorder();
+        idField.setBorder(BorderFactory.createCompoundBorder(idFieldBorder, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        Border passwordFieldBorder = passwordField.getBorder();
+        passwordField.setBorder(BorderFactory.createCompoundBorder(passwordFieldBorder, BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        doneButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (mainFrame.connectServer())
-                    login();
+                signup();
             }
         });
-        signupLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (mainFrame.connectServer())
-                    signup();
-            }
-        });
-
-        KeyAdapter keyAdapter = new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getKeyChar() == KeyEvent.VK_ENTER && mainFrame.connectServer()) {
-                    login();
-                }
-            }
-        };
-
-        idField.addKeyListener(keyAdapter);
-        passwordField.addKeyListener(keyAdapter);
     }
 
     @Override
-    public JPanel getPanel() {
-        return panel;
+    public void setVisible(boolean b) {
+        if (b)
+            load();
+        super.setVisible(b);
     }
 
-    public void login() {
-
-        try {
-            UserController userController = mainFrame.getUserController();
-            String id = idField.getText();
-            String pw = new String(passwordField.getPassword());
-            ResponseStatus status = userController.login(id, pw);
-            if (status.status()) {
-                mainFrame.login();
-                mainFrame.setUserID(id);
-            } else {
-                String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
-                String msg = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString(status.msg());
-                JOptionPane.showMessageDialog(mainFrame, msg, title, JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (IOException e) {
-            String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
-            JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
+    private void load() {
+        idField.setText("");
+        passwordField.setText("");
+        mainFrame.connectServer();
+        LectureController lectureController = mainFrame.getLectureController();
+        LinkedList<String> majors = lectureController.getLectureBook().getIndexAttributes(LectureController.AttributeName.Major.name());
+        for (String major : majors) {
+            majorComboBox.addItem(major);
         }
+        for (int i = 1; i <= 4; i++) {
+            gradeComboBox.addItem(i);
+        }
+        setLocationRelativeTo(mainFrame);
     }
 
     public void signup() {
-
         try {
             UserController userController = mainFrame.getUserController();
             String id = idField.getText();
             String pw = new String(passwordField.getPassword());
-            ResponseStatus status = userController.signup(id, pw);
+            String major = (String) majorComboBox.getSelectedItem();
+            int grade = (int) Objects.requireNonNullElse(gradeComboBox.getSelectedItem(), 0);
+            ResponseStatus status = userController.signup(id, pw, major, grade);
 
             String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("info");
             String msg = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString(status.msg());
             JOptionPane.showMessageDialog(mainFrame, msg, title, JOptionPane.ERROR_MESSAGE);
+            if (status.status())
+                setVisible(false);
         } catch (IOException e) {
             String title = ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("error");
             JOptionPane.showMessageDialog(mainFrame, e.getLocalizedMessage(), title, JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
+    private void createUIComponents() {
+        gradeComboBox = new JComboBox<>();
+        majorComboBox = new JComboBox<>();
     }
 
     /**
@@ -120,10 +107,11 @@ public class LoginFrom implements ComponentForm {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        createUIComponents();
         panel = new JPanel();
-        panel.setLayout(new GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
+        panel.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel.add(panel1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         passwordField = new JPasswordField();
         panel1.add(passwordField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
@@ -136,21 +124,25 @@ public class LoginFrom implements ComponentForm {
         idField = new JTextField();
         idField.setText("");
         panel1.add(idField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        panel1.add(gradeComboBox, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        doneButton = new JButton();
+        this.$$$loadButtonText$$$(doneButton, this.$$$getMessageFromBundle$$$("string", "done_btn"));
+        panel1.add(doneButton, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.add(majorComboBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        this.$$$loadLabelText$$$(label1, this.$$$getMessageFromBundle$$$("string", "grade"));
+        panel1.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        this.$$$loadLabelText$$$(label2, this.$$$getMessageFromBundle$$$("string", "major"));
+        panel1.add(label2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         panel.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        loginButton = new JButton();
-        this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("string", "login"));
-        panel.add(loginButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
-        panel.add(spacer2, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panel.add(spacer2, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
-        panel.add(spacer3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        signupLabel = new JLabel();
-        this.$$$loadLabelText$$$(signupLabel, this.$$$getMessageFromBundle$$$("string", "signup"));
-        panel.add(signupLabel, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel.add(spacer3, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer4 = new Spacer();
-        panel.add(spacer4, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        signupLabel.setLabelFor(idField);
+        panel.add(spacer4, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;

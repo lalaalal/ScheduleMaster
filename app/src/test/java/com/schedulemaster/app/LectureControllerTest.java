@@ -1,10 +1,12 @@
 package com.schedulemaster.app;
 
 import com.schedulemaster.app.controller.LectureController;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+@Disabled
 public class LectureControllerTest {
     @Test
     public void testLectureSearch() throws IOException {
@@ -17,7 +19,7 @@ public class LectureControllerTest {
             long end = System.currentTimeMillis();
             System.out.println((end - start) + " ms");
             start = System.currentTimeMillis();
-            lectureController.findWithComparator((lecture) -> lecture.professor.equals("박현민"));
+            lectureController.getLectureBook().findWithComparator((lecture) -> lecture.professor.equals("박현민"));
             end = System.currentTimeMillis();
             System.out.println((end - start) + " ms");
         }

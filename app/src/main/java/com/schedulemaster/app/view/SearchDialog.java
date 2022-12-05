@@ -3,6 +3,8 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.schedulemaster.app.view.content.SearchForm;
+import com.schedulemaster.app.view.table.LectureTableForm;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 

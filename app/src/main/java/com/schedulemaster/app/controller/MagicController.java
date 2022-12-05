@@ -101,24 +101,36 @@ public class MagicController {
         LinkedList<Lecture> suggestion = new LinkedList<>();
         Heap<Priority> priorityHeap = userController.getPriorityHeap();
         while (!priorityHeap.isEmpty()) {
+            if (suggestion.getLength() >= maxSuggestion)
+                return suggestion;
             String lectureNum = priorityHeap.pop().lectureNum();
             Lecture lecture = lectureBook.findLecture(lectureNum);
 
-            if (!lecture.time.conflictWith(usedTime) && !hasSameName(suggestion, lecture))
-                suggestion.push(lecture);
-            if (suggestion.getLength() >= maxSuggestion)
-                return suggestion;
+            addLecture(suggestion, lecture, usedTime);
         }
 
-        LinkedList<Lecture> lectures = lectureBook.getLectures();
-        for (Lecture lecture : lectures) {
-            if (suggestion.getLength() >= maxSuggestion)
-                return suggestion;
-            if (!lecture.time.conflictWith(usedTime) && !hasSameName(suggestion, lecture))
-                suggestion.push(lecture);
-        }
+        addLectures(suggestion, userController.getSelectedLectures(), usedTime, maxSuggestion);
+        LinkedList<Lecture> majorMatchLectures = lectureBook.findLectures(LectureController.AttributeName.Major.name(), userController.getUserMajor());
+        addLectures(suggestion, LectureBook.findWithComparator(majorMatchLectures, lecture -> lecture.grade <= userController.getUserGrade()), usedTime, maxSuggestion);
+        addLectures(suggestion, lectureBook.getLectures(), usedTime, maxSuggestion);
 
         return suggestion;
+    }
+
+    private void addLecture(LinkedList<Lecture> suggestion, Lecture lecture, LectureTime usedTime) {
+        if (!lecture.time.conflictWith(usedTime) && !hasSameName(suggestion, lecture)
+                && !hasSameName(userController.getEnrolledLectures(), lecture)
+                && !userController.getSelectedLectures().has(lecture)
+                && lecture.enrolled != lecture.max)
+            suggestion.push(lecture);
+    }
+
+    private void addLectures(LinkedList<Lecture> suggestion, LinkedList<Lecture> lectures, LectureTime usedTime, int maxSuggestion) {
+        for (Lecture lecture : lectures) {
+            if (suggestion.getLength() >= maxSuggestion)
+                return;
+            addLecture(suggestion, lecture, usedTime);
+        }
     }
 
     private LectureTime getUsedTime() {

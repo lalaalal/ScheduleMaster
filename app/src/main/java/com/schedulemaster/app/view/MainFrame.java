@@ -1,8 +1,5 @@
 package com.schedulemaster.app.view;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.Client;
 import com.schedulemaster.app.controller.LectureController;
 import com.schedulemaster.app.controller.MagicController;
@@ -10,32 +7,32 @@ import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.observers.EnrolledLectureObserver;
 import com.schedulemaster.app.observers.LectureBookObserver;
 import com.schedulemaster.app.observers.SelectedLectureObserver;
+import com.schedulemaster.app.view.content.*;
 import com.schedulemaster.misc.Hash;
+import mdlaf.MaterialLookAndFeel;
+import mdlaf.themes.MaterialLiteTheme;
+import mdlaf.themes.MaterialOceanicTheme;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
+    private static final Hash<String, Locale> SUPPORTED_LOCALES = new Hash<>();
+    private static final LookAndFeel LITE_THEME = new MaterialLookAndFeel(new MaterialLiteTheme());
+    private static final LookAndFeel DARK_THEME = new MaterialLookAndFeel(new MaterialOceanicTheme());
     private final LoginFrom loginFrom = new LoginFrom(this);
-
+    private AppTheme theme = AppTheme.Lite;
     private final Hash<ContentForm.Content, ContentForm> contentForms = new Hash<>();
+    private final TitleBarForm titleBarForm = new TitleBarForm(this);
+
     private JPanel mainPanel;
     private JPanel titleBar;
     private JPanel contentPanel;
-    private JLabel titleLabel;
-    private JLabel userIDLabel;
-    private JLabel logoutLabel;
-    private JLabel homeLabel;
-    private JLabel lectureBagLabel;
-    private JLabel wizardLabel;
 
     private Client client;
     private LectureController lectureController;
@@ -47,25 +44,25 @@ public class MainFrame extends JFrame {
 
     public static final String RESOURCE_BUNDLE_NAME = "string";
 
+    static {
+        SUPPORTED_LOCALES.put("korean", Locale.KOREAN);
+        SUPPORTED_LOCALES.put("english", Locale.ENGLISH);
+        SUPPORTED_LOCALES.put("japanese", Locale.JAPANESE);
+        SUPPORTED_LOCALES.put("chinese", Locale.CHINESE);
+    }
+
+    public static Iterable<String> supportedLocaleKeys() {
+        return SUPPORTED_LOCALES.getKeys();
+    }
+
     public MainFrame() {
         super("Main");
 
+        $$$setupUI$$$();
         setSize(1400, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(loginFrom.getPanel());
         setLocationRelativeTo(null);
-
-        titleBar.setBorder(new EmptyBorder(20, 20, 20, 20));
-        logoutLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-
-        setVisible(true);
-        logoutLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                disconnectServer();
-                showLoginForm();
-            }
-        });
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -74,30 +71,11 @@ public class MainFrame extends JFrame {
             }
         });
 
+        contentForms.set(ContentForm.Content.Login, loginFrom);
         contentForms.set(ContentForm.Content.Home, new HomeForm(this));
         contentForms.set(ContentForm.Content.LectureBag, new LectureBagForm(this));
         contentForms.set(ContentForm.Content.MagicWizard, new MagicWizardForm(this));
         contentForms.set(ContentForm.Content.MagicSelector, new MagicSelectorForm(this));
-        homeLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                setContentForm(ContentForm.Content.Home);
-            }
-        });
-        lectureBagLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                setContentForm(ContentForm.Content.LectureBag);
-            }
-        });
-        wizardLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                setContentForm(ContentForm.Content.MagicWizard);
-            }
-        });
-
-
     }
 
     public void setContentForm(ContentForm.Content content) {
@@ -137,7 +115,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void disconnectServer() {
+    protected void disconnectServer() {
         try {
             if (client != null) {
                 client.close();
@@ -160,14 +138,14 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
-    private void showLoginForm() {
+    protected void showLoginForm() {
         setContentPane(loginFrom.getPanel());
         revalidate();
         repaint();
     }
 
     public void setUserID(String id) {
-        userIDLabel.setText(id);
+        titleBarForm.setUserID(id);
     }
 
     public LectureController getLectureController() {
@@ -194,11 +172,43 @@ public class MainFrame extends JFrame {
         lectureBookObserver.addLectureView(lectureView);
     }
 
-    {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
+    public void changeLocale(Locale locale) {
+        Locale.setDefault(locale);
+        for (ContentForm contentForm : contentForms)
+            contentForm.onLocaleChange();
+    }
+
+    /**
+     * Change Application theme. If you have another component in MainFrame, override and call ohThemeChange.
+     *
+     * @param theme Theme to change
+     */
+    public void setTheme(AppTheme theme) {
+        try {
+            this.theme = theme;
+            if (theme == AppTheme.Lite)
+                UIManager.setLookAndFeel(LITE_THEME);
+            else
+                UIManager.setLookAndFeel(DARK_THEME);
+            for (ContentForm contentForm : contentForms)
+                contentForm.onThemeChange();
+        } catch (UnsupportedLookAndFeelException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Toggle theme between lite and dark.
+     */
+    public void toggleTheme() {
+        if (theme == AppTheme.Lite)
+            setTheme(AppTheme.Dark);
+        else
+            setTheme(AppTheme.Lite);
+    }
+
+    private void createUIComponents() {
+        titleBar = titleBarForm.getPanel();
     }
 
     /**
@@ -209,90 +219,13 @@ public class MainFrame extends JFrame {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        createUIComponents();
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
-        titleBar = new JPanel();
-        titleBar.setLayout(new GridLayoutManager(1, 9, new Insets(0, 0, 0, 0), -1, -1));
-        titleBar.setBackground(new Color(-13156691));
-        titleBar.setForeground(new Color(-13156691));
         mainPanel.add(titleBar, BorderLayout.NORTH);
-        titleLabel = new JLabel();
-        titleLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(titleLabel, this.$$$getMessageFromBundle$$$("string", "title"));
-        titleBar.add(titleLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        userIDLabel = new JLabel();
-        userIDLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(userIDLabel, this.$$$getMessageFromBundle$$$("string", "default_id"));
-        titleBar.add(userIDLabel, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        logoutLabel = new JLabel();
-        logoutLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(logoutLabel, this.$$$getMessageFromBundle$$$("string", "logout"));
-        titleBar.add(logoutLabel, new GridConstraints(0, 8, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        titleBar.add(spacer1, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer2 = new Spacer();
-        titleBar.add(spacer2, new GridConstraints(0, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(15, -1), null, null, 0, false));
-        homeLabel = new JLabel();
-        homeLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(homeLabel, this.$$$getMessageFromBundle$$$("string", "home"));
-        titleBar.add(homeLabel, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer3 = new Spacer();
-        titleBar.add(spacer3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(15, -1), null, null, 0, false));
-        lectureBagLabel = new JLabel();
-        lectureBagLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(lectureBagLabel, this.$$$getMessageFromBundle$$$("string", "enrolled"));
-        titleBar.add(lectureBagLabel, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        wizardLabel = new JLabel();
-        wizardLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(wizardLabel, this.$$$getMessageFromBundle$$$("string", "wizard"));
-        titleBar.add(wizardLabel, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(contentPanel, BorderLayout.CENTER);
-    }
-
-    private static Method $$$cachedGetBundleMethod$$$ = null;
-
-    private String $$$getMessageFromBundle$$$(String path, String key) {
-        ResourceBundle bundle;
-        try {
-            Class<?> thisClass = this.getClass();
-            if ($$$cachedGetBundleMethod$$$ == null) {
-                Class<?> dynamicBundleClass = thisClass.getClassLoader().loadClass("com.intellij.DynamicBundle");
-                $$$cachedGetBundleMethod$$$ = dynamicBundleClass.getMethod("getBundle", String.class, Class.class);
-            }
-            bundle = (ResourceBundle) $$$cachedGetBundleMethod$$$.invoke(null, path, thisClass);
-        } catch (Exception e) {
-            bundle = ResourceBundle.getBundle(path);
-        }
-        return bundle.getString(key);
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    private void $$$loadLabelText$$$(JLabel component, String text) {
-        StringBuffer result = new StringBuffer();
-        boolean haveMnemonic = false;
-        char mnemonic = '\0';
-        int mnemonicIndex = -1;
-        for (int i = 0; i < text.length(); i++) {
-            if (text.charAt(i) == '&') {
-                i++;
-                if (i == text.length()) break;
-                if (!haveMnemonic && text.charAt(i) != '&') {
-                    haveMnemonic = true;
-                    mnemonic = text.charAt(i);
-                    mnemonicIndex = result.length();
-                }
-            }
-            result.append(text.charAt(i));
-        }
-        component.setText(result.toString());
-        if (haveMnemonic) {
-            component.setDisplayedMnemonic(mnemonic);
-            component.setDisplayedMnemonicIndex(mnemonicIndex);
-        }
     }
 
     /**
@@ -301,5 +234,4 @@ public class MainFrame extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
-
 }

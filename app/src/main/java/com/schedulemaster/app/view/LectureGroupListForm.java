@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.view.content.ContentForm;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
@@ -17,7 +18,7 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class LectureGroupListForm implements ComponentForm {
+public class LectureGroupListForm extends ComponentGroup {
     private JPanel panel;
     private JPanel lectureGroupListPanel;
     private JButton groupAddButton;
@@ -83,6 +84,8 @@ public class LectureGroupListForm implements ComponentForm {
 
         lectureGroupListPanel.revalidate();
         lectureGroupListPanel.repaint();
+
+        addComponentForm(lectureGroupForm);
     }
 
     @Override

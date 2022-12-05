@@ -52,21 +52,7 @@ public class LectureController extends Subject {
         return lectureBook.findLectures(attributeName.name(), value);
     }
 
-    public LinkedList<Lecture> findWithComparator(Comparator comparator) {
-        LinkedList<Lecture> result = new LinkedList<>();
-        for (Lecture lecture : lectureBook.getLectures()) {
-            if (comparator.compare(lecture))
-                result.push(lecture);
-        }
-
-        return result;
-    }
-
     public LectureBook getLectureBook() {
         return lectureBook;
-    }
-
-    public interface Comparator {
-        boolean compare(Lecture lecture);
     }
 }

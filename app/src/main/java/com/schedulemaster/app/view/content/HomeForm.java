@@ -1,15 +1,19 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.content;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.view.*;
+import com.schedulemaster.app.view.table.HomeLectureTableForm;
+import com.schedulemaster.app.view.table.LectureTableForm;
+import com.schedulemaster.app.view.table.SelectedLectureTableForm;
 
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class HomeForm implements ContentForm {
+public class HomeForm extends ContentForm {
     private final MainFrame frame;
     private JPanel panel;
     private JPanel timeTablePanel;
@@ -30,6 +34,10 @@ public class HomeForm implements ContentForm {
 
         lectureBagLabel.setBorder(BorderFactory.createEmptyBorder(5, 35, 0, 5));
         timeTableLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
+
+        addComponentForm(selectedLectureTableForm);
+        addComponentForm(searchForm);
+        addComponentForm(timeTableForm);
     }
 
     @Override

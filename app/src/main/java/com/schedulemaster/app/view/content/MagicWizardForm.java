@@ -1,7 +1,8 @@
-package com.schedulemaster.app.view;
+package com.schedulemaster.app.view.content;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.schedulemaster.app.view.*;
 import com.schedulemaster.model.LectureTime;
 
 import javax.swing.*;
@@ -9,27 +10,29 @@ import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
-public class MagicWizardForm implements ContentForm {
+public class MagicWizardForm extends ContentForm {
     private JPanel panel;
     private JPanel addGroupPanel;
     private JPanel selectTimeTablePanel;
     private JLabel unwantedTimeLabel;
 
-    private final SelectableTimeTable selectableTimeTable = new SelectableTimeTable();
+    private final SelectableTimeTable selectableTimeTableForm = new SelectableTimeTable();
     private final LectureGroupListForm lectureGroupListForm;
 
     private final MainFrame frame;
 
     public MagicWizardForm(MainFrame frame) {
         this.frame = frame;
-        lectureGroupListForm = new LectureGroupListForm(frame, selectableTimeTable);
+        lectureGroupListForm = new LectureGroupListForm(frame, selectableTimeTableForm);
         $$$setupUI$$$();
+        addComponentForm(lectureGroupListForm);
+        addComponentForm(selectableTimeTableForm);
     }
 
     private void createUIComponents() {
         addGroupPanel = lectureGroupListForm.getPanel();
 
-        selectTimeTablePanel = selectableTimeTable.getPanel();
+        selectTimeTablePanel = selectableTimeTableForm.getPanel();
         unwantedTimeLabel = new HeaderLabel();
         unwantedTimeLabel.setBorder(BorderFactory.createEmptyBorder(20, 35, 0, 5));
     }
@@ -44,7 +47,7 @@ public class MagicWizardForm implements ContentForm {
         try {
             frame.getUserController().refresh();
             LectureTime unwantedTime = frame.getUserController().getUnwantedTime();
-            selectableTimeTable.setSelectedTime(unwantedTime);
+            selectableTimeTableForm.setSelectedTime(unwantedTime);
 
             frame.getMagicController().init();
         } catch (Exception e) {
