@@ -141,9 +141,10 @@ public class Client extends Communicator {
         return response != null && response.status() == Status.SUCCEED;
     }
 
-    public void addRating(LectureRating.Rating rating) throws IOException {
+    public ResponseStatus addRating(LectureRating.Rating rating) throws IOException {
         Request request = new Request(Request.ADD_RATING, rating);
         Response response = send(request);
+        return new ResponseStatus(response.status() == Status.SUCCEED, response.data().toString());
     }
 
     public LectureRating getRating(String lectureNum) throws IOException {
@@ -151,6 +152,11 @@ public class Client extends Communicator {
         Response response = send(request);
 
         return (LectureRating) response.data();
+    }
+
+    public void removeRating(String lectureNum) throws IOException {
+        Request request = new Request(Request.REMOVE_RATING, lectureNum);
+        send(request);
     }
 
     private void bye() throws IOException {

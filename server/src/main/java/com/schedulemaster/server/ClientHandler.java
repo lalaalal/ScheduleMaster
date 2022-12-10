@@ -85,6 +85,7 @@ public class ClientHandler extends Communicator implements Runnable {
                 case Request.SET_UNWANTED_TIME -> setUnwantedTimeResponse(request);
                 case Request.ADD_RATING -> addRating(request);
                 case Request.GET_RATING -> getRating(request);
+                case Request.REMOVE_RATING -> removeRating(request);
                 case Request.BYE -> byeResponse();
                 default -> commandNotFoundResponse();
             };
@@ -210,6 +211,15 @@ public class ClientHandler extends Communicator implements Runnable {
             LectureRating rating = lectureHandler.getLectureRating(lectureNum);
 
             return new Response(Status.SUCCEED, rating);
+        }
+
+        public synchronized Response removeRating(Request request) {
+            if (user == null)
+                return new Response(Status.FAILED, Response.LOGIN_REQUIRED);
+            String lectureNum = (String) request.data();
+            lectureHandler.removeLectureRating(lectureNum, user);
+
+            return new Response(Status.SUCCEED, Response.SUCCEED);
         }
 
         public Response byeResponse() {

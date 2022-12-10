@@ -1,6 +1,7 @@
 package com.schedulemaster.app.controller;
 
 import com.schedulemaster.app.Client;
+import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.Subject;
 import com.schedulemaster.app.view.MainFrame;
 import com.schedulemaster.misc.LinkedList;
@@ -57,11 +58,15 @@ public class LectureController extends Subject {
         return lectureBook;
     }
 
-    public void addLectureRating(LectureRating.Rating rating) throws IOException {
-        client.addRating(rating);
+    public ResponseStatus addLectureRating(LectureRating.Rating rating) throws IOException {
+        return client.addRating(rating);
     }
 
     public LectureRating getLectureRating(String lectureNum) throws IOException {
         return client.getRating(lectureNum);
+    }
+
+    public void removeLectureRating(String lectureNum) throws IOException {
+        client.removeRating(lectureNum);
     }
 }

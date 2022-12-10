@@ -25,6 +25,7 @@ public record Request(String command, Object data) implements Serializable {
     public static final String SET_UNWANTED_TIME = "set_unwanted_time";
     public static final String ADD_RATING = "add_rating";
     public static final String GET_RATING = "get_rating";
+    public static final String REMOVE_RATING = "remove_rating";
 
     /**
      * @return Simple name of data type.

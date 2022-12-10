@@ -154,32 +154,42 @@ public class LectureHandler {
     }
 
     public synchronized String addLectureRating(LectureRating.Rating rating) {
-        logger.log("Adding rating \"" + rating + "\"", Logger.INFO);
+        logger.log("Adding rate \"" + rating + "\"", Logger.INFO);
         LectureRating lectureRating = ratings.get(rating.lectureNum());
         if (lectureRating == null) {
-            logger.log("There's no rating for " + rating.lectureNum(), Logger.DEBUG);
-            logger.log("Creating new rating instance for " + rating.lectureNum(), Logger.VERBOSE);
+            logger.log("There's no rate for " + rating.lectureNum(), Logger.DEBUG);
+            logger.log("Creating new rate instance for " + rating.lectureNum(), Logger.VERBOSE);
             lectureRating = new LectureRating(findLecture(rating.lectureNum()));
             ratings.put(rating.lectureNum(), lectureRating);
         }
-        lectureRating.addRating(rating.user(), rating.rating(), rating.comment());
-        logger.log("Adding rating Succeed : " + rating.lectureNum(), Logger.DEBUG);
+        boolean result = lectureRating.addRating(rating.user(), rating.rate(), rating.comment());
+        if (!result) {
+            logger.log("Adding rate failed : " + rating.lectureNum(), Logger.DEBUG);
+            return "already_committed";
+        }
+        logger.log("Adding rate succeed : " + rating.lectureNum(), Logger.DEBUG);
         save();
         return Response.SUCCEED;
     }
 
     public LectureRating getLectureRating(String lectureNum) {
-        logger.log("Getting rating about " + lectureNum, Logger.INFO);
+        logger.log("Getting rate about " + lectureNum, Logger.INFO);
 
         LectureRating lectureRating = ratings.get(lectureNum);
         if (lectureRating == null) {
-            logger.log("There's no rating for " + lectureNum, Logger.DEBUG);
-            logger.log("Creating new rating instance for " + lectureNum, Logger.VERBOSE);
+            logger.log("There's no rate for " + lectureNum, Logger.DEBUG);
+            logger.log("Creating new rate instance for " + lectureNum, Logger.VERBOSE);
             lectureRating = new LectureRating(findLecture(lectureNum));
             ratings.put(lectureNum, lectureRating);
         }
 
         return lectureRating;
+    }
+
+    public synchronized void removeLectureRating(String lectureNum, User user) {
+        LectureRating lectureRating = ratings.get(lectureNum);
+        if (lectureRating != null)
+            lectureRating.removeRating(user);
     }
 
     public synchronized void save() {

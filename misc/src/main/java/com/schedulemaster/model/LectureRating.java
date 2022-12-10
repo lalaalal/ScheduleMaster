@@ -5,7 +5,7 @@ import com.schedulemaster.misc.LinkedList;
 import java.io.Serializable;
 
 public class LectureRating implements Serializable {
-    public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 2L;
     private final Lecture lecture;
     private final LinkedList<Rating> ratings = new LinkedList<>();
 
@@ -13,8 +13,14 @@ public class LectureRating implements Serializable {
         this.lecture = lecture;
     }
 
-    public void addRating(User user, int rating, String comment) {
-        ratings.push(new Rating(lecture.lectureNum, user, rating, comment));
+    public boolean addRating(User user, int rate, String comment) {
+        for (Rating rating : ratings) {
+            if (rating.user.equals(user))
+                return false;
+        }
+
+        ratings.push(new Rating(lecture.lectureNum, user, rate, comment));
+        return true;
     }
 
     public String getLectureName() {
@@ -24,19 +30,29 @@ public class LectureRating implements Serializable {
     public double getAverageRating() {
         double sum = 0;
         for (Rating rating : ratings)
-            sum += rating.rating;
+            sum += rating.rate;
 
         return sum / ratings.getLength();
+    }
+
+    public void removeRating(User user) {
+        Rating target = null;
+        for (Rating rating : ratings) {
+            if (rating.user.equals(user))
+                target = rating;
+        }
+        if (target != null)
+            ratings.remove(target);
     }
 
     public Rating[] getRatings() {
         return ratings.toArray(new Rating[0]);
     }
 
-    public record Rating(String lectureNum, User user, int rating, String comment) implements Serializable {
+    public record Rating(String lectureNum, User user, int rate, String comment) implements Serializable {
         @Override
         public String toString() {
-            return user.id + " [ " + rating + " ] : " + comment;
+            return user.id + " [ " + rate + " ] : " + comment;
         }
     }
 }

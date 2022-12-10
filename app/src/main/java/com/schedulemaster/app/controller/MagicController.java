@@ -1,10 +1,10 @@
 package com.schedulemaster.app.controller;
 
-import com.schedulemaster.model.*;
 import com.schedulemaster.app.model.Schedule;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.Heap;
 import com.schedulemaster.misc.LinkedList;
+import com.schedulemaster.model.*;
 
 import java.io.IOException;
 
@@ -109,6 +109,7 @@ public class MagicController {
             addLecture(suggestion, lecture, usedTime);
         }
 
+        addLectures(suggestion, LectureBook.findWithComparator(lectureBook.getLectures(), lecture -> lecture.max <= lecture.enrolled), usedTime, maxSuggestion);
         addLectures(suggestion, userController.getSelectedLectures(), usedTime, maxSuggestion);
         LinkedList<Lecture> majorMatchLectures = lectureBook.findLectures(LectureController.AttributeName.Major.name(), userController.getUserMajor());
         addLectures(suggestion, LectureBook.findWithComparator(majorMatchLectures, lecture -> lecture.grade <= userController.getUserGrade()), usedTime, maxSuggestion);
