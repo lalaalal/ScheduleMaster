@@ -23,6 +23,8 @@ public record Request(String command, Object data) implements Serializable {
     public static final String UNSELECT = "unselect";
     public static final String SET_PRIORITIES = "set_priorities";
     public static final String SET_UNWANTED_TIME = "set_unwanted_time";
+    public static final String ADD_RATING = "add_rating";
+    public static final String GET_RATING = "get_rating";
 
     /**
      * @return Simple name of data type.

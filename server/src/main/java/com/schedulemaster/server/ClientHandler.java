@@ -2,6 +2,7 @@ package com.schedulemaster.server;
 
 import com.schedulemaster.misc.*;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureRating;
 import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
 
@@ -82,6 +83,8 @@ public class ClientHandler extends Communicator implements Runnable {
                         Request.CANCEL, Request.UNSELECT -> lectureCommandResponse(request);
                 case Request.SET_PRIORITIES -> setPrioritiesResponse(request);
                 case Request.SET_UNWANTED_TIME -> setUnwantedTimeResponse(request);
+                case Request.ADD_RATING -> addRating(request);
+                case Request.GET_RATING -> getRating(request);
                 case Request.BYE -> byeResponse();
                 default -> commandNotFoundResponse();
             };
@@ -187,6 +190,26 @@ public class ClientHandler extends Communicator implements Runnable {
             userHandler.save();
 
             return new Response(Status.SUCCEED, Response.SUCCEED);
+        }
+
+        public synchronized Response addRating(Request request) {
+            if (user == null)
+                return new Response(Status.FAILED, Response.LOGIN_REQUIRED);
+            LectureRating.Rating rating = (LectureRating.Rating) request.data();
+            if (!rating.user().equals(user))
+                return new Response(Status.FAILED, Response.LOGIN_REQUIRED);
+            String result = lectureHandler.addLectureRating(rating);
+            if (result.equals(Response.SUCCEED))
+                return new Response(Status.SUCCEED, result);
+
+            return new Response(Status.FAILED, result);
+        }
+
+        public synchronized Response getRating(Request request) {
+            String lectureNum = (String) request.data();
+            LectureRating rating = lectureHandler.getLectureRating(lectureNum);
+
+            return new Response(Status.SUCCEED, rating);
         }
 
         public Response byeResponse() {

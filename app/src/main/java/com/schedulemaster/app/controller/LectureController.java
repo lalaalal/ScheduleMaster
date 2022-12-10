@@ -6,6 +6,7 @@ import com.schedulemaster.app.view.MainFrame;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureBook;
+import com.schedulemaster.model.LectureRating;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -54,5 +55,13 @@ public class LectureController extends Subject {
 
     public LectureBook getLectureBook() {
         return lectureBook;
+    }
+
+    public void addLectureRating(LectureRating.Rating rating) throws IOException {
+        client.addRating(rating);
+    }
+
+    public LectureRating getLectureRating(String lectureNum) throws IOException {
+        return client.getRating(lectureNum);
     }
 }

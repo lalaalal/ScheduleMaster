@@ -2,11 +2,12 @@ package com.schedulemaster.app;
 
 import com.schedulemaster.misc.*;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureRating;
 import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
 import com.schedulemaster.util.SHA256;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Objects;
 
@@ -21,6 +22,10 @@ public class Client extends Communicator {
 
     public Client() throws IOException {
         super(new Socket(HOST, PORT));
+    }
+
+    public Client(String host) throws IOException {
+        super(new Socket(host, PORT));
     }
 
     /**
@@ -134,6 +139,18 @@ public class Client extends Communicator {
         Response response = send(request);
 
         return response != null && response.status() == Status.SUCCEED;
+    }
+
+    public void addRating(LectureRating.Rating rating) throws IOException {
+        Request request = new Request(Request.ADD_RATING, rating);
+        Response response = send(request);
+    }
+
+    public LectureRating getRating(String lectureNum) throws IOException {
+        Request request = new Request(Request.GET_RATING, lectureNum);
+        Response response = send(request);
+
+        return (LectureRating) response.data();
     }
 
     private void bye() throws IOException {

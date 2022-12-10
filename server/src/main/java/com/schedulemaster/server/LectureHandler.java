@@ -5,6 +5,7 @@ import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.misc.Request;
 import com.schedulemaster.misc.Response;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureRating;
 import com.schedulemaster.model.LectureTime;
 import com.schedulemaster.model.User;
 import com.schedulemaster.util.CSVReader;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 public class LectureHandler {
     private Hash<String, Lecture> lectures;
     private final String lectureDataPath;
+    private Hash<String, LectureRating> ratings;
 
     private final Logger logger = Logger.getInstance();
 
@@ -29,16 +31,19 @@ public class LectureHandler {
         logger.log("Reading lecture data from \"" + lectureDataPath + "\"", Logger.INFO);
         try (FileInputStream fis = new FileInputStream(lectureDataPath);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
-            Object object = ois.readObject();
-            lectures = (Hash<String, Lecture>) object;
+            lectures = (Hash<String, Lecture>) ois.readObject();
+            ratings = (Hash<String, LectureRating>) ois.readObject();
         } catch (FileNotFoundException e) {
             lectures = new Hash<>();
+            ratings = new Hash<>();
             logger.log("No such file : \"" + lectureDataPath + "\"", Logger.ERROR);
         } catch (ClassNotFoundException e) {
             lectures = new Hash<>();
+            ratings = new Hash<>();
             logger.log("Class not found while reading data from \"" + lectureDataPath + "\"", Logger.ERROR);
         } catch (IOException e) {
             lectures = new Hash<>();
+            ratings = new Hash<>();
             logger.log("Something went wrong while load lectures from \"" + lectures + "\"", Logger.ERROR);
         }
     }
@@ -148,11 +153,41 @@ public class LectureHandler {
         return Response.SUCCEED;
     }
 
+    public synchronized String addLectureRating(LectureRating.Rating rating) {
+        logger.log("Adding rating \"" + rating + "\"", Logger.INFO);
+        LectureRating lectureRating = ratings.get(rating.lectureNum());
+        if (lectureRating == null) {
+            logger.log("There's no rating for " + rating.lectureNum(), Logger.DEBUG);
+            logger.log("Creating new rating instance for " + rating.lectureNum(), Logger.VERBOSE);
+            lectureRating = new LectureRating(findLecture(rating.lectureNum()));
+            ratings.put(rating.lectureNum(), lectureRating);
+        }
+        lectureRating.addRating(rating.user(), rating.rating(), rating.comment());
+        logger.log("Adding rating Succeed : " + rating.lectureNum(), Logger.DEBUG);
+        save();
+        return Response.SUCCEED;
+    }
+
+    public LectureRating getLectureRating(String lectureNum) {
+        logger.log("Getting rating about " + lectureNum, Logger.INFO);
+
+        LectureRating lectureRating = ratings.get(lectureNum);
+        if (lectureRating == null) {
+            logger.log("There's no rating for " + lectureNum, Logger.DEBUG);
+            logger.log("Creating new rating instance for " + lectureNum, Logger.VERBOSE);
+            lectureRating = new LectureRating(findLecture(lectureNum));
+            ratings.put(lectureNum, lectureRating);
+        }
+
+        return lectureRating;
+    }
+
     public synchronized void save() {
         logger.log("Saving lectures to \"" + lectureDataPath + "\"", Logger.DEBUG);
         try (FileOutputStream fos = new FileOutputStream(lectureDataPath)) {
             try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                 oos.writeObject(lectures);
+                oos.writeObject(ratings);
             }
         } catch (IOException e) {
             logger.log(e.getMessage(), Logger.ERROR);

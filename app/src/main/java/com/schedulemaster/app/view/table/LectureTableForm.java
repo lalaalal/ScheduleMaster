@@ -7,9 +7,11 @@ import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.util.ThemeManager;
 import com.schedulemaster.app.view.LectureView;
 import com.schedulemaster.app.view.MainFrame;
+import com.schedulemaster.app.view.RatingBoardDialog;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
+import com.schedulemaster.model.LectureRating;
 import com.schedulemaster.model.LectureTime;
 
 import javax.swing.*;
@@ -81,12 +83,35 @@ public class LectureTableForm extends LectureView {
         this.frame = frame;
 
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        lectureTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    try {
+                        String lectureNum = getSelectedLectureNum();
+                        LectureRating rating = frame.getLectureController().getLectureRating(lectureNum);
+                        RatingBoardDialog ratingBoardDialog = new RatingBoardDialog(frame, lectureNum);
+                        ratingBoardDialog.setLectureRating(rating);
+                        ratingBoardDialog.setVisible(true);
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        });
         addThemeChangeListener(() -> {
             Border lineBorder = BorderFactory.createLineBorder(ThemeManager.getInstance().getColor("Table.cellBorder"), 1);
             scrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15), lineBorder));
             lectureTable.setRowHeight((int) (lectureTable.getRowHeight() * 1.3));
             scrollPane.getViewport().setBackground(ThemeManager.getDefaultColor("Panel.background"));
         });
+    }
+
+    private String getSelectedLectureNum() {
+        int row = lectureTable.getSelectedRow();
+        int modelIndex = lectureTable.getColumn("강의번호").getModelIndex();
+        int column = lectureTable.convertColumnIndexToView(modelIndex);
+        return lectureTable.getValueAt(row, column).toString();
     }
 
     @Override

@@ -21,6 +21,10 @@ public class UserController extends Subject {
         this.lectureBook = lectureBook;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public ResponseStatus login(String id, String pw) throws IOException {
         ResponseStatus status = client.login(id, pw);
         if (status.status())
