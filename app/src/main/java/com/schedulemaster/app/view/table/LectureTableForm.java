@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.util.ThemeManager;
 import com.schedulemaster.app.view.LectureView;
 import com.schedulemaster.app.view.MainFrame;
 import com.schedulemaster.misc.Hash;
@@ -12,6 +13,7 @@ import com.schedulemaster.model.Lecture;
 import com.schedulemaster.model.LectureTime;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -79,7 +81,12 @@ public class LectureTableForm extends LectureView {
         this.frame = frame;
 
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setBorder(BorderFactory.createCompoundBorder(scrollPane.getBorder(), BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)));
+        addThemeChangeListener(() -> {
+            Border lineBorder = BorderFactory.createLineBorder(ThemeManager.getInstance().getColor("Table.cellBorder"), 1);
+            scrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15), lineBorder));
+            lectureTable.setRowHeight((int) (lectureTable.getRowHeight() * 1.3));
+            scrollPane.getViewport().setBackground(ThemeManager.getDefaultColor("Panel.background"));
+        });
     }
 
     @Override

@@ -211,4 +211,5 @@ public class SearchForm extends ContentForm {
     public JComponent $$$getRootComponent$$$() {
         return panel;
     }
+
 }

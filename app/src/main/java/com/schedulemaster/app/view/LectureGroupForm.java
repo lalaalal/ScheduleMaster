@@ -42,6 +42,7 @@ public class LectureGroupForm extends ComponentForm {
             lectureTableForm.updateView();
         }));
         groupNameLabel.setText(name);
+        addThemeChangeListener(lectureTableForm::onThemeChange);
     }
 
     public LinkedList<Lecture> getLectures() {

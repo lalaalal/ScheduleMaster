@@ -2,6 +2,7 @@ package com.schedulemaster.app.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.schedulemaster.app.util.ThemeManager;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -35,6 +36,7 @@ public class TimeTableForm extends LectureView {
     private static final Color[] COLORS = {Color.decode("#FF8787"), Color.decode("#F8C4B4"), Color.decode("#E5EBB2"), Color.decode("#BCE29E"), Color.decode("#B8E8FC"), Color.decode("#B1AFFF"), Color.decode("#C8FFD4"), Color.decode("#DFD3C3"), Color.decode("#F8EDE3"), Color.decode("#AEBDCA")};
     private final Hash<String, Integer> lectureColors = new Hash<>();
     private final Hash<Position, String> lectureNames = new Hash<>();
+    private final ThemeManager themeManager = ThemeManager.getInstance();
 
     static {
         for (int row = 0; row < N_CLASS; row++) {
@@ -52,8 +54,12 @@ public class TimeTableForm extends LectureView {
     public TimeTableForm() {
         $$$setupUI$$$();
         timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        timeTable.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         scrollPane.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        addThemeChangeListener(() -> {
+            scrollPane.getViewport().setBackground(ThemeManager.getDefaultColor("Panel.background"));
+            timeTable.setBorder(BorderFactory.createLineBorder(themeManager.getColor("Table.cellBorder"), 1));
+        });
     }
 
     @Override
@@ -148,12 +154,11 @@ public class TimeTableForm extends LectureView {
         timeTable = new JTable(RAW_DATA, HEADER);
         timeTable.getTableHeader().setReorderingAllowed(false);
         timeTable.setEnabled(false);
-        timeTable.setRowHeight((int) (timeTable.getRowHeight() * 1.3));
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JComponent component = (JComponent) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                component.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.LIGHT_GRAY));
+                component.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, themeManager.getColor("Table.cellBorder")));
                 if (column == 0) {
                     component.setBackground(null);
                     return component;
@@ -166,8 +171,11 @@ public class TimeTableForm extends LectureView {
 
                 Color nextColor = colors.get(nextPosition);
                 if (nextColor != null && nextColor.equals(color))
-                    component.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.LIGHT_GRAY));
+                    component.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, themeManager.getColor("Table.cellBorder")));
                 setText(name);
+                setForeground(ThemeManager.getDefaultColor("Label.foreground"));
+                if (color != null)
+                    setForeground(Color.GRAY);
                 component.setBackground(color);
                 return component;
             }

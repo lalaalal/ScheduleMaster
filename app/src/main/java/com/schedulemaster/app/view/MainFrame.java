@@ -7,11 +7,9 @@ import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.observers.EnrolledLectureObserver;
 import com.schedulemaster.app.observers.LectureBookObserver;
 import com.schedulemaster.app.observers.SelectedLectureObserver;
+import com.schedulemaster.app.util.ThemeManager;
 import com.schedulemaster.app.view.content.*;
 import com.schedulemaster.misc.Hash;
-import mdlaf.MaterialLookAndFeel;
-import mdlaf.themes.MaterialLiteTheme;
-import mdlaf.themes.MaterialOceanicTheme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,10 +21,8 @@ import java.util.ResourceBundle;
 
 public class MainFrame extends JFrame {
     private static final Hash<String, Locale> SUPPORTED_LOCALES = new Hash<>();
-    private static final LookAndFeel LITE_THEME = new MaterialLookAndFeel(new MaterialLiteTheme());
-    private static final LookAndFeel DARK_THEME = new MaterialLookAndFeel(new MaterialOceanicTheme());
     private final LoginFrom loginFrom = new LoginFrom(this);
-    private AppTheme theme = AppTheme.Lite;
+    private final ThemeManager themeManager = ThemeManager.getInstance();
     private final Hash<ContentForm.Content, ContentForm> contentForms = new Hash<>();
     private final TitleBarForm titleBarForm = new TitleBarForm(this);
 
@@ -76,6 +72,8 @@ public class MainFrame extends JFrame {
         contentForms.set(ContentForm.Content.LectureBag, new LectureBagForm(this));
         contentForms.set(ContentForm.Content.MagicWizard, new MagicWizardForm(this));
         contentForms.set(ContentForm.Content.MagicSelector, new MagicSelectorForm(this));
+
+        setTheme(AppTheme.Lite);
     }
 
     public void setContentForm(ContentForm.Content content) {
@@ -87,6 +85,8 @@ public class MainFrame extends JFrame {
         contentPanel.add(contentForm.getPanel(), BorderLayout.CENTER);
 
         contentForm.load();
+        contentForm.onLocaleChange();
+        contentForm.onThemeChange();
         revalidate();
         repaint();
     }
@@ -185,11 +185,11 @@ public class MainFrame extends JFrame {
      */
     public void setTheme(AppTheme theme) {
         try {
-            this.theme = theme;
+            this.themeManager.currentTheme = theme;
             if (theme == AppTheme.Lite)
-                UIManager.setLookAndFeel(LITE_THEME);
+                UIManager.setLookAndFeel(ThemeManager.LITE_THEME);
             else
-                UIManager.setLookAndFeel(DARK_THEME);
+                UIManager.setLookAndFeel(ThemeManager.DARK_THEME);
             for (ContentForm contentForm : contentForms)
                 contentForm.onThemeChange();
         } catch (UnsupportedLookAndFeelException e) {
@@ -201,7 +201,7 @@ public class MainFrame extends JFrame {
      * Toggle theme between lite and dark.
      */
     public void toggleTheme() {
-        if (theme == AppTheme.Lite)
+        if (themeManager.currentTheme == AppTheme.Lite)
             setTheme(AppTheme.Dark);
         else
             setTheme(AppTheme.Lite);
