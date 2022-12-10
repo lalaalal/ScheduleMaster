@@ -39,7 +39,6 @@ public class SearchForm extends ContentForm {
         this.lectureTableForm = lectureTableForm;
 
         $$$setupUI$$$();
-        searchField.setBorder(BorderFactory.createCompoundBorder(searchField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         searchField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -64,6 +63,7 @@ public class SearchForm extends ContentForm {
         searchLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 5));
 
         addComponentForm(lectureTableForm);
+        addThemeChangeListener(() -> searchField.setBorder(BorderFactory.createCompoundBorder(searchField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5))));
     }
 
     @Override

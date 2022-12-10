@@ -3,6 +3,7 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.schedulemaster.app.util.ThemeManager;
 import com.schedulemaster.app.view.content.ContentForm;
 
 import javax.swing.*;
@@ -23,6 +24,8 @@ public class TitleBarForm extends ComponentForm {
     private JLabel logoutLabel;
 
     public TitleBarForm(MainFrame frame) {
+        ThemeManager themeManager = ThemeManager.getInstance();
+        userIDLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         logoutLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
         logoutLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -50,7 +53,9 @@ public class TitleBarForm extends ComponentForm {
                 frame.setContentForm(ContentForm.Content.MagicWizard);
             }
         });
-
+        addThemeChangeListener(() -> {
+            panel.setBackground(themeManager.getColor("TitleBar.background"));
+        });
     }
 
     public void setUserID(String id) {

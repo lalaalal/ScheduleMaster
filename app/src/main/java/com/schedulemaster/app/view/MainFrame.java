@@ -176,6 +176,7 @@ public class MainFrame extends JFrame {
         Locale.setDefault(locale);
         for (ContentForm contentForm : contentForms)
             contentForm.onLocaleChange();
+        titleBarForm.onLocaleChange();
     }
 
     /**
@@ -192,6 +193,7 @@ public class MainFrame extends JFrame {
                 UIManager.setLookAndFeel(ThemeManager.DARK_THEME);
             for (ContentForm contentForm : contentForms)
                 contentForm.onThemeChange();
+            titleBarForm.onThemeChange();
         } catch (UnsupportedLookAndFeelException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

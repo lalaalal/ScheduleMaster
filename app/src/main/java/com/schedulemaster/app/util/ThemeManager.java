@@ -57,6 +57,11 @@ public class ThemeManager {
     private ThemeManager() {
         addColor(AppTheme.Lite, "Table.cellBorder", Color.LIGHT_GRAY);
         addColor(AppTheme.Dark, "Table.cellBorder", Color.DARK_GRAY);
+
+        addColor(AppTheme.Lite, "TitleBar.background", Color.decode("#373EAD"));
+        addColor(AppTheme.Lite, "TitleBar.foreground", Color.LIGHT_GRAY);
+        addColor(AppTheme.Dark, "TitleBar.background", getDefaultColor(DARK_THEME, "Table.selectionBackground"));
+        addColor(AppTheme.Dark, "TitleBar.foreground", getDefaultColor(DARK_THEME, "Label.foreground"));
     }
 
     /**
