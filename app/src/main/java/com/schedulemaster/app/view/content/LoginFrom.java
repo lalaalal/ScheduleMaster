@@ -71,6 +71,8 @@ public class LoginFrom extends ContentForm {
                 mainFrame.toggleTheme();
             }
         });
+
+        addThemeChangeListener(() -> SwingUtilities.updateComponentTreeUI(signupDialog));
     }
 
     @Override

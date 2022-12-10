@@ -43,6 +43,7 @@ public class LectureGroupForm extends ComponentForm {
         }));
         groupNameLabel.setText(name);
         addThemeChangeListener(lectureTableForm::onThemeChange);
+        addThemeChangeListener(() -> SwingUtilities.updateComponentTreeUI(searchDialog));
     }
 
     public LinkedList<Lecture> getLectures() {
