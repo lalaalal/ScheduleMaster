@@ -109,13 +109,26 @@ public class MagicController {
             addLecture(suggestion, lecture, usedTime);
         }
 
-        addLectures(suggestion, LectureBook.findWithComparator(lectureBook.getLectures(), lecture -> lecture.max <= lecture.enrolled), usedTime, maxSuggestion);
+        addLectures(suggestion, findMatchingUrgentLectures(), usedTime, maxSuggestion);
         addLectures(suggestion, userController.getSelectedLectures(), usedTime, maxSuggestion);
         LinkedList<Lecture> majorMatchLectures = lectureBook.findLectures(LectureController.AttributeName.Major.name(), userController.getUserMajor());
         addLectures(suggestion, LectureBook.findWithComparator(majorMatchLectures, lecture -> lecture.grade <= userController.getUserGrade()), usedTime, maxSuggestion);
         addLectures(suggestion, lectureBook.getLectures(), usedTime, maxSuggestion);
 
         return suggestion;
+    }
+
+    private LinkedList<Lecture> findMatchingUrgentLectures() {
+        LinkedList<Lecture> urgentLectures = LectureBook.findWithComparator(userController.getSelectedLectures(), lecture -> lecture.max <= lecture.enrolled);
+        return LectureBook.findWithComparator(lectureBook.getLectures(), lecture -> {
+            for (Lecture urgentLecture : urgentLectures) {
+                if (lecture.name.equals(urgentLecture.name)
+                        && !lecture.lectureNum.equals(urgentLecture.lectureNum)
+                        && !userController.getEnrolledLectures().has(urgentLecture))
+                    return true;
+            }
+            return false;
+        });
     }
 
     private void addLecture(LinkedList<Lecture> suggestion, Lecture lecture, LectureTime usedTime) {
