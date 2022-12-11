@@ -117,7 +117,7 @@ public class LectureTableForm extends LectureView {
                 TableColumn tableColumn = columnModel.getColumn(i);
                 tableColumn.setHeaderValue(Translator.getBundleString(columnNames.get(i)));
             }
-            tableHeader.repaint();
+            updateView();
         });
     }
 

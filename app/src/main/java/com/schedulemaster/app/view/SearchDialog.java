@@ -50,6 +50,7 @@ public class SearchDialog extends JDialog {
     @Override
     public void setVisible(boolean b) {
         searchForm.load();
+        searchForm.onLocaleChange();
         super.setVisible(b);
     }
 

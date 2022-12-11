@@ -89,6 +89,8 @@ public class LectureGroupListForm extends ComponentGroup {
         lectureGroupListPanel.repaint();
 
         addComponentForm(lectureGroupForm);
+        lectureGroupForm.onLocaleChange();
+        lectureGroupForm.onThemeChange();
     }
 
     public void deleteGroup(LectureGroupForm lectureGroupForm) {
