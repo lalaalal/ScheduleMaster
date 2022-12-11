@@ -123,7 +123,7 @@ public class LectureTableForm extends LectureView {
 
     private String getSelectedLectureNum() {
         int row = lectureTable.getSelectedRow();
-        int modelIndex = lectureTable.getColumn("강의번호").getModelIndex();
+        int modelIndex = lectureTable.getColumn(Translator.getBundleString("lecture_num")).getModelIndex();
         int column = lectureTable.convertColumnIndexToView(modelIndex);
         return lectureTable.getValueAt(row, column).toString();
     }
