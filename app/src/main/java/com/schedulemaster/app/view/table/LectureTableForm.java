@@ -221,9 +221,9 @@ public class LectureTableForm extends LectureView {
                 ResponseStatus status = userAction.action(userController, lecture);
                 if (status.status())
                     frame.getLectureController().refresh();
-                JOptionPane.showConfirmDialog(frame, resourceBundle.getString(status.msg()), resourceBundle.getString("info"), JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(frame, Translator.getBundleString(status.msg()), Translator.getBundleString("info"), JOptionPane.DEFAULT_OPTION);
             } catch (IOException e) {
-                JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), resourceBundle.getString("error"), JOptionPane.DEFAULT_OPTION);
+                JOptionPane.showConfirmDialog(frame, e.getLocalizedMessage(), Translator.getBundleString("error"), JOptionPane.DEFAULT_OPTION);
             }
         });
 

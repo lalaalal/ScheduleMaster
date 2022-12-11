@@ -3,6 +3,7 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.schedulemaster.app.util.Translator;
 import com.schedulemaster.app.view.content.SearchForm;
 import com.schedulemaster.app.view.table.LectureTableForm;
 import com.schedulemaster.misc.LinkedList;
@@ -52,6 +53,10 @@ public class SearchDialog extends JDialog {
         searchForm.load();
         searchForm.onLocaleChange();
         super.setVisible(b);
+    }
+
+    public void updateLocale() {
+        selectButton.setText(Translator.getBundleString("select"));
     }
 
     public void addCallBack(Callback callback) {

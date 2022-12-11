@@ -99,6 +99,9 @@ public class MagicController {
         LectureTime usedTime = getUsedTime();
 
         LinkedList<Lecture> suggestion = new LinkedList<>();
+
+        addLectures(suggestion, findMatchingUrgentLectures(), usedTime, maxSuggestion);
+
         Heap<Priority> priorityHeap = userController.getPriorityHeap();
         while (!priorityHeap.isEmpty()) {
             if (suggestion.getLength() >= maxSuggestion)
@@ -109,7 +112,6 @@ public class MagicController {
             addLecture(suggestion, lecture, usedTime);
         }
 
-        addLectures(suggestion, findMatchingUrgentLectures(), usedTime, maxSuggestion);
         addLectures(suggestion, userController.getSelectedLectures(), usedTime, maxSuggestion);
         LinkedList<Lecture> majorMatchLectures = lectureBook.findLectures(LectureController.AttributeName.Major.name(), userController.getUserMajor());
         addLectures(suggestion, LectureBook.findWithComparator(majorMatchLectures, lecture -> lecture.grade <= userController.getUserGrade()), usedTime, maxSuggestion);

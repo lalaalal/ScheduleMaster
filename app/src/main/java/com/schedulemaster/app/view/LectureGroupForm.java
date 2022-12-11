@@ -59,6 +59,7 @@ public class LectureGroupForm extends ComponentForm {
             deleteButton.setText(Translator.getBundleString("delete_group"));
             updateGroupNameLabel();
             lectureTableForm.onLocaleChange();
+            searchDialog.updateLocale();
         });
     }
 
