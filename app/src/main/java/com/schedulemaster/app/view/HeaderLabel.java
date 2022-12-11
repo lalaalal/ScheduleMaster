@@ -9,4 +9,10 @@ public class HeaderLabel extends JLabel {
     public HeaderLabel() {
         setFont(headerFont);
     }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        setFont(UIManager.getDefaults().getFont("Label.font").deriveFont(18f));
+    }
 }

@@ -77,6 +77,11 @@ public class RatingBoardDialog extends JDialog {
         });
     }
 
+    public void updateLocale() {
+        commitButton.setText(Translator.getBundleString("commit"));
+        removeRatingButton.setText(Translator.getBundleString("remove_my_rating"));
+    }
+
     private void refresh() {
         try {
             listModel.removeAllElements();

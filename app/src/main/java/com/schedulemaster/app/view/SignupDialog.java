@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.ResponseStatus;
 import com.schedulemaster.app.controller.LectureController;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.util.Translator;
 import com.schedulemaster.misc.LinkedList;
 
 import javax.swing.*;
@@ -27,6 +28,8 @@ public class SignupDialog extends JDialog {
     private JButton doneButton;
     private JComboBox<String> majorComboBox;
     private JPanel panel;
+    private JLabel gradeLabel;
+    private JLabel majorLabel;
     private final MainFrame mainFrame;
 
     public SignupDialog(MainFrame mainFrame) {
@@ -50,6 +53,14 @@ public class SignupDialog extends JDialog {
                 signup();
             }
         });
+    }
+
+    public void updateLocale() {
+        idLabel.setText(Translator.getBundleString("id"));
+        pwLabel.setText(Translator.getBundleString("pw"));
+        gradeLabel.setText(Translator.getBundleString("grade"));
+        majorLabel.setText(Translator.getBundleString("major"));
+        doneButton.setText(Translator.getBundleString("done_btn"));
     }
 
     @Override
@@ -129,12 +140,12 @@ public class SignupDialog extends JDialog {
         this.$$$loadButtonText$$$(doneButton, this.$$$getMessageFromBundle$$$("string", "done_btn"));
         panel1.add(doneButton, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         panel1.add(majorComboBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label1 = new JLabel();
-        this.$$$loadLabelText$$$(label1, this.$$$getMessageFromBundle$$$("string", "grade"));
-        panel1.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        this.$$$loadLabelText$$$(label2, this.$$$getMessageFromBundle$$$("string", "major"));
-        panel1.add(label2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        gradeLabel = new JLabel();
+        this.$$$loadLabelText$$$(gradeLabel, this.$$$getMessageFromBundle$$$("string", "grade"));
+        panel1.add(gradeLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        majorLabel = new JLabel();
+        this.$$$loadLabelText$$$(majorLabel, this.$$$getMessageFromBundle$$$("string", "major"));
+        panel1.add(majorLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         panel.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();

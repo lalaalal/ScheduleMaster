@@ -85,6 +85,7 @@ public class LoginFrom extends ContentForm {
             signupLabel.setText(Translator.getBundleString("signup"));
             toggleThemeButton.setText(Translator.getBundleString("toggle_theme"));
         });
+        addLocaleChangeListener(signupDialog::updateLocale);
     }
 
     @Override

@@ -72,7 +72,7 @@
             </constraints>
             <properties/>
           </component>
-          <component id="1f8c1" class="javax.swing.JLabel">
+          <component id="1f8c1" class="javax.swing.JLabel" binding="gradeLabel">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -80,7 +80,7 @@
               <text resource-bundle="string" key="grade"/>
             </properties>
           </component>
-          <component id="c20af" class="javax.swing.JLabel">
+          <component id="c20af" class="javax.swing.JLabel" binding="majorLabel">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>

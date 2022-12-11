@@ -47,6 +47,7 @@ public class MainFrame extends JFrame {
         SUPPORTED_LOCALES.put("english", Locale.ENGLISH);
         SUPPORTED_LOCALES.put("japanese", Locale.JAPANESE);
         SUPPORTED_LOCALES.put("chinese", Locale.CHINESE);
+        SUPPORTED_LOCALES.put("vietnam", new Locale("vi", "Vietnam"));
     }
 
     public static Iterable<String> supportedLocaleKeys() {

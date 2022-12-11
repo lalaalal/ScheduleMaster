@@ -41,7 +41,7 @@ public class LectureGroupForm extends ComponentForm {
                 searchDialog.setVisible(true);
             }
         });
-        lectureTableForm.addButtonColumn(ResourceBundle.getBundle(MainFrame.RESOURCE_BUNDLE_NAME).getString("unselect"), ((lecture) -> {
+        lectureTableForm.addButtonColumn("unselect", ((lecture) -> {
             lectureTableForm.removeLecture(lecture);
             lectureTableForm.updateView();
         }));
@@ -56,7 +56,9 @@ public class LectureGroupForm extends ComponentForm {
         addThemeChangeListener(() -> SwingUtilities.updateComponentTreeUI(searchDialog));
         addLocaleChangeListener(() -> {
             searchButton.setText(Translator.getBundleString("search"));
+            deleteButton.setText(Translator.getBundleString("delete_group"));
             updateGroupNameLabel();
+            lectureTableForm.onLocaleChange();
         });
     }
 

@@ -3,6 +3,7 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.util.ThemeManager;
+import com.schedulemaster.app.util.Translator;
 import com.schedulemaster.misc.Hash;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -10,6 +11,9 @@ import com.schedulemaster.model.LectureTime;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 
 public class TimeTableForm extends LectureView {
@@ -25,7 +29,7 @@ public class TimeTableForm extends LectureView {
 
     private static final int N_CLASS = 14;
 
-    private static final String[] HEADER = {"", "월", "화", "수", "목", "금", "토"};
+    private static final String[] HEADER = {"", "mon", "tue", "wed", "thu", "fri", "sat"};
     private static final String[][] RAW_DATA = new String[N_CLASS][HEADER.length];
 
     public static final int FIRST_CLASS_HOUR = 9;
@@ -60,6 +64,10 @@ public class TimeTableForm extends LectureView {
             scrollPane.getViewport().setBackground(ThemeManager.getDefaultColor("Panel.background"));
             timeTable.setBorder(BorderFactory.createLineBorder(themeManager.getColor("Table.cellBorder"), 1));
         });
+        addLocaleChangeListener(() -> {
+            updateHeader();
+            updatePeriod();
+        });
     }
 
     @Override
@@ -86,6 +94,23 @@ public class TimeTableForm extends LectureView {
         }
         panel.revalidate();
         panel.repaint();
+    }
+
+    private void updateHeader() {
+        JTableHeader tableHeader = timeTable.getTableHeader();
+        TableColumnModel columnModel = tableHeader.getColumnModel();
+        for (int i = 0; i < HEADER.length; i++) {
+            TableColumn tableColumn = columnModel.getColumn(i);
+            tableColumn.setHeaderValue(Translator.getBundleString(HEADER[i]));
+        }
+        tableHeader.repaint();
+    }
+
+    private void updatePeriod() {
+        for (int i = 0; i < N_CLASS; i++) {
+            String text = (i + 1) + Translator.getBundleString("period");
+            timeTable.setValueAt(text, i, 0);
+        }
     }
 
     private void setClassTimes(Lecture lecture, int colorIndex) {
