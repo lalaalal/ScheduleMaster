@@ -3,6 +3,7 @@ package com.schedulemaster.app.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.schedulemaster.app.util.Translator;
 import com.schedulemaster.app.view.table.LectureTableForm;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -21,11 +22,14 @@ public class LectureGroupForm extends ComponentForm {
     private JPanel groupTablePanel;
     private JButton searchButton;
     private JPanel headerPanel;
+    private JButton deleteButton;
 
     private final LectureTableForm lectureTableForm;
     private final SearchDialog searchDialog;
+    private int groupNumber;
 
-    public LectureGroupForm(MainFrame frame, String name) {
+    public LectureGroupForm(MainFrame frame, LectureGroupListForm groupListForm, int groupNumber) {
+        this.groupNumber = groupNumber;
         lectureTableForm = new LectureTableForm(frame);
         searchDialog = new SearchDialog(frame);
         $$$setupUI$$$();
@@ -41,9 +45,29 @@ public class LectureGroupForm extends ComponentForm {
             lectureTableForm.removeLecture(lecture);
             lectureTableForm.updateView();
         }));
-        groupNameLabel.setText(name);
+        deleteButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                groupListForm.deleteGroup(LectureGroupForm.this);
+            }
+        });
+        updateGroupNameLabel();
         addThemeChangeListener(lectureTableForm::onThemeChange);
         addThemeChangeListener(() -> SwingUtilities.updateComponentTreeUI(searchDialog));
+        addLocaleChangeListener(() -> {
+            searchButton.setText(Translator.getBundleString("search"));
+            updateGroupNameLabel();
+        });
+    }
+
+    public void setGroupNumber(int groupNumber) {
+        this.groupNumber = groupNumber;
+        updateGroupNameLabel();
+    }
+
+    private void updateGroupNameLabel() {
+        String text = Translator.getBundleString("group") + " " + groupNumber;
+        groupNameLabel.setText(text);
     }
 
     public LinkedList<Lecture> getLectures() {
@@ -74,7 +98,7 @@ public class LectureGroupForm extends ComponentForm {
         panel.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
         panel.add(groupTablePanel, new GridConstraints(1, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         headerPanel = new JPanel();
-        headerPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        headerPanel.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
         panel.add(headerPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, 1, null, null, null, 0, false));
         headerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(15, 15, 0, 15), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         groupNameLabel.setText("Label");
@@ -84,6 +108,9 @@ public class LectureGroupForm extends ComponentForm {
         searchButton = new JButton();
         this.$$$loadButtonText$$$(searchButton, this.$$$getMessageFromBundle$$$("string", "search"));
         headerPanel.add(searchButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        deleteButton = new JButton();
+        this.$$$loadButtonText$$$(deleteButton, this.$$$getMessageFromBundle$$$("string", "delete_group"));
+        headerPanel.add(deleteButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;

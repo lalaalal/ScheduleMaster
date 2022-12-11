@@ -2,7 +2,11 @@ package com.schedulemaster.app.view.content;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.schedulemaster.app.view.*;
+import com.schedulemaster.app.util.Translator;
+import com.schedulemaster.app.view.HeaderLabel;
+import com.schedulemaster.app.view.LectureGroupListForm;
+import com.schedulemaster.app.view.MainFrame;
+import com.schedulemaster.app.view.SelectableTimeTable;
 import com.schedulemaster.model.LectureTime;
 
 import javax.swing.*;
@@ -27,6 +31,10 @@ public class MagicWizardForm extends ContentForm {
         $$$setupUI$$$();
         addComponentForm(lectureGroupListForm);
         addComponentForm(selectableTimeTableForm);
+
+        addLocaleChangeListener(() -> {
+            unwantedTimeLabel.setText(Translator.getBundleString("unwanted_time"));
+        });
     }
 
     private void createUIComponents() {

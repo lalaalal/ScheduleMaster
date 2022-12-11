@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
+import com.schedulemaster.app.util.Translator;
 import com.schedulemaster.app.view.content.ContentForm;
 import com.schedulemaster.misc.LinkedList;
 import com.schedulemaster.model.Lecture;
@@ -30,8 +31,6 @@ public class LectureGroupListForm extends ComponentGroup {
     private final LinkedList<LectureGroupForm> lectureGroupForms = new LinkedList<>();
     private final MainFrame frame;
 
-    private int groupCount = 0;
-
     public LectureGroupListForm(MainFrame frame, SelectableTimeTable selectableTimeTable) {
         this.frame = frame;
         $$$setupUI$$$();
@@ -52,6 +51,10 @@ public class LectureGroupListForm extends ComponentGroup {
 
                 setupMagic();
             }
+        });
+        addLocaleChangeListener(() -> {
+            groupAddButton.setText(Translator.getBundleString("group_add_btn"));
+            doneButton.setText(Translator.getBundleString("done_btn"));
         });
     }
 
@@ -76,8 +79,8 @@ public class LectureGroupListForm extends ComponentGroup {
     }
 
     public void addGroup() {
-        groupCount += 1;
-        LectureGroupForm lectureGroupForm = new LectureGroupForm(frame, "그룹 " + groupCount);
+        int groupCount = lectureGroupForms.getLength() + 1;
+        LectureGroupForm lectureGroupForm = new LectureGroupForm(frame, this, groupCount);
         gridLayout.setRows(groupCount);
         lectureGroupListPanel.add(lectureGroupForm.getPanel());
         lectureGroupForms.push(lectureGroupForm);
@@ -86,6 +89,26 @@ public class LectureGroupListForm extends ComponentGroup {
         lectureGroupListPanel.repaint();
 
         addComponentForm(lectureGroupForm);
+    }
+
+    public void deleteGroup(LectureGroupForm lectureGroupForm) {
+        lectureGroupForms.remove(lectureGroupForm);
+        lectureGroupListPanel.remove(lectureGroupForm.getPanel());
+        removeComponentForm(lectureGroupForm);
+
+        gridLayout.setRows(lectureGroupForms.getLength());
+        reorderGroups();
+
+        lectureGroupListPanel.revalidate();
+        lectureGroupListPanel.repaint();
+    }
+
+    private void reorderGroups() {
+        int index = 1;
+        for (LectureGroupForm lectureGroupForm : lectureGroupForms) {
+            lectureGroupForm.setGroupNumber(index);
+            index += 1;
+        }
     }
 
     @Override

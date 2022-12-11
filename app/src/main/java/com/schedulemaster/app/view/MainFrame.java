@@ -7,11 +7,13 @@ import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.observers.EnrolledLectureObserver;
 import com.schedulemaster.app.observers.LectureBookObserver;
 import com.schedulemaster.app.observers.SelectedLectureObserver;
+import com.schedulemaster.app.util.FontManager;
 import com.schedulemaster.app.util.ThemeManager;
 import com.schedulemaster.app.view.content.*;
 import com.schedulemaster.misc.Hash;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -172,11 +174,21 @@ public class MainFrame extends JFrame {
         lectureBookObserver.addLectureView(lectureView);
     }
 
+    public void changeLocale(String localeString) {
+        Locale locale = SUPPORTED_LOCALES.get(localeString);
+        changeLocale(locale);
+    }
+
     public void changeLocale(Locale locale) {
         Locale.setDefault(locale);
+        if (locale.equals(Locale.ENGLISH) || locale.equals(Locale.KOREAN))
+            FontManager.setUIFont(new FontUIResource(FontManager.getFont()));
+        else
+            FontManager.setUIFont(new FontUIResource(new Font("Sans-serif", Font.BOLD, 13)));
         for (ContentForm contentForm : contentForms)
             contentForm.onLocaleChange();
         titleBarForm.onLocaleChange();
+        setTheme(themeManager.currentTheme);
     }
 
     /**

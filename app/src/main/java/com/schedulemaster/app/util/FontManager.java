@@ -1,6 +1,5 @@
 package com.schedulemaster.app.util;
 
-
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
@@ -16,6 +15,16 @@ import java.util.Enumeration;
 public class FontManager {
     public static final float DEFAULT_FONT_SIZE = 13f;
     public static final float HEADER_FONT_SIZE = 18f;
+    private static Font loadedFont;
+
+    /**
+     * Get loaded font.
+     *
+     * @return Loaded font
+     */
+    public static Font getFont() {
+        return loadedFont;
+    }
 
     /**
      * Get font with size.
@@ -34,11 +43,17 @@ public class FontManager {
      * @throws FontFormatException If the fontStream data does not contain the required font tables for the specified format
      */
     public static void loadFont() throws IOException, FontFormatException {
+        if (loadedFont != null) {
+            setUIFont(new FontUIResource(loadedFont));
+            return;
+        }
         try (InputStream is = FontManager.class.getClassLoader().getResourceAsStream("font/SCDream4.otf")) {
             if (is == null)
                 throw new IOException("Font not found");
-            Font font = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(DEFAULT_FONT_SIZE);
-            setUIFont(new FontUIResource(font));
+            GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            loadedFont = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(DEFAULT_FONT_SIZE);
+            graphicsEnvironment.registerFont(loadedFont);
+            setUIFont(new FontUIResource(loadedFont));
         }
     }
 
@@ -57,4 +72,3 @@ public class FontManager {
         }
     }
 }
-

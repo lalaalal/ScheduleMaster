@@ -26,7 +26,7 @@ public class App {
     public static void main(String[] args) {
         try {
             setSystemProperties();
-            Locale.setDefault(Locale.JAPANESE);
+            Locale.setDefault(Locale.KOREAN);
             UIManager.setLookAndFeel(new MaterialLookAndFeel());
             FontManager.loadFont();
             MainFrame frame = new MainFrame();

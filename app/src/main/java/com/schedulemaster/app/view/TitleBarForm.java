@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.util.ThemeManager;
+import com.schedulemaster.app.util.Translator;
 import com.schedulemaster.app.view.content.ContentForm;
 
 import javax.swing.*;
@@ -55,6 +56,12 @@ public class TitleBarForm extends ComponentForm {
         });
         addThemeChangeListener(() -> {
             panel.setBackground(themeManager.getColor("TitleBar.background"));
+        });
+        addLocaleChangeListener(() -> {
+            homeLabel.setText(Translator.getBundleString("home"));
+            lectureBagLabel.setText(Translator.getBundleString("enrolled"));
+            wizardLabel.setText(Translator.getBundleString("wizard"));
+            logoutLabel.setText(Translator.getBundleString("logout"));
         });
     }
 

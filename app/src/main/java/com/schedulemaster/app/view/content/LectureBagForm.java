@@ -5,7 +5,10 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.observers.Observer;
-import com.schedulemaster.app.view.*;
+import com.schedulemaster.app.util.Translator;
+import com.schedulemaster.app.view.HeaderLabel;
+import com.schedulemaster.app.view.MainFrame;
+import com.schedulemaster.app.view.TimeTableForm;
 import com.schedulemaster.app.view.table.EnrolledLectureTableForm;
 import com.schedulemaster.app.view.table.SelectedLectureTableForm;
 import com.schedulemaster.misc.LinkedList;
@@ -66,6 +69,13 @@ public class LectureBagForm extends ContentForm {
         addComponentForm(selectedLectureTableForm);
         addComponentForm(enrolledLectureTableForm);
         addComponentForm(timeTableForm);
+
+        addLocaleChangeListener(() -> {
+            enrolledLecturesLabel.setText(Translator.getBundleString("enrolled_lecture"));
+            timeTableLabel.setText(Translator.getBundleString("enrolled_lecture"));
+            suggestionCheckBox.setText(Translator.getBundleString("suggest_check_box"));
+            selectedLectureLabel.setText(Translator.getBundleString("lecture_bag"));
+        });
     }
 
     @Override

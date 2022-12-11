@@ -6,7 +6,10 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.schedulemaster.app.controller.MagicController;
 import com.schedulemaster.app.controller.UserController;
 import com.schedulemaster.app.model.Schedule;
-import com.schedulemaster.app.view.*;
+import com.schedulemaster.app.util.Translator;
+import com.schedulemaster.app.view.HeaderLabel;
+import com.schedulemaster.app.view.MainFrame;
+import com.schedulemaster.app.view.TimeTableForm;
 import com.schedulemaster.app.view.table.LectureTableForm;
 import com.schedulemaster.model.Lecture;
 
@@ -68,6 +71,13 @@ public class MagicSelectorForm extends ContentForm {
 
         addComponentForm(lectureTableForm);
         addComponentForm(timeTableForm);
+
+        addLocaleChangeListener(() -> {
+            selectButton.setText(Translator.getBundleString("select_btn"));
+            previewLabel.setText(Translator.getBundleString("preview_label"));
+            previousButton.setText(Translator.getBundleString("previous_btn"));
+            nextButton.setText(Translator.getBundleString("next_btn"));
+        });
     }
 
     @Override

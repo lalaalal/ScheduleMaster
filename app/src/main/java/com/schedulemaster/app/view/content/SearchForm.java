@@ -3,6 +3,7 @@ package com.schedulemaster.app.view.content;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.controller.LectureController;
+import com.schedulemaster.app.util.Translator;
 import com.schedulemaster.app.view.HeaderLabel;
 import com.schedulemaster.app.view.MainFrame;
 import com.schedulemaster.app.view.table.LectureTableForm;
@@ -64,6 +65,11 @@ public class SearchForm extends ContentForm {
 
         addComponentForm(lectureTableForm);
         addThemeChangeListener(() -> searchField.setBorder(BorderFactory.createCompoundBorder(searchField.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5))));
+        addLocaleChangeListener(() -> {
+            searchButton.setText(Translator.getBundleString("search"));
+            searchLabel.setText(Translator.getBundleString("search"));
+            showAll.setText(Translator.getBundleString("show_all_btn"));
+        });
     }
 
     @Override

@@ -3,7 +3,10 @@ package com.schedulemaster.app.view.content;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.schedulemaster.app.controller.UserController;
-import com.schedulemaster.app.view.*;
+import com.schedulemaster.app.util.Translator;
+import com.schedulemaster.app.view.HeaderLabel;
+import com.schedulemaster.app.view.MainFrame;
+import com.schedulemaster.app.view.TimeTableForm;
 import com.schedulemaster.app.view.table.HomeLectureTableForm;
 import com.schedulemaster.app.view.table.LectureTableForm;
 import com.schedulemaster.app.view.table.SelectedLectureTableForm;
@@ -38,6 +41,11 @@ public class HomeForm extends ContentForm {
         addComponentForm(selectedLectureTableForm);
         addComponentForm(searchForm);
         addComponentForm(timeTableForm);
+
+        addLocaleChangeListener(() -> {
+            lectureBagLabel.setText(Translator.getBundleString("lecture_bag"));
+            timeTableLabel.setText(Translator.getBundleString("lecture_bag"));
+        });
     }
 
     @Override
